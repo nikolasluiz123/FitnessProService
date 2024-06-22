@@ -145,7 +145,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '50/day',
         'user': '1000/day'
-    }
+    },
+    'EXCEPTION_HANDLER': 'error_handler.custom_exception_handler',
 }
 
 LOGGING = {

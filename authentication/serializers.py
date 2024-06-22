@@ -1,12 +1,14 @@
 from django.contrib.auth.models import User, Group
 from email_validator import validate_email, EmailNotValidError
 from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
 
 from authentication.enumerators import EnumUserProfile
 
 
 class UserSerializer(serializers.ModelSerializer):
     user_profile = serializers.ChoiceField(choices=EnumUserProfile.choices(), write_only=True)
+    group_names = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -26,6 +28,10 @@ class UserSerializer(serializers.ModelSerializer):
             'null': 'A senha é obrigatória.',
             'blank': 'A senha é obrigatória.'
         }
+
+    @staticmethod
+    def get_group_names(obj):
+        return [group.name for group in obj.groups.all()]
 
     @staticmethod
     def validate_first_name(first_name: str):
@@ -60,5 +66,6 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         group_name = f'{validated_data.pop('user_profile')}_PERMISSIONS'
         validated_data['groups'] = Group.objects.filter(name=group_name)
+        validated_data['password'] = make_password(validated_data['password'])
 
         return super().create(validated_data)
