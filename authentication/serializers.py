@@ -4,6 +4,7 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 
 from authentication.enumerators import EnumUserProfile
+from authentication.models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -69,3 +70,106 @@ class UserSerializer(serializers.ModelSerializer):
         validated_data['password'] = make_password(validated_data['password'])
 
         return super().create(validated_data)
+
+
+class AcademyFrequencySerializer(serializers.ModelSerializer):
+    day_week_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AcademyFrequency
+        fields = ['id', 'day_week', 'day_week_display', 'start', 'end']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['day_week'].error_messages = {
+            'required': 'O dia da semana é obrigatório.',
+            'null': 'O dia da semana é obrigatório.',
+            'blank': 'O dia da semana é obrigatório.',
+            'invalid_choice': 'Dia da semana inválido.'
+        }
+
+        self.fields['start'].error_messages = {
+            'required': 'A hora de início é obrigatória.',
+            'null': 'A hora de início é obrigatória.',
+            'blank': 'A hora de início é obrigatória.',
+            'invalid': 'A hora de início é inválida.'
+        }
+
+        self.fields['end'].error_messages = {
+            'required': 'A hora de fim é obrigatória.',
+            'null': 'A hora de fim é obrigatória.',
+            'blank': 'A hora de fim é obrigatória.',
+            'invalid': 'A hora de fim é inválida.'
+        }
+
+    @staticmethod
+    def get_day_week_display(obj):
+        return obj.get_day_week_display()
+
+
+class AcademySerializer(serializers.ModelSerializer):
+    frequencies = AcademyFrequencySerializer(many=True)
+    username = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = Academy
+        fields = ['id', 'name', 'frequencies', 'username']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['name'].error_messages = {
+            'required': 'O nome é obrigatório.',
+            'null': 'O nome é obrigatório.',
+            'blank': 'O nome é obrigatório.'
+        }
+
+        self.fields['frequencies'].error_messages = {
+            'required': 'A frequência é obrigatória.',
+            'null': 'A frequência é obrigatória.',
+            'blank': 'A frequência é obrigatória.'
+        }
+
+    @staticmethod
+    def validate_frequencies(frequencies):
+        print(frequencies)
+
+        if len(frequencies) == 0:
+            raise serializers.ValidationError('É obrigatório informar ao menos um dia da semana na frequência da '
+                                              'academia.')
+
+        return frequencies
+
+    def create(self, validated_data):
+        frequencies_data = validated_data.pop('frequencies')
+        username = validated_data.pop('username')
+
+        academy = Academy.objects.create(**validated_data)
+
+        for frequency_data in frequencies_data:
+            AcademyFrequency.objects.create(academy=academy, **frequency_data)
+
+        user = User.objects.get(username=username)
+        UserAcademy.objects.create(user=user, academy=academy)
+
+        return academy
+
+    def update(self, instance, validated_data):
+        frequencies_data = validated_data.pop('frequencies')
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+
+        for frequency_data in frequencies_data:
+            frequency_id = frequency_data.get('id')
+
+            if frequency_id:
+                frequency = AcademyFrequency.objects.get(id=frequency_id, academy=instance)
+                frequency.day_week = frequency_data.get('day_week', frequency.day_week)
+                frequency.start = frequency_data.get('start', frequency.start)
+                frequency.end = frequency_data.get('end', frequency.end)
+                frequency.save()
+            else:
+                AcademyFrequency.objects.create(academy=instance, **frequency_data)
+
+        return instance
