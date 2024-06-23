@@ -173,3 +173,9 @@ class AcademySerializer(serializers.ModelSerializer):
                 AcademyFrequency.objects.create(academy=instance, **frequency_data)
 
         return instance
+
+
+class ListAcademiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Academy
+        fields = ['id', 'name']

@@ -1,5 +1,3 @@
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.viewsets import *
 
@@ -33,25 +31,16 @@ class AcademyViewSet(ModelViewSet):
     queryset = Academy.objects.all()
     serializer_class = AcademySerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+class AcademiesListAPI(generics.ListAPIView):
+    """
+        Listagem de todas as academias sem paginação. Pode ser usada quando deseja-se exibir todos os dados de uma
+        vez em algum componente simples de visualização.
+    """
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+    serializer_class = ListAcademiesSerializer
+    pagination_class = None
 
-        return Response(serializer.data)
-
-    def perform_create(self, serializer):
-        serializer.save()
-
-    def perform_update(self, serializer):
-        serializer.save()
+    def get_queryset(self):
+        query_set = Academy.objects.all()
+        return query_set

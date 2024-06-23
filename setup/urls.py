@@ -26,6 +26,7 @@ router.register('academies', AcademyViewSet, basename='Academies')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('academies/list', AcademiesListAPI.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
 ]
