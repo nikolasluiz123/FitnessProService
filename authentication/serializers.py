@@ -1,9 +1,9 @@
-from django.contrib.auth.models import User, Group
-from email_validator import validate_email, EmailNotValidError
-from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
+from email_validator import validate_email, EmailNotValidError
+from rest_framework import serializers, status
 
-from authentication.enumerators import EnumUserProfile
+from authentication.enumerators import *
 from authentication.models import *
 
 
@@ -74,10 +74,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 class AcademyFrequencySerializer(serializers.ModelSerializer):
     day_week_display = serializers.SerializerMethodField()
+    academy_name = serializers.SerializerMethodField()
+    username = serializers.CharField(write_only=True)
 
     class Meta:
         model = AcademyFrequency
-        fields = ['id', 'day_week', 'day_week_display', 'start', 'end']
+        fields = ['id', 'day_week', 'day_week_display', 'start', 'end', 'academy', 'academy_name', 'username']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -107,75 +109,59 @@ class AcademyFrequencySerializer(serializers.ModelSerializer):
     def get_day_week_display(obj):
         return obj.get_day_week_display()
 
-
-class AcademySerializer(serializers.ModelSerializer):
-    frequencies = AcademyFrequencySerializer(many=True)
-    username = serializers.CharField(write_only=True)
-
-    class Meta:
-        model = Academy
-        fields = ['id', 'name', 'frequencies', 'username']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['name'].error_messages = {
-            'required': 'O nome é obrigatório.',
-            'null': 'O nome é obrigatório.',
-            'blank': 'O nome é obrigatório.'
-        }
-
-        self.fields['frequencies'].error_messages = {
-            'required': 'A frequência é obrigatória.',
-            'null': 'A frequência é obrigatória.',
-            'blank': 'A frequência é obrigatória.'
-        }
-
     @staticmethod
-    def validate_frequencies(frequencies):
-        print(frequencies)
+    def get_academy_name(obj):
+        return obj.academy.name
 
-        if len(frequencies) == 0:
-            raise serializers.ValidationError('É obrigatório informar ao menos um dia da semana na frequência da '
-                                              'academia.')
+    def validate(self, attrs):
+        AcademyFrequency.objects.filter(day_week=attrs['day_week'])
 
-        return frequencies
+        user = User.objects.get(username=attrs['username'])
+        exists_user_academy = UserAcademy.objects.filter(user=user, academy=attrs['academy']).exists()
+
+        conflicts = AcademyFrequency.objects.filter(
+            day_week=attrs['day_week'],
+            academy=attrs['academy']
+        ).filter(
+            start__lt=attrs['end'],
+            end__gt=attrs['start']
+        )
+
+        if exists_user_academy and conflicts.exists():
+            frequency_conflict = conflicts.first()
+            raise serializers.ValidationError(f'Houve um conflito com {frequency_conflict.academy.name} frequentada {frequency_conflict.get_day_week_display()} das {frequency_conflict.start} até {frequency_conflict.end}', code=status.HTTP_400_BAD_REQUEST)
+
+        return attrs
 
     def create(self, validated_data):
-        frequencies_data = validated_data.pop('frequencies')
-        username = validated_data.pop('username')
+        academy = validated_data['academy']
+        user = User.objects.get(username=validated_data.pop('username'))
 
-        academy = Academy.objects.create(**validated_data)
+        if not UserAcademy.objects.filter(user=user, academy=academy).exists():
+            UserAcademy.objects.create(user=user, academy=academy)
 
-        for frequency_data in frequencies_data:
-            AcademyFrequency.objects.create(academy=academy, **frequency_data)
-
-        user = User.objects.get(username=username)
-        UserAcademy.objects.create(user=user, academy=academy)
-
-        return academy
-
-    def update(self, instance, validated_data):
-        frequencies_data = validated_data.pop('frequencies')
-        instance.name = validated_data.get('name', instance.name)
-        instance.save()
-
-        for frequency_data in frequencies_data:
-            frequency_id = frequency_data.get('id')
-
-            if frequency_id:
-                frequency = AcademyFrequency.objects.get(id=frequency_id, academy=instance)
-                frequency.day_week = frequency_data.get('day_week', frequency.day_week)
-                frequency.start = frequency_data.get('start', frequency.start)
-                frequency.end = frequency_data.get('end', frequency.end)
-                frequency.save()
-            else:
-                AcademyFrequency.objects.create(academy=instance, **frequency_data)
-
-        return instance
-
+        return super().create(validated_data)
 
 class ListAcademiesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Academy
         fields = ['id', 'name']
+
+
+class UserAuthenticationSerializer(serializers.Serializer):
+    username = serializers.CharField(allow_null=True, allow_blank=True)
+    password = serializers.CharField(allow_null=True, allow_blank=True)
+
+    @staticmethod
+    def validate_username(username: str):
+        if username is None or len(username) == 0:
+            raise serializers.ValidationError('O nome de usuário é obrigatório.')
+
+        return username
+
+    @staticmethod
+    def validate_password(password: str):
+        if password is None or len(password) == 0:
+            raise serializers.ValidationError('A senha é obrigatória.')
+
+        return password

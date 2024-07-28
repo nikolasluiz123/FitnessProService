@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import CASCADE
+from django.db.models import CASCADE, Case, When, IntegerField
 
 
 class Academy(models.Model):
@@ -33,6 +33,19 @@ class AcademyFrequency(models.Model):
     start = models.TimeField(null=False, blank=False)
     end = models.TimeField(null=False, blank=False)
     academy = models.ForeignKey(Academy, on_delete=CASCADE, related_name='frequencies', null=False, blank=False)
+
+    @staticmethod
+    def get_day_week_ordering_case():
+        return Case(
+            When(day_week='DOM', then=0),
+            When(day_week='SEG', then=1),
+            When(day_week='TER', then=2),
+            When(day_week='QUA', then=3),
+            When(day_week='QUI', then=4),
+            When(day_week='SEX', then=5),
+            When(day_week='SAB', then=6),
+            output_field=IntegerField(),
+        )
 
 
 class UserAcademy(models.Model):
