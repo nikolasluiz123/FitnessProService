@@ -17,7 +17,9 @@ import br.com.fitnesspro.repository.general.person.IPersonRepository
 import br.com.fitnesspro.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.repository.scheduler.ISchedulerConfigRepository
 import br.com.fitnesspro.repository.scheduler.ISchedulerRepository
+import org.springframework.stereotype.Service
 
+@Service
 class SchedulerService(
     private val schedulerRepository: ISchedulerRepository,
     private val customSchedulerRepository: ICustomSchedulerRepository,
