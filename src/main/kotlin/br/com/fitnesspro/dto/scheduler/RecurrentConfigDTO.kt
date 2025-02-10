@@ -22,7 +22,7 @@ data class RecurrentConfigDTO(
 
     @Schema(description = "Dias da semana", required = true)
     @field:NotNull(message = "Os dias da semana são obrigatórios")
-    @field:Size(min = 1, message = "Deve ser informado ao menos um dia da semana")
+    @field:Size(min = 1, max = 7, message = "Devem ser informados entre 1 e 7 dias da semana")
     @field:UniqueElements(message = "Os dias da semana não podem ser repetidos")
     val dayWeeks: List<DayOfWeek>
 )
