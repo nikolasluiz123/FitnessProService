@@ -255,14 +255,16 @@ class SchedulerService(
                 alarm = alarm,
                 notification = notification,
                 minScheduleDensity = minScheduleDensity,
-                maxScheduleDensity = maxScheduleDensity
+                maxScheduleDensity = maxScheduleDensity,
+                person = personRepository.findById(personId!!).get()
             )
         } ?: SchedulerConfig(
             active = active,
             alarm = alarm,
             notification = notification,
             minScheduleDensity = minScheduleDensity,
-            maxScheduleDensity = maxScheduleDensity
+            maxScheduleDensity = maxScheduleDensity,
+            person = personRepository.findById(personId!!).get()
         )
     }
 }

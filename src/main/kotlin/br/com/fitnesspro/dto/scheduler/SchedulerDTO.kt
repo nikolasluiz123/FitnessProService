@@ -4,7 +4,6 @@ import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.validation.constraints.Future
 import jakarta.validation.constraints.FutureOrPresent
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -36,12 +35,10 @@ data class SchedulerDTO(
 
     @Schema(description = "Hora de início", example = "08:00", required = true)
     @field:NotNull(message = "A hora de início é obrigatória")
-    @field:Future(message = "O horário de início deve ser posterior a hora atual")
     var timeStart: LocalTime? = null,
 
     @Schema(description = "Hora de término", example = "10:00", required = true)
     @field:NotNull(message = "A hora de término é obrigatória")
-    @field:Future(message = "O horário de fim deve ser posterior a hora atual")
     var timeEnd: LocalTime? = null,
 
     @Schema(description = "Data de cancelamento", example = "2023-01-01T10:00:00", required = false)
