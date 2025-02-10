@@ -6,6 +6,7 @@ object EndPointsV1 {
     const val PERSON_V1 = "$API_V1/person"
     const val PERSON_ACADEMY_TIME = "/academy/time"
     const val PERSON_BATCH = "/batch"
+    const val PERSON_ACADEMY_TIME_BATCH = "/academy/time/batch"
 
     const val ACADEMY_V1 = "$API_V1/academy"
     const val ACADEMY_BATCH = "/batch"

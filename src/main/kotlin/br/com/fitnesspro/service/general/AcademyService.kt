@@ -61,6 +61,11 @@ class AcademyService(
         academyRepository.saveAll(academyList)
     }
 
+    fun savePersonAcademyTimeBatch(personAcademyTimeDTOList: List<PersonAcademyTimeDTO>) {
+        val personAcademyTimeList = personAcademyTimeDTOList.map { it.toPersonAcademyTime() }
+        personAcademyTimeRepository.saveAll(personAcademyTimeList)
+    }
+
     private fun AcademyDTO.toAcademy(): Academy {
         return id?.let { academyId ->
             academyRepository.findById(academyId).get().copy(

@@ -48,4 +48,12 @@ class PersonController(
         academyService.savePersonAcademyTime(personAcademyTimeDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
+
+    @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_BATCH)
+    @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun savePersonAcademyTimeList(@RequestBody @Valid personAcademyTimeDTOList: List<PersonAcademyTimeDTO>): ResponseEntity<PersistenceServiceResponse> {
+        academyService.savePersonAcademyTimeBatch(personAcademyTimeDTOList)
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
 }
