@@ -64,5 +64,5 @@ data class SchedulerDTO(
     var type: EnumSchedulerType? = null,
 
     @Schema(description = "Configuração de recorrência", required = false)
-    var recurrentConfig: RecurrentConfigDTO
+    var recurrentConfig: RecurrentConfigDTO? = null
 )
