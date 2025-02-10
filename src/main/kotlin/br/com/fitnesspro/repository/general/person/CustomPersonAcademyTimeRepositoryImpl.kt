@@ -1,9 +1,9 @@
 package br.com.fitnesspro.repository.general.person
 
 import br.com.fitnesspro.models.general.PersonAcademyTime
-import br.com.fitnesspro.repository.helper.Constants.QR_NL
-import br.com.fitnesspro.repository.query.Parameter
-import br.com.fitnesspro.repository.query.setParameters
+import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
+import br.com.fitnesspro.repository.common.query.Parameter
+import br.com.fitnesspro.repository.common.query.setParameters
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
