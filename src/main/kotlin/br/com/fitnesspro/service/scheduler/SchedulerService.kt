@@ -37,7 +37,7 @@ class SchedulerService(
             }
 
             EnumSchedulerType.RECURRENT -> {
-                val config = schedulerDTO.recurrentConfig
+                val config = schedulerDTO.recurrentConfig!!
 
                 val scheduleDates = generateSequence(config.dateStart) { it.plusDays(1) }
                     .takeWhile { it <= config.dateEnd }
@@ -76,7 +76,7 @@ class SchedulerService(
             EnumSchedulerType.RECURRENT -> {
                 validateStartTime(scheduler)
                 validateTimePeriod(scheduler)
-                validateDateConfigPeriod(dto.recurrentConfig)
+                validateDateConfigPeriod(dto.recurrentConfig!!)
             }
         }
     }
