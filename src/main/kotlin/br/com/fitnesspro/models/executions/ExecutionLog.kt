@@ -33,6 +33,9 @@ data class ExecutionLog(
     @Column(name = "end_point", nullable = false)
     var endPoint: String? = null,
 
-    @Column(name = "result_log", columnDefinition = "TEXT")
-    var resultLog: String? = null
+    @Column(name = "request_body", columnDefinition = "TEXT")
+    var requestBody: String? = null,
+
+    @Column(name = "error", columnDefinition = "TEXT")
+    var error: String? = null
 )

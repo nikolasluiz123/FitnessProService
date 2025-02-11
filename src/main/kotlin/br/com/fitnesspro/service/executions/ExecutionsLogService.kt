@@ -47,20 +47,11 @@ class ExecutionsLogService(
 
         if (ex == null) {
             log.state = EnumExecutionState.FINISHED
-            log.resultLog = "Request Body:\n$requestBody"
+            log.requestBody = requestBody
         } else {
             log.state = EnumExecutionState.ERROR
-            val stackTrace = ex.stackTraceToString()
-
-            log.resultLog = """
-            Request Body:
-            $requestBody
-
-            -------------------------------
-            
-            Error Stack Trace:
-            $stackTrace
-        """.trimIndent()
+            log.requestBody = requestBody
+            log.error = ex.stackTraceToString()
         }
 
         logRepository.save(log)
