@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.general
 
-import br.com.fitnesspro.config.JWTService
+import br.com.fitnesspro.config.application.JWTService
 import br.com.fitnesspro.dto.general.AuthenticationDTO
 import br.com.fitnesspro.helper.HashHelper
 import br.com.fitnesspro.repository.general.user.IUserRepository

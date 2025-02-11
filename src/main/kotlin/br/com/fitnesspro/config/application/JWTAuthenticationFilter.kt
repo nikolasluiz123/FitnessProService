@@ -1,4 +1,4 @@
-package br.com.fitnesspro.config
+package br.com.fitnesspro.config.application
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

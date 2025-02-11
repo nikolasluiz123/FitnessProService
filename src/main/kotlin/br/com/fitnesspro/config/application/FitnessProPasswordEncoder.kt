@@ -1,4 +1,4 @@
-package br.com.fitnesspro.config
+package br.com.fitnesspro.config.application
 
 import br.com.fitnesspro.helper.HashHelper
 import org.springframework.security.crypto.password.PasswordEncoder

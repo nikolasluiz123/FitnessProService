@@ -1,8 +1,10 @@
 package br.com.fitnesspro.models.scheduler
 
-import br.com.fitnesspro.models.base.BaseModel
+import br.com.fitnesspro.extensions.dateTimeNow
+import br.com.fitnesspro.models.base.AuditableModel
 import br.com.fitnesspro.models.general.Person
 import jakarta.persistence.*
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -16,7 +18,14 @@ import java.util.*
 data class SchedulerConfig(
     @Id
     override val id: String = UUID.randomUUID().toString(),
+
     override var active: Boolean = true,
+
+    @Column(name = "creation_date", nullable = false)
+    override var creationDate: LocalDateTime = dateTimeNow(),
+
+    @Column(name = "update_date", nullable = false)
+    override var updateDate: LocalDateTime = dateTimeNow(),
 
     var alarm: Boolean = false,
 
@@ -31,4 +40,4 @@ data class SchedulerConfig(
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "person_id", nullable = false)
     var person: Person? = null
-): BaseModel()
+): AuditableModel()

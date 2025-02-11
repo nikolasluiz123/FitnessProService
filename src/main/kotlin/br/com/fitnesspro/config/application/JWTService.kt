@@ -1,4 +1,4 @@
-package br.com.fitnesspro.config
+package br.com.fitnesspro.config.application
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts

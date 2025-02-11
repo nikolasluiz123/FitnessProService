@@ -1,6 +1,7 @@
 package br.com.fitnesspro.models.scheduler
 
-import br.com.fitnesspro.models.base.BaseModel
+import br.com.fitnesspro.extensions.dateTimeNow
+import br.com.fitnesspro.models.base.AuditableModel
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
@@ -21,7 +22,14 @@ import java.util.*
 data class Scheduler(
     @Id
     override val id: String = UUID.randomUUID().toString(),
+
     override var active: Boolean = true,
+
+    @Column(name = "creation_date", nullable = false)
+    override var creationDate: LocalDateTime = dateTimeNow(),
+
+    @Column(name = "update_date", nullable = false)
+    override var updateDate: LocalDateTime = dateTimeNow(),
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "academy_member_person_id", nullable = false)
@@ -51,4 +59,4 @@ data class Scheduler(
 
     @Column(length = 4096)
     var observation: String? = null
-): BaseModel()
+): AuditableModel()

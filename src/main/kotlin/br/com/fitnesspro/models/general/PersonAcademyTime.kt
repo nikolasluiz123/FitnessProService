@@ -1,8 +1,10 @@
 package br.com.fitnesspro.models.general
 
-import br.com.fitnesspro.models.base.BaseModel
+import br.com.fitnesspro.extensions.dateTimeNow
+import br.com.fitnesspro.models.base.AuditableModel
 import jakarta.persistence.*
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
 
@@ -17,7 +19,14 @@ import java.util.*
 data class PersonAcademyTime(
     @Id
     override val id: String = UUID.randomUUID().toString(),
+
     override var active: Boolean = true,
+
+    @Column(name = "creation_date", nullable = false)
+    override var creationDate: LocalDateTime = dateTimeNow(),
+
+    @Column(name = "update_date", nullable = false)
+    override var updateDate: LocalDateTime = dateTimeNow(),
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "person_id", nullable = false)
@@ -35,4 +44,4 @@ data class PersonAcademyTime(
 
     @Column(name = "day_week", nullable = false)
     var dayOfWeek: DayOfWeek? = null,
-): BaseModel()
+): AuditableModel()

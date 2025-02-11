@@ -1,6 +1,7 @@
 package br.com.fitnesspro.models.general
 
-import br.com.fitnesspro.models.base.BaseModel
+import br.com.fitnesspro.extensions.dateTimeNow
+import br.com.fitnesspro.models.base.AuditableModel
 import br.com.fitnesspro.models.general.enums.EnumUserType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -9,6 +10,7 @@ import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -16,7 +18,14 @@ import java.util.*
 data class User(
     @Id
     override var id: String? = UUID.randomUUID().toString(),
+
     override var active: Boolean = true,
+
+    @Column(name = "creation_date", nullable = false)
+    override var creationDate: LocalDateTime = dateTimeNow(),
+
+    @Column(name = "update_date", nullable = false)
+    override var updateDate: LocalDateTime = dateTimeNow(),
 
     @Column(unique = true, nullable = false, length = 64)
     var email: String? = null,
@@ -28,7 +37,7 @@ data class User(
     var type: EnumUserType? = null,
 
     var authenticated: Boolean = false,
-): BaseModel(), UserDetails {
+): AuditableModel(), UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(type!!.name))

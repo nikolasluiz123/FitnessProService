@@ -1,5 +1,6 @@
-package br.com.fitnesspro.config
+package br.com.fitnesspro.config.application
 
+import br.com.fitnesspro.config.interceptors.LoggingInterceptor
 import br.com.fitnesspro.repository.general.user.IUserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -10,10 +11,15 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
-class ApplicationConfig(private val userRepository: IUserRepository) {
+class ApplicationConfig(
+    private val userRepository: IUserRepository,
+    private val loggingInterceptor: LoggingInterceptor
+): WebMvcConfigurer {
 
     @Bean
     fun userDetailsService(): UserDetailsService {
@@ -39,5 +45,11 @@ class ApplicationConfig(private val userRepository: IUserRepository) {
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return FitnessProPasswordEncoder()
+    }
+
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(loggingInterceptor)
+            .addPathPatterns("/**")
+            .excludePathPatterns("/health-check", "/swagger-ui/**", "/v3/api-docs/**")
     }
 }
