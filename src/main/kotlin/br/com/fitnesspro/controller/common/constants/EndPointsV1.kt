@@ -24,4 +24,6 @@ object EndPointsV1 {
     const val SCHEDULER_CONFIG = "/config"
     const val SCHEDULER_CONFIG_EXPORT = "/config/export"
     const val SCHEDULER_CONFIG_IMPORT = "/config/import"
+
+    const val LOGS_V1 = "$API_V1/logs"
 }

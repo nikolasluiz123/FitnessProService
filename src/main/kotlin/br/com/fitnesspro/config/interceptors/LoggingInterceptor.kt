@@ -1,6 +1,6 @@
 package br.com.fitnesspro.config.interceptors
 
-import br.com.fitnesspro.service.executions.ExecutionsLogService
+import br.com.fitnesspro.service.logs.ExecutionsLogService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component

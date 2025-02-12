@@ -1,5 +1,6 @@
-package br.com.fitnesspro.service.executions
+package br.com.fitnesspro.service.logs
 
+import br.com.fitnesspro.dto.logs.ExecutionLogDTO
 import br.com.fitnesspro.models.executions.ExecutionLog
 import br.com.fitnesspro.models.executions.enums.EnumExecutionState
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
@@ -59,5 +60,22 @@ class ExecutionsLogService(
         }
 
         logRepository.save(log)
+    }
+
+    fun getAllLogs(): List<ExecutionLogDTO> {
+        return logRepository.findAll().map { it.toExecutionLogDTO() }
+    }
+
+    private fun ExecutionLog.toExecutionLogDTO(): ExecutionLogDTO {
+        return ExecutionLogDTO(
+            id = id,
+            type = type,
+            state = state,
+            executionStart = executionStart,
+            executionEnd = executionEnd,
+            endPoint = endPoint,
+            requestBody = requestBody,
+            error = error
+        )
     }
 }
