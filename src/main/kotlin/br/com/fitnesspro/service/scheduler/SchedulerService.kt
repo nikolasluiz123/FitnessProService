@@ -12,8 +12,11 @@ import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
+import br.com.fitnesspro.repository.scheduler.ICustomSchedulerConfigRepository
 import br.com.fitnesspro.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.repository.scheduler.ISchedulerConfigRepository
 import br.com.fitnesspro.repository.scheduler.ISchedulerRepository
@@ -25,7 +28,8 @@ class SchedulerService(
     private val customSchedulerRepository: ICustomSchedulerRepository,
     private val schedulerConfigRepository: ISchedulerConfigRepository,
     private val personRepository: IPersonRepository,
-    private val customAcademyRepository: ICustomAcademyRepository
+    private val customAcademyRepository: ICustomAcademyRepository,
+    private val customSchedulerConfigRepository: ICustomSchedulerConfigRepository
 ) {
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
         validateScheduler(schedulerDTO)
@@ -220,6 +224,14 @@ class SchedulerService(
         }
 
         schedulerConfigRepository.saveAll(configs)
+    }
+
+    fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO> {
+        return customSchedulerRepository.getSchedulesImport(filter, pageInfos)
+    }
+
+    fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfigDTO> {
+        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos)
     }
 
     private fun SchedulerDTO.toScheduler(): Scheduler {

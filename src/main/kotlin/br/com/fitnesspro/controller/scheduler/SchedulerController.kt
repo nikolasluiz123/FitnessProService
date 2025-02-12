@@ -3,8 +3,11 @@ package br.com.fitnesspro.controller.scheduler
 import br.com.fitnesspro.controller.common.constants.EndPointsV1
 import br.com.fitnesspro.controller.common.constants.Timeouts
 import br.com.fitnesspro.controller.common.responses.PersistenceServiceResponse
+import br.com.fitnesspro.controller.common.responses.ReadServiceResponse
 import br.com.fitnesspro.dto.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.dto.scheduler.SchedulerDTO
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.scheduler.SchedulerService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -32,7 +35,7 @@ class SchedulerController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PostMapping(EndPointsV1.SCHEDULER_BATCH)
+    @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
     @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>): ResponseEntity<PersistenceServiceResponse> {
@@ -48,12 +51,28 @@ class SchedulerController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PostMapping(EndPointsV1.SCHEDULER_CONFIG_BATCH)
+    @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
     @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
+
+    @PostMapping(EndPointsV1.SCHEDULER_IMPORT)
+    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importScheduler(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<SchedulerDTO>> {
+        val users = schedulerService.getSchedulesImport(filter, pageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
+    }
+
+    @PostMapping(EndPointsV1.SCHEDULER_CONFIG_IMPORT)
+    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importSchedulerConfig(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<SchedulerConfigDTO>> {
+        val users = schedulerService.getSchedulerConfigsImport(filter, pageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
     }
 
 }

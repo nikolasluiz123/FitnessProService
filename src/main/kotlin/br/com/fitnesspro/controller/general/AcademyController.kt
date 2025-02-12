@@ -3,7 +3,10 @@ package br.com.fitnesspro.controller.general
 import br.com.fitnesspro.controller.common.constants.EndPointsV1
 import br.com.fitnesspro.controller.common.constants.Timeouts
 import br.com.fitnesspro.controller.common.responses.PersistenceServiceResponse
+import br.com.fitnesspro.controller.common.responses.ReadServiceResponse
 import br.com.fitnesspro.dto.general.AcademyDTO
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.general.AcademyService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -31,12 +34,20 @@ class AcademyController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PostMapping(EndPointsV1.ACADEMY_BATCH)
+    @PostMapping(EndPointsV1.ACADEMY_EXPORT)
     @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademyBatch(@RequestBody @Valid academyDTOList: List<AcademyDTO>): ResponseEntity<PersistenceServiceResponse> {
         academyService.saveAcademyBatch(academyDTOList)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
+
+    @PostMapping(EndPointsV1.ACADEMY_IMPORT)
+    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importAcademies(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<AcademyDTO>> {
+        val users = academyService.getAcademiesImport(filter, pageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
     }
 
 }

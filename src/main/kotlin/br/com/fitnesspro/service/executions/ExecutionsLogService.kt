@@ -29,11 +29,15 @@ class ExecutionsLogService(
     }
 
     private fun getExecutionType(method: String?, requestURI: String): EnumExecutionType {
-        return when (method) {
-            "GET" -> GET
-            "POST" -> POST
+        return when {
+            requestURI.contains("import") -> IMPORTATION
+            requestURI.contains("export") -> EXPORTATION
+            method == "GET" -> GET
+            method == "POST" -> POST
+            method == "PUT" -> PUT
+            method == "DELETE" -> DELETE
             else -> {
-                if (requestURI.contains("import")) IMPORTATION else EXPORTATION
+                throw IllegalArgumentException("Tipo de execução não identificado")
             }
         }
     }

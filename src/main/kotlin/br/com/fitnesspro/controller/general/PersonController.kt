@@ -3,8 +3,11 @@ package br.com.fitnesspro.controller.general
 import br.com.fitnesspro.controller.common.constants.EndPointsV1
 import br.com.fitnesspro.controller.common.constants.Timeouts
 import br.com.fitnesspro.controller.common.responses.PersistenceServiceResponse
+import br.com.fitnesspro.controller.common.responses.ReadServiceResponse
 import br.com.fitnesspro.dto.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.dto.general.PersonDTO
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.general.AcademyService
 import br.com.fitnesspro.service.general.PersonService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -33,7 +36,7 @@ class PersonController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PostMapping(EndPointsV1.PERSON_BATCH)
+    @PostMapping(EndPointsV1.PERSON_EXPORT)
     @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonList(@RequestBody @Valid personDTOList: List<PersonDTO>): ResponseEntity<PersistenceServiceResponse> {
@@ -49,11 +52,28 @@ class PersonController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_BATCH)
+    @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_EXPORT)
     @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonAcademyTimeList(@RequestBody @Valid personAcademyTimeDTOList: List<PersonAcademyTimeDTO>): ResponseEntity<PersistenceServiceResponse> {
         academyService.savePersonAcademyTimeBatch(personAcademyTimeDTOList)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
+
+    @PostMapping(EndPointsV1.PERSON_IMPORT)
+    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importPersons(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<PersonDTO>> {
+        val users = personService.getPersonsImport(filter, pageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
+    }
+
+    @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_IMPORT)
+    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importPersonAcademyTime(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<PersonAcademyTimeDTO>> {
+        val users = academyService.getPersonAcademyTimesImport(filter, pageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
+    }
+
 }

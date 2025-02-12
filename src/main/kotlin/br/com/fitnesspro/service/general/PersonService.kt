@@ -6,8 +6,11 @@ import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.helper.HashHelper
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.repository.general.user.ICustomUserRepository
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
+import br.com.fitnesspro.repository.general.person.ICustomPersonRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
+import br.com.fitnesspro.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.repository.general.user.IUserRepository
 import org.springframework.stereotype.Service
 
@@ -15,7 +18,8 @@ import org.springframework.stereotype.Service
 class PersonService(
     private val userRepository: IUserRepository,
     private val personRepository: IPersonRepository,
-    private val customUserRepository: ICustomUserRepository
+    private val customUserRepository: ICustomUserRepository,
+    private val customPersonRepository: ICustomPersonRepository
 ) {
 
     fun savePerson(personDTO: PersonDTO) {
@@ -57,6 +61,22 @@ class PersonService(
         personRepository.saveAll(persons)
     }
 
+    fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonDTO> {
+        return customPersonRepository.getPersonsImport(filter, pageInfos).map { it.toPersonDTO() }
+    }
+
+    private fun Person.toPersonDTO(): PersonDTO {
+        return PersonDTO(
+            id = id,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            name = name,
+            birthDate = birthDate,
+            phone = phone,
+            user = user?.toUserDTO()
+        )
+    }
+
     private fun PersonDTO.toPerson(): Person {
         return id?.let { personId ->
             personRepository.findById(personId).get().copy(
@@ -72,6 +92,19 @@ class PersonService(
             phone = phone,
             user = user?.toUser(),
             active = active
+        )
+    }
+
+    private fun User.toUserDTO(): UserDTO {
+        return UserDTO(
+            id = id,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            active = active,
+            email = email,
+            password = password,
+            type = type,
+            authenticated = authenticated
         )
     }
 

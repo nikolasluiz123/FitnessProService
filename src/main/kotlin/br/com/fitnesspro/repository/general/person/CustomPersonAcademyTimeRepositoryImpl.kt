@@ -1,8 +1,12 @@
 package br.com.fitnesspro.repository.general.person
 
+import br.com.fitnesspro.dto.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.models.general.PersonAcademyTime
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.repository.common.query.Parameter
+import br.com.fitnesspro.repository.common.query.getResultList
 import br.com.fitnesspro.repository.common.query.setParameters
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
@@ -69,4 +73,56 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
             return null
         }
     }
+
+    override fun getPersonAcademyTimesImport(
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos
+    ): List<PersonAcademyTimeDTO> {
+        val params = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select pat.id as id, ")
+            add("        pat.person_id as personId, ")
+            add("        pat.academy_id as academyId, ")
+            add("        pat.time_start as timeStart, ")
+            add("        pat.time_end as timeEnd, ")
+            add("        pat.day_week as dayOfWeek, ")
+            add("        pat.active as active, ")
+            add("        pat.creation_date as creationDate, ")
+            add("        pat.update_date as updateDate ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from person_academy_time pat ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where 1 = 1 ")
+
+            if (filter.onlyActives) {
+                add(" and pat.active = true ")
+            }
+
+            filter.lastUpdateDate?.let {
+                add(" and pat.update_date >= :pLastUpdateDate ")
+                params.add(Parameter(name = "pLastUpdateDate", value = it))
+            }
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createNativeQuery(sql.toString())
+        query.setParameters(params)
+        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
+        query.maxResults = pageInfos.pageSize
+
+        val result = query.getResultList(PersonAcademyTimeDTO::class.java)
+
+        return result
+    }
+
 }

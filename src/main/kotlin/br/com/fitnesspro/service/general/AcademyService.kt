@@ -8,7 +8,10 @@ import br.com.fitnesspro.extensions.format
 import br.com.fitnesspro.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.models.general.Academy
 import br.com.fitnesspro.models.general.PersonAcademyTime
+import br.com.fitnesspro.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.repository.general.academy.IAcademyRepository
+import br.com.fitnesspro.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.repository.general.person.ICustomPersonAcademyTimeRepository
 import br.com.fitnesspro.repository.general.person.IPersonAcademyTimeRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
@@ -19,7 +22,8 @@ class AcademyService(
     private val personAcademyTimeRepository: IPersonAcademyTimeRepository,
     private val customPersonAcademyTimeRepository: ICustomPersonAcademyTimeRepository,
     private val academyRepository: IAcademyRepository,
-    private val personRepository: IPersonRepository
+    private val customAcademyRepository: ICustomAcademyRepository,
+    private val personRepository: IPersonRepository,
 ) {
 
     fun savePersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO) {
@@ -64,6 +68,14 @@ class AcademyService(
     fun savePersonAcademyTimeBatch(personAcademyTimeDTOList: List<PersonAcademyTimeDTO>) {
         val personAcademyTimeList = personAcademyTimeDTOList.map { it.toPersonAcademyTime() }
         personAcademyTimeRepository.saveAll(personAcademyTimeList)
+    }
+
+    fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonAcademyTimeDTO> {
+        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos)
+    }
+
+    fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
+        return customAcademyRepository.getAcademiesImport(filter, pageInfos)
     }
 
     private fun AcademyDTO.toAcademy(): Academy {

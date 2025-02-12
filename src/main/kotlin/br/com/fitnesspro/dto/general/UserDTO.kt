@@ -1,16 +1,24 @@
 package br.com.fitnesspro.dto.general
 
+import br.com.fitnesspro.dto.common.AuditableDTO
 import br.com.fitnesspro.models.general.enums.EnumUserType
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import java.time.LocalDateTime
 
 data class UserDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "O identificador deve ter entre 1 e 255 caracteres")
-    var id: String? = null,
+    override var id: String? = null,
+
+    @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    override var creationDate: LocalDateTime? = null,
+
+    @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "O campo ativo é obrigatório")
@@ -34,4 +42,4 @@ data class UserDTO(
     @Schema(description = "Valor booleano que representa se o usuário está autenticado", required = true)
     @field:NotNull(message = "O campo autenticado é obrigatório")
     var authenticated: Boolean = false,
-)
+): AuditableDTO
