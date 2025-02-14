@@ -1,8 +1,7 @@
 package br.com.fitnesspro.service.models.general
 
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.general.enums.EnumUserType
-import br.com.fitnesspro.service.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -37,7 +36,7 @@ data class User(
     var type: EnumUserType? = null,
 
     var authenticated: Boolean = false,
-): AuditableModel(), UserDetails {
+): br.com.fitnesspro.service.models.base.AuditableModel(), UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(type!!.name))

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.extensions
+package br.com.fitnesspro.core.extensions
 
 import java.time.DayOfWeek
 import java.time.format.TextStyle

@@ -29,10 +29,23 @@
 				<artifactId>fitnesspro-shared-communication</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>fitnesspro-data-access</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>fitnesspro-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
+        <module>fitnesspro-core</module>
         <module>fitnesspro-shared-communication</module>
         <module>fitnesspro-service</module>
     </modules>

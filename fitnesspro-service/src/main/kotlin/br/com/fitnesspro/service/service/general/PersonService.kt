@@ -1,10 +1,7 @@
 package br.com.fitnesspro.service.service.general
 
-import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
-import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.core.helper.HashHelper
 import br.com.fitnesspro.service.exception.BusinessException
-import br.com.fitnesspro.service.helper.HashHelper
-import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
 import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
@@ -12,6 +9,8 @@ import br.com.fitnesspro.service.repository.general.person.ICustomPersonReposito
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
+import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
+import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -65,7 +64,7 @@ class PersonService(
         return customPersonRepository.getPersonsImport(filter, pageInfos).map { it.toPersonDTO() }
     }
 
-    private fun Person.toPersonDTO(): PersonDTO {
+    private fun br.com.fitnesspro.service.models.general.Person.toPersonDTO(): PersonDTO {
         return PersonDTO(
             id = id,
             creationDate = creationDate,
@@ -77,7 +76,7 @@ class PersonService(
         )
     }
 
-    private fun PersonDTO.toPerson(): Person {
+    private fun PersonDTO.toPerson(): br.com.fitnesspro.service.models.general.Person {
         return id?.let { personId ->
             personRepository.findById(personId).get().copy(
                 name = name,
@@ -86,7 +85,7 @@ class PersonService(
                 user = user?.toUser(),
                 active = active
             )
-        } ?: Person(
+        } ?: br.com.fitnesspro.service.models.general.Person(
             name = name,
             birthDate = birthDate,
             phone = phone,

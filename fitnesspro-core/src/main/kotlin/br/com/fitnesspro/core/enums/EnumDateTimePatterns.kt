@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.enums
+package br.com.fitnesspro.core.enums
 
 enum class EnumDateTimePatterns(val pattern: String) {
     DATE("dd/MM/yyyy"),

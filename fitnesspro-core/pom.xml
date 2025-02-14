@@ -3,22 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>br.com</groupId>
         <artifactId>fitnesspro</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fitnesspro-shared-communication</artifactId>
+    <artifactId>fitnesspro-core</artifactId>
     <packaging>jar</packaging>
-
-    <properties>
-        <java.version>17</java.version>
-        <springdoc.web.version>2.8.4</springdoc.web.version>
-        <jjwt.version>0.11.5</jjwt.version>
-        <jack.version>2.18.2</jack.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -27,25 +19,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>${jack.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.web.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

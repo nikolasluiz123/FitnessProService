@@ -1,17 +1,11 @@
 package br.com.fitnesspro.service.service.scheduler
 
-import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
+import br.com.fitnesspro.core.extensions.dateNow
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
-import br.com.fitnesspro.service.enums.EnumDateTimePatterns.*
 import br.com.fitnesspro.service.exception.BusinessException
-import br.com.fitnesspro.service.extensions.dateNow
-import br.com.fitnesspro.service.extensions.format
-import br.com.fitnesspro.service.extensions.timeNow
-import br.com.fitnesspro.service.models.general.Person
-import br.com.fitnesspro.service.models.scheduler.Scheduler
-import br.com.fitnesspro.service.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
@@ -20,6 +14,9 @@ import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerConfigRepo
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.service.repository.scheduler.ISchedulerConfigRepository
 import br.com.fitnesspro.service.repository.scheduler.ISchedulerRepository
+import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -86,7 +83,7 @@ class SchedulerService(
     }
 
     @Throws(BusinessException::class)
-    private fun validateConflict(scheduler: Scheduler, person: Person) {
+    private fun validateConflict(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler, person: br.com.fitnesspro.service.models.general.Person) {
         val hasConflict = customSchedulerRepository.getHasSchedulerConflict(
             schedulerId = scheduler.id,
             personId = person.id,
@@ -108,7 +105,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateConflictRecurrent(schedulers: List<Scheduler>) {
+    private fun validateConflictRecurrent(schedulers: List<br.com.fitnesspro.service.models.scheduler.Scheduler>) {
         val conflicts = schedulers.filter { scheduler ->
             customSchedulerRepository.getHasSchedulerConflict(
                 schedulerId = scheduler.id,
@@ -129,7 +126,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateStartTime(scheduler: Scheduler) {
+    private fun validateStartTime(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
         val actualHour = timeNow()
         val timeStart = scheduler.timeStart!!
 
@@ -140,7 +137,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateStartTimeSuggestionScheduler(scheduler: Scheduler) {
+    private fun validateStartTimeSuggestionScheduler(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
         validateStartTime(scheduler)
 
         val academyTimes = customAcademyRepository.getPersonAcademyTimeList(
@@ -158,7 +155,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateEndTimeSuggestionScheduler(scheduler: Scheduler) {
+    private fun validateEndTimeSuggestionScheduler(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
         val academyTimes = customAcademyRepository.getPersonAcademyTimeList(
             personId = scheduler.professionalPerson?.id!!,
             dayOfWeek = scheduler.scheduledDate?.dayOfWeek!!
@@ -174,7 +171,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateTimePeriod(scheduler: Scheduler) {
+    private fun validateTimePeriod(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
         if (scheduler.timeStart!!.isAfter(scheduler.timeEnd!!) || scheduler.timeStart == scheduler.timeEnd) {
             throw BusinessException("Os horários de Início e Fim são inválidos")
         }
@@ -208,7 +205,7 @@ class SchedulerService(
         schedulerConfigRepository.save(config)
     }
 
-    private fun validateDensityRange(config: SchedulerConfig) {
+    private fun validateDensityRange(config: br.com.fitnesspro.service.models.scheduler.SchedulerConfig) {
         if (config.minScheduleDensity > config.maxScheduleDensity ||
             config.minScheduleDensity == config.maxScheduleDensity) {
             throw BusinessException("Os valores da densidade dos eventos são inválidos.")
@@ -234,7 +231,7 @@ class SchedulerService(
         return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos)
     }
 
-    private fun SchedulerDTO.toScheduler(): Scheduler {
+    private fun SchedulerDTO.toScheduler(): br.com.fitnesspro.service.models.scheduler.Scheduler {
         return id?.let { schedulerId ->
             schedulerRepository.findById(schedulerId).get().copy(
                 academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
@@ -247,7 +244,7 @@ class SchedulerService(
                 compromiseType = compromiseType,
                 observation = observation
             )
-        } ?: Scheduler(
+        } ?: br.com.fitnesspro.service.models.scheduler.Scheduler(
             academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
             professionalPerson = personRepository.findById(professionalPersonId!!).get(),
             scheduledDate = scheduledDate,
@@ -260,7 +257,7 @@ class SchedulerService(
         )
     }
 
-    private fun SchedulerConfigDTO.toSchedulerConfig(): SchedulerConfig {
+    private fun SchedulerConfigDTO.toSchedulerConfig(): br.com.fitnesspro.service.models.scheduler.SchedulerConfig {
         return id?.let {
             schedulerConfigRepository.findById(it).get().copy(
                 active = active,
@@ -270,7 +267,7 @@ class SchedulerService(
                 maxScheduleDensity = maxScheduleDensity,
                 person = personRepository.findById(personId!!).get()
             )
-        } ?: SchedulerConfig(
+        } ?: br.com.fitnesspro.service.models.scheduler.SchedulerConfig(
             active = active,
             alarm = alarm,
             notification = notification,

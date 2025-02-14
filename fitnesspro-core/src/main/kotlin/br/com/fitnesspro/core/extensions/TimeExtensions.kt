@@ -1,6 +1,6 @@
-package br.com.fitnesspro.service.extensions
+package br.com.fitnesspro.core.extensions
 
-import br.com.fitnesspro.service.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import java.time.*
 import java.time.format.DateTimeFormatter
 

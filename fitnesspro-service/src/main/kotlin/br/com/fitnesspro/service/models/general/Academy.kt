@@ -1,7 +1,6 @@
 package br.com.fitnesspro.service.models.general
 
-import br.com.fitnesspro.service.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -31,4 +30,4 @@ data class Academy(
 
     @Column(length = 11)
     var phone: String? = null,
-): AuditableModel()
+): br.com.fitnesspro.service.models.base.AuditableModel()

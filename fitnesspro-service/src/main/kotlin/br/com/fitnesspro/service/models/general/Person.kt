@@ -1,7 +1,6 @@
 package br.com.fitnesspro.service.models.general
 
-import br.com.fitnesspro.service.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -37,5 +36,5 @@ data class Person(
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "user_id", nullable = false)
-    var user: User? = null
-): AuditableModel()
+    var user: br.com.fitnesspro.service.models.general.User? = null
+): br.com.fitnesspro.service.models.base.AuditableModel()

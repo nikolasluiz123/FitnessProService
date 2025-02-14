@@ -1,6 +1,5 @@
 package br.com.fitnesspro.service.repository.general.person
 
-import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
@@ -18,7 +17,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<Person> {
+    override fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<br.com.fitnesspro.service.models.general.Person> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -26,7 +25,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${Person::class.java.name} p ")
+            add(" from ${br.com.fitnesspro.service.models.general.Person::class.java.name} p ")
         }
 
         val where = StringJoiner(QR_NL).apply {
@@ -48,12 +47,12 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), Person::class.java)
+        val query = entityManager.createQuery(sql.toString(), br.com.fitnesspro.service.models.general.Person::class.java)
         query.setParameters(params)
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        val result = query.getResultList(Person::class.java)
+        val result = query.getResultList(br.com.fitnesspro.service.models.general.Person::class.java)
 
         return result
     }

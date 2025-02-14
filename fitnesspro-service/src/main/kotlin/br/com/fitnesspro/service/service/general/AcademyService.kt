@@ -1,12 +1,9 @@
 package br.com.fitnesspro.service.service.general
 
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
-import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
-import br.com.fitnesspro.service.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.service.exception.BusinessException
-import br.com.fitnesspro.service.extensions.format
-import br.com.fitnesspro.service.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.service.models.general.Academy
 import br.com.fitnesspro.service.models.general.PersonAcademyTime
 import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
@@ -15,6 +12,8 @@ import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyReposi
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonAcademyTimeRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonAcademyTimeRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
+import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
+import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -48,8 +47,8 @@ class AcademyService(
             throw BusinessException(
                 "Não foi possível definir este horário pois há um conflito com o horário de %s das %s até %s.".format(
                     conflictPersonAcademyTime.dayOfWeek!!.getFirstPartFullDisplayName(),
-                    conflictPersonAcademyTime.timeStart!!.format(EnumDateTimePatterns.TIME),
-                    conflictPersonAcademyTime.timeEnd!!.format(EnumDateTimePatterns.TIME)
+                    conflictPersonAcademyTime.timeStart!!.format(TIME),
+                    conflictPersonAcademyTime.timeEnd!!.format(TIME)
                 )
             )
         }
@@ -78,7 +77,7 @@ class AcademyService(
         return customAcademyRepository.getAcademiesImport(filter, pageInfos)
     }
 
-    private fun AcademyDTO.toAcademy(): Academy {
+    private fun AcademyDTO.toAcademy(): br.com.fitnesspro.service.models.general.Academy {
         return id?.let { academyId ->
             academyRepository.findById(academyId).get().copy(
                 name = name,
@@ -86,7 +85,7 @@ class AcademyService(
                 address = address,
                 active = active
             )
-        } ?: Academy(
+        } ?: br.com.fitnesspro.service.models.general.Academy(
             name = name,
             phone = phone,
             address = address,

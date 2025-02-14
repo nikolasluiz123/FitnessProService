@@ -1,11 +1,11 @@
 package br.com.fitnesspro.service.service.logs
 
-import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
 import br.com.fitnesspro.models.executions.enums.EnumExecutionState
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType.*
 import br.com.fitnesspro.service.models.executions.ExecutionLog
 import br.com.fitnesspro.service.repository.executions.IExecutionsLogRepository
+import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service

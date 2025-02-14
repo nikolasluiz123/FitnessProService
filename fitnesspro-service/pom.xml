@@ -14,10 +14,8 @@
 
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.9.25</kotlin.version>
         <springdoc.web.version>2.8.4</springdoc.web.version>
         <jjwt.version>0.11.5</jjwt.version>
-        <gson.version>2.10.1</gson.version>
     </properties>
 
     <build>
@@ -144,7 +142,13 @@
         <dependency>
             <groupId>br.com</groupId>
             <artifactId>fitnesspro-shared-communication</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>br.com</groupId>
+            <artifactId>fitnesspro-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

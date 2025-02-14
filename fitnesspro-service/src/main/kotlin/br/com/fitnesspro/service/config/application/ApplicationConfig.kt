@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-
 @Configuration
 class ApplicationConfig(
     private val userRepository: IUserRepository,

@@ -1,7 +1,5 @@
 package br.com.fitnesspro.service.controller.scheduler
 
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.service.controller.common.constants.EndPointsV1
 import br.com.fitnesspro.service.controller.common.constants.Timeouts
 import br.com.fitnesspro.service.controller.common.responses.PersistenceServiceResponse
@@ -9,6 +7,8 @@ import br.com.fitnesspro.service.controller.common.responses.ReadServiceResponse
 import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.service.scheduler.SchedulerService
+import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid

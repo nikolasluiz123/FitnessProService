@@ -1,7 +1,6 @@
 package br.com.fitnesspro.service.models.scheduler
 
-import br.com.fitnesspro.service.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.models.general.Person
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -39,5 +38,5 @@ data class SchedulerConfig(
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "person_id", nullable = false)
-    var person: Person? = null
-): AuditableModel()
+    var person: br.com.fitnesspro.service.models.general.Person? = null
+): br.com.fitnesspro.service.models.base.AuditableModel()

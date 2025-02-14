@@ -1,13 +1,12 @@
 package br.com.fitnesspro.service.repository.general.academy
 
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
-import br.com.fitnesspro.service.models.general.PersonAcademyTime
 import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
+import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -20,7 +19,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getPersonAcademyTimeList(personId: String, academyId: String?, dayOfWeek: DayOfWeek?): List<PersonAcademyTime> {
+    override fun getPersonAcademyTimeList(personId: String, academyId: String?, dayOfWeek: DayOfWeek?): List<br.com.fitnesspro.service.models.general.PersonAcademyTime> {
         val params = mutableListOf<Parameter>()
         params.add(Parameter("pPersonId", personId))
 
@@ -29,7 +28,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${PersonAcademyTime::class.java.name} pat ")
+            add(" from ${br.com.fitnesspro.service.models.general.PersonAcademyTime::class.java.name} pat ")
         }
 
         val where = StringJoiner(QR_NL).apply {
@@ -53,7 +52,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), PersonAcademyTime::class.java)
+        val query = entityManager.createQuery(sql.toString(), br.com.fitnesspro.service.models.general.PersonAcademyTime::class.java)
         query.setParameters(params)
 
         return query.resultList

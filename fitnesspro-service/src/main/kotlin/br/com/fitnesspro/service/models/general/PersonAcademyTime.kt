@@ -1,7 +1,6 @@
 package br.com.fitnesspro.service.models.general
 
-import br.com.fitnesspro.service.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import jakarta.persistence.*
 import java.time.DayOfWeek
 import java.time.LocalDateTime
@@ -30,11 +29,11 @@ data class PersonAcademyTime(
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "person_id", nullable = false)
-    var person: Person? = null,
+    var person: br.com.fitnesspro.service.models.general.Person? = null,
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "academy_id", nullable = false)
-    var academy: Academy? = null,
+    var academy: br.com.fitnesspro.service.models.general.Academy? = null,
 
     @Column(name = "time_start", nullable = false)
     var timeStart: LocalTime? = null,
@@ -44,4 +43,4 @@ data class PersonAcademyTime(
 
     @Column(name = "day_week", nullable = false)
     var dayOfWeek: DayOfWeek? = null,
-): AuditableModel()
+): br.com.fitnesspro.service.models.base.AuditableModel()

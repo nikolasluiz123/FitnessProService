@@ -4,4 +4,5 @@ import br.com.fitnesspro.service.models.general.PersonAcademyTime
 import br.com.fitnesspro.service.repository.common.IAuditableFitnessProRepository
 
 
-interface IPersonAcademyTimeRepository: IAuditableFitnessProRepository<PersonAcademyTime>
+interface IPersonAcademyTimeRepository:
+    br.com.fitnesspro.service.repository.common.IAuditableFitnessProRepository<br.com.fitnesspro.service.models.general.PersonAcademyTime>

@@ -4,4 +4,5 @@ import br.com.fitnesspro.service.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.repository.common.IAuditableFitnessProRepository
 
 
-interface ISchedulerConfigRepository: IAuditableFitnessProRepository<SchedulerConfig>
+interface ISchedulerConfigRepository:
+    br.com.fitnesspro.service.repository.common.IAuditableFitnessProRepository<br.com.fitnesspro.service.models.scheduler.SchedulerConfig>

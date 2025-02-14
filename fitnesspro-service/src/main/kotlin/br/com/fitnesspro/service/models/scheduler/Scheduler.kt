@@ -1,10 +1,9 @@
 package br.com.fitnesspro.service.models.scheduler
 
+import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
-import br.com.fitnesspro.service.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
-import br.com.fitnesspro.service.models.general.Person
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,11 +32,11 @@ data class Scheduler(
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "academy_member_person_id", nullable = false)
-    var academyMemberPerson: Person? = null,
+    var academyMemberPerson: br.com.fitnesspro.service.models.general.Person? = null,
 
     @ManyToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "professional_person_id", nullable = false)
-    var professionalPerson: Person? = null,
+    var professionalPerson: br.com.fitnesspro.service.models.general.Person? = null,
 
     @Column(name = "scheduled_date", nullable = false)
     var scheduledDate: LocalDate? = null,
@@ -59,4 +58,4 @@ data class Scheduler(
 
     @Column(length = 4096)
     var observation: String? = null
-): AuditableModel()
+): br.com.fitnesspro.service.models.base.AuditableModel()
