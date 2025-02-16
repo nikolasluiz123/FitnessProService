@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.controller.common.responses
+package br.com.fitnesspro.shared.communication.responses
 
 import io.swagger.v3.oas.annotations.media.Schema
 

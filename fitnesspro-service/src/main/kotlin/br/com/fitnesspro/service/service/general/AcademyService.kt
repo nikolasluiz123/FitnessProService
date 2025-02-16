@@ -5,8 +5,8 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.models.general.PersonAcademyTime
-import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
-import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.general.academy.IAcademyRepository
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonAcademyTimeRepository

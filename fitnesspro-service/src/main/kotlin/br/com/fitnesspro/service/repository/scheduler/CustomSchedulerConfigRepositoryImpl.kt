@@ -1,8 +1,8 @@
 package br.com.fitnesspro.service.repository.scheduler
 
-import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
-import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters

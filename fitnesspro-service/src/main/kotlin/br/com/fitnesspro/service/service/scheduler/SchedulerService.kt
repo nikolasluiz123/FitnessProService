@@ -6,17 +6,21 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.service.exception.BusinessException
-import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
-import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
+import br.com.fitnesspro.service.models.workout.Workout
+import br.com.fitnesspro.service.models.workout.WorkoutGroup
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerConfigRepository
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.service.repository.scheduler.ISchedulerConfigRepository
 import br.com.fitnesspro.service.repository.scheduler.ISchedulerRepository
+import br.com.fitnesspro.service.repository.workout.IWorkoutGroupRepository
+import br.com.fitnesspro.service.repository.workout.IWorkoutRepository
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import org.springframework.stereotype.Service
 
 @Service
@@ -26,7 +30,9 @@ class SchedulerService(
     private val schedulerConfigRepository: ISchedulerConfigRepository,
     private val personRepository: IPersonRepository,
     private val customAcademyRepository: ICustomAcademyRepository,
-    private val customSchedulerConfigRepository: ICustomSchedulerConfigRepository
+    private val customSchedulerConfigRepository: ICustomSchedulerConfigRepository,
+    private val workoutRepository: IWorkoutRepository,
+    private val workoutGroupRepository: IWorkoutGroupRepository
 ) {
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
         validateScheduler(schedulerDTO)
@@ -51,7 +57,20 @@ class SchedulerService(
 
                 validateConflictRecurrent(schedules)
 
+                val workout = Workout(
+                    academyMemberPerson = schedules.first().academyMemberPerson,
+                    professionalPerson = schedules.first().professionalPerson,
+                    dateStart = schedules.first().scheduledDate,
+                    dateEnd = schedules.last().scheduledDate
+                )
+
+                val workoutGroups = schedules.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
+                    WorkoutGroup(dayWeek = it, workout = workout)
+                }
+
                 schedulerRepository.saveAll(schedules)
+                workoutRepository.save(workout)
+                workoutGroupRepository.saveAll(workoutGroups)
             }
         }
     }

@@ -30,11 +30,11 @@ data class Scheduler(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne
     @JoinColumn(name = "academy_member_person_id", nullable = false)
     var academyMemberPerson: br.com.fitnesspro.service.models.general.Person? = null,
 
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne
     @JoinColumn(name = "professional_person_id", nullable = false)
     var professionalPerson: br.com.fitnesspro.service.models.general.Person? = null,
 

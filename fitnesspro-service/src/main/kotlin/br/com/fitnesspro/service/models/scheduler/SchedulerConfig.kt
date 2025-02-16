@@ -36,7 +36,7 @@ data class SchedulerConfig(
     @Column(name = "max_schedule_density", nullable = false)
     var maxScheduleDensity: Int = 2,
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne
     @JoinColumn(name = "person_id", nullable = false)
     var person: br.com.fitnesspro.service.models.general.Person? = null
 ): br.com.fitnesspro.service.models.base.AuditableModel()

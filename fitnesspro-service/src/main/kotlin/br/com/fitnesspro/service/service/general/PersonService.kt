@@ -3,8 +3,8 @@ package br.com.fitnesspro.service.service.general
 import br.com.fitnesspro.core.helper.HashHelper
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.models.general.User
-import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
-import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository

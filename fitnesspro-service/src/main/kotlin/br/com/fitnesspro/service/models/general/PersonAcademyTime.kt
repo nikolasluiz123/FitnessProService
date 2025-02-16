@@ -27,11 +27,11 @@ data class PersonAcademyTime(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne
     @JoinColumn(name = "person_id", nullable = false)
     var person: br.com.fitnesspro.service.models.general.Person? = null,
 
-    @ManyToOne(cascade = [CascadeType.ALL])
+    @ManyToOne
     @JoinColumn(name = "academy_id", nullable = false)
     var academy: br.com.fitnesspro.service.models.general.Academy? = null,
 

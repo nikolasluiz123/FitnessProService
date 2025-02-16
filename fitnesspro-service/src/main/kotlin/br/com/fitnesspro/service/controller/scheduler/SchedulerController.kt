@@ -1,14 +1,14 @@
 package br.com.fitnesspro.service.controller.scheduler
 
-import br.com.fitnesspro.service.controller.common.constants.EndPointsV1
-import br.com.fitnesspro.service.controller.common.constants.Timeouts
-import br.com.fitnesspro.service.controller.common.responses.PersistenceServiceResponse
-import br.com.fitnesspro.service.controller.common.responses.ReadServiceResponse
-import br.com.fitnesspro.service.repository.common.filter.CommonImportFilter
-import br.com.fitnesspro.service.repository.common.paging.ImportPageInfos
 import br.com.fitnesspro.service.service.scheduler.SchedulerService
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1
+import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -28,7 +28,7 @@ class SchedulerController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveScheduler(schedulerDTO)
@@ -36,7 +36,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
-    @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerBatch(schedulerDTOList)
@@ -44,7 +44,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
-    @Transactional(timeout = Timeouts.LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfig(schedulerConfigDTO)
@@ -52,7 +52,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
-    @Transactional(timeout = Timeouts.HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
@@ -60,7 +60,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_IMPORT)
-    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun importScheduler(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<SchedulerDTO>> {
         val users = schedulerService.getSchedulesImport(filter, pageInfos)
@@ -68,7 +68,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_IMPORT)
-    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun importSchedulerConfig(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<SchedulerConfigDTO>> {
         val users = schedulerService.getSchedulerConfigsImport(filter, pageInfos)

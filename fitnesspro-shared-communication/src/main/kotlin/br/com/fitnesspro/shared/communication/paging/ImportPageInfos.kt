@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.repository.common.paging
+package br.com.fitnesspro.shared.communication.paging
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max

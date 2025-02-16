@@ -1,11 +1,11 @@
 package br.com.fitnesspro.service.controller.general
 
-import br.com.fitnesspro.service.controller.common.constants.EndPointsV1
-import br.com.fitnesspro.service.controller.common.constants.Timeouts
-import br.com.fitnesspro.service.controller.common.responses.AuthenticationServiceResponse
-import br.com.fitnesspro.service.controller.common.responses.FitnessProServiceResponse
 import br.com.fitnesspro.service.service.general.UserService
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1
+import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
+import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -25,7 +25,7 @@ class AuthenticationController(
 ) {
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGIN)
-    @Transactional(timeout = Timeouts.LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun login(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
         val token = userService.login(authenticationDTO)
 
@@ -39,7 +39,7 @@ class AuthenticationController(
     }
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGOUT)
-    @Transactional(timeout = Timeouts.LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun logout(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<FitnessProServiceResponse> {
         userService.logout(authenticationDTO)

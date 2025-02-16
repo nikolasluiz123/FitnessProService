@@ -1,9 +1,9 @@
 package br.com.fitnesspro.service.controller.logs
 
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
-import br.com.fitnesspro.service.controller.common.constants.EndPointsV1
-import br.com.fitnesspro.service.controller.common.constants.Timeouts
-import br.com.fitnesspro.service.controller.common.responses.ReadServiceResponse
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1
+import br.com.fitnesspro.shared.communication.constants.Timeouts
+import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.service.service.logs.ExecutionsLogService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -22,7 +22,7 @@ class ExecutionLogController(
 ) {
 
     @GetMapping
-    @Transactional(timeout = Timeouts.MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getAllLogs(): ResponseEntity<ReadServiceResponse<ExecutionLogDTO>> {
         val logs = logService.getAllLogs()

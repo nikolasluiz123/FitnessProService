@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.controller.common.responses
+package br.com.fitnesspro.shared.communication.responses
 
 class ReadServiceResponse<DTO>(
     var values: List<DTO>,

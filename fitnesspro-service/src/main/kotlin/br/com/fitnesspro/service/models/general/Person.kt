@@ -34,7 +34,7 @@ data class Person(
     @Column(length = 11)
     var phone: String? = null,
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     var user: br.com.fitnesspro.service.models.general.User? = null
 ): br.com.fitnesspro.service.models.base.AuditableModel()

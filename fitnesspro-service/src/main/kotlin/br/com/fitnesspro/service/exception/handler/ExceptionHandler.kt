@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.exception.handler
 
-import br.com.fitnesspro.service.controller.common.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.service.exception.BusinessException
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
