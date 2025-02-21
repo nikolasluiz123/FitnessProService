@@ -1,7 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.logs
 
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
-import br.com.fitnesspro.models.executions.enums.EnumExecutionState
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime

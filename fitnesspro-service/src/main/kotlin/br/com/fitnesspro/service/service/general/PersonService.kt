@@ -2,15 +2,16 @@ package br.com.fitnesspro.service.service.general
 
 import br.com.fitnesspro.core.helper.HashHelper
 import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import org.springframework.stereotype.Service
 
 @Service
@@ -64,7 +65,7 @@ class PersonService(
         return customPersonRepository.getPersonsImport(filter, pageInfos).map { it.toPersonDTO() }
     }
 
-    private fun br.com.fitnesspro.service.models.general.Person.toPersonDTO(): PersonDTO {
+    private fun Person.toPersonDTO(): PersonDTO {
         return PersonDTO(
             id = id,
             creationDate = creationDate,
@@ -76,22 +77,36 @@ class PersonService(
         )
     }
 
-    private fun PersonDTO.toPerson(): br.com.fitnesspro.service.models.general.Person {
-        return id?.let { personId ->
-            personRepository.findById(personId).get().copy(
-                name = name,
-                birthDate = birthDate,
-                phone = phone,
-                user = user?.toUser(),
-                active = active
-            )
-        } ?: br.com.fitnesspro.service.models.general.Person(
-            name = name,
-            birthDate = birthDate,
-            phone = phone,
-            user = user?.toUser(),
-            active = active
-        )
+    private fun PersonDTO.toPerson(): Person {
+        return when {
+            id == null -> {
+                Person(
+                    name = name,
+                    birthDate = birthDate,
+                    phone = phone,
+                    user = user?.toUser()
+                )
+            }
+
+            personRepository.findById(id!!).isPresent -> {
+                personRepository.findById(id!!).get().copy(
+                    name = name,
+                    birthDate = birthDate,
+                    phone = phone,
+                    user = user?.toUser()
+                )
+            }
+
+            else -> {
+                Person(
+                    id = id!!,
+                    name = name,
+                    birthDate = birthDate,
+                    phone = phone,
+                    user = user?.toUser()
+                )
+            }
+        }
     }
 
     private fun User.toUserDTO(): UserDTO {
@@ -108,18 +123,34 @@ class PersonService(
     }
 
     private fun UserDTO.toUser(): User {
-        return id?.let { userId ->
-            userRepository.findById(userId).get().copy(
-                email = email,
-                password = password,
-                type = type,
-                active = active
-            )
-        } ?: User(
-            email = email,
-            password = password,
-            type = type,
-            active = active
-        )
+        return when {
+            id == null -> {
+                User(
+                    email = email,
+                    password = password,
+                    type = type,
+                    active = active
+                )
+            }
+
+            userRepository.findById(id!!).isPresent -> {
+                userRepository.findById(id!!).get().copy(
+                    email = email,
+                    password = password,
+                    type = type,
+                    active = active
+                )
+            }
+
+            else -> {
+                User(
+                    id = id!!,
+                    email = email,
+                    password = password,
+                    type = type,
+                    active = active
+                )
+            }
+        }
     }
 }

@@ -33,21 +33,38 @@ class WorkoutService(
     }
 
     private fun WorkoutDTO.toWorkout(): Workout {
-        return id?.let {
-            workoutRepository.findById(it).get().copy(
-                active = active,
-                academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-                professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-                dateStart = dateStart,
-                dateEnd = dateEnd
-            )
-        } ?: Workout(
-            active = active,
-            academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-            professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-            dateStart = dateStart,
-            dateEnd = dateEnd
-        )
+        return when {
+            id == null -> {
+                Workout(
+                    active = active,
+                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
+                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
+                    dateStart = dateStart,
+                    dateEnd = dateEnd
+                )
+            }
+
+            workoutRepository.findById(id!!).isPresent -> {
+                workoutRepository.findById(id!!).get().copy(
+                    active = active,
+                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
+                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
+                    dateStart = dateStart,
+                    dateEnd = dateEnd
+                )
+            }
+
+            else -> {
+                Workout(
+                    id = id!!,
+                    active = active,
+                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
+                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
+                    dateStart = dateStart,
+                    dateEnd = dateEnd
+                )
+            }
+        }
     }
 
     private fun WorkoutGroupDTO.toWorkoutGroup(): WorkoutGroup {

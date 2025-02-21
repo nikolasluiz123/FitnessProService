@@ -6,6 +6,8 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.service.models.scheduler.Scheduler
+import br.com.fitnesspro.service.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.models.workout.Workout
 import br.com.fitnesspro.service.models.workout.WorkoutGroup
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
@@ -102,7 +104,7 @@ class SchedulerService(
     }
 
     @Throws(BusinessException::class)
-    private fun validateConflict(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler, person: br.com.fitnesspro.service.models.general.Person) {
+    private fun validateConflict(scheduler: Scheduler, person: br.com.fitnesspro.service.models.general.Person) {
         val hasConflict = customSchedulerRepository.getHasSchedulerConflict(
             schedulerId = scheduler.id,
             personId = person.id,
@@ -124,7 +126,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateConflictRecurrent(schedulers: List<br.com.fitnesspro.service.models.scheduler.Scheduler>) {
+    private fun validateConflictRecurrent(schedulers: List<Scheduler>) {
         val conflicts = schedulers.filter { scheduler ->
             customSchedulerRepository.getHasSchedulerConflict(
                 schedulerId = scheduler.id,
@@ -145,7 +147,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateStartTime(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
+    private fun validateStartTime(scheduler: Scheduler) {
         val actualHour = timeNow()
         val timeStart = scheduler.timeStart!!
 
@@ -156,7 +158,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateStartTimeSuggestionScheduler(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
+    private fun validateStartTimeSuggestionScheduler(scheduler: Scheduler) {
         validateStartTime(scheduler)
 
         val academyTimes = customAcademyRepository.getPersonAcademyTimeList(
@@ -174,7 +176,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateEndTimeSuggestionScheduler(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
+    private fun validateEndTimeSuggestionScheduler(scheduler: Scheduler) {
         val academyTimes = customAcademyRepository.getPersonAcademyTimeList(
             personId = scheduler.professionalPerson?.id!!,
             dayOfWeek = scheduler.scheduledDate?.dayOfWeek!!
@@ -190,7 +192,7 @@ class SchedulerService(
         }
     }
 
-    private fun validateTimePeriod(scheduler: br.com.fitnesspro.service.models.scheduler.Scheduler) {
+    private fun validateTimePeriod(scheduler: Scheduler) {
         if (scheduler.timeStart!!.isAfter(scheduler.timeEnd!!) || scheduler.timeStart == scheduler.timeEnd) {
             throw BusinessException("Os horários de Início e Fim são inválidos")
         }
@@ -224,7 +226,7 @@ class SchedulerService(
         schedulerConfigRepository.save(config)
     }
 
-    private fun validateDensityRange(config: br.com.fitnesspro.service.models.scheduler.SchedulerConfig) {
+    private fun validateDensityRange(config: SchedulerConfig) {
         if (config.minScheduleDensity > config.maxScheduleDensity ||
             config.minScheduleDensity == config.maxScheduleDensity) {
             throw BusinessException("Os valores da densidade dos eventos são inválidos.")
@@ -250,49 +252,88 @@ class SchedulerService(
         return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos)
     }
 
-    private fun SchedulerDTO.toScheduler(): br.com.fitnesspro.service.models.scheduler.Scheduler {
-        return id?.let { schedulerId ->
-            schedulerRepository.findById(schedulerId).get().copy(
-                academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-                professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-                scheduledDate = scheduledDate,
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                canceledDate = canceledDate,
-                situation = situation,
-                compromiseType = compromiseType,
-                observation = observation
-            )
-        } ?: br.com.fitnesspro.service.models.scheduler.Scheduler(
-            academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-            professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-            scheduledDate = scheduledDate,
-            timeStart = timeStart,
-            timeEnd = timeEnd,
-            canceledDate = canceledDate,
-            situation = situation,
-            compromiseType = compromiseType,
-            observation = observation
-        )
+    private fun SchedulerDTO.toScheduler(): Scheduler {
+        return when {
+            id == null -> {
+                Scheduler(
+                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
+                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
+                    scheduledDate = scheduledDate,
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
+                    canceledDate = canceledDate,
+                    situation = situation,
+                    compromiseType = compromiseType,
+                    observation = observation
+                )
+            }
+
+            schedulerRepository.findById(id!!).isPresent -> {
+                schedulerRepository.findById(id!!).get().copy(
+                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
+                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
+                    scheduledDate = scheduledDate,
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
+                    canceledDate = canceledDate,
+                    situation = situation,
+                    compromiseType = compromiseType,
+                    observation = observation
+                )
+            }
+
+            else -> {
+                Scheduler(
+                    id = id!!,
+                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
+                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
+                    scheduledDate = scheduledDate,
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
+                    canceledDate = canceledDate,
+                    situation = situation,
+                    compromiseType = compromiseType,
+                    observation = observation
+                )
+            }
+        }
     }
 
-    private fun SchedulerConfigDTO.toSchedulerConfig(): br.com.fitnesspro.service.models.scheduler.SchedulerConfig {
-        return id?.let {
-            schedulerConfigRepository.findById(it).get().copy(
-                active = active,
-                alarm = alarm,
-                notification = notification,
-                minScheduleDensity = minScheduleDensity,
-                maxScheduleDensity = maxScheduleDensity,
-                person = personRepository.findById(personId!!).get()
-            )
-        } ?: br.com.fitnesspro.service.models.scheduler.SchedulerConfig(
-            active = active,
-            alarm = alarm,
-            notification = notification,
-            minScheduleDensity = minScheduleDensity,
-            maxScheduleDensity = maxScheduleDensity,
-            person = personRepository.findById(personId!!).get()
-        )
+    private fun SchedulerConfigDTO.toSchedulerConfig(): SchedulerConfig {
+        return when {
+            id == null -> {
+                SchedulerConfig(
+                    active = active,
+                    alarm = alarm,
+                    notification = notification,
+                    minScheduleDensity = minScheduleDensity,
+                    maxScheduleDensity = maxScheduleDensity,
+                    person = personRepository.findById(personId!!).get()
+                )
+            }
+
+            schedulerConfigRepository.findById(id!!).isPresent -> {
+                schedulerConfigRepository.findById(id!!).get().copy(
+                    active = active,
+                    alarm = alarm,
+                    notification = notification,
+                    minScheduleDensity = minScheduleDensity,
+                    maxScheduleDensity = maxScheduleDensity,
+                    person = personRepository.findById(personId!!).get()
+                )
+            }
+
+            else -> {
+                SchedulerConfig(
+                    id = id!!,
+                    active = active,
+                    alarm = alarm,
+                    notification = notification,
+                    minScheduleDensity = minScheduleDensity,
+                    maxScheduleDensity = maxScheduleDensity,
+                    person = personRepository.findById(personId!!).get()
+                )
+            }
+        }
     }
 }

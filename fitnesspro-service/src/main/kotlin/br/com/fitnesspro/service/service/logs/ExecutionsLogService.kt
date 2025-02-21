@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.service.logs
 
-import br.com.fitnesspro.models.executions.enums.EnumExecutionState
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType.*
 import br.com.fitnesspro.service.models.executions.ExecutionLog

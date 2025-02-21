@@ -4,9 +4,8 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.service.models.general.Academy
 import br.com.fitnesspro.service.models.general.PersonAcademyTime
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.general.academy.IAcademyRepository
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonAcademyTimeRepository
@@ -14,7 +13,10 @@ import br.com.fitnesspro.service.repository.general.person.IPersonAcademyTimeRep
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import org.springframework.stereotype.Service
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class AcademyService(
@@ -77,15 +79,13 @@ class AcademyService(
         return customAcademyRepository.getAcademiesImport(filter, pageInfos)
     }
 
-    private fun AcademyDTO.toAcademy(): br.com.fitnesspro.service.models.general.Academy {
-        return id?.let { academyId ->
-            academyRepository.findById(academyId).get().copy(
-                name = name,
-                phone = phone,
-                address = address,
-                active = active
-            )
-        } ?: br.com.fitnesspro.service.models.general.Academy(
+    private fun AcademyDTO.toAcademy(): Academy {
+        return academyRepository.findById(id!!).getOrNull()?.copy(
+            name = name,
+            phone = phone,
+            address = address,
+            active = active
+        ) ?: Academy(
             name = name,
             phone = phone,
             address = address,
@@ -94,22 +94,40 @@ class AcademyService(
     }
 
     private fun PersonAcademyTimeDTO.toPersonAcademyTime(): PersonAcademyTime {
-        return id?.let { personAcademyTimeId ->
-            personAcademyTimeRepository.findById(personAcademyTimeId).get().copy(
-                person = personRepository.findById(personId!!).get(),
-                academy = academyRepository.findById(academyId!!).get(),
-                timeStart = timeStart,
-                timeEnd = timeEnd,
-                dayOfWeek = dayOfWeek,
-                active = active
-            )
-        } ?: PersonAcademyTime(
-            person = personRepository.findById(personId!!).get(),
-            academy = academyRepository.findById(academyId!!).get(),
-            timeStart = timeStart,
-            timeEnd = timeEnd,
-            dayOfWeek = dayOfWeek,
-            active = active
-        )
+        return when {
+            id == null -> {
+                PersonAcademyTime(
+                    person = personRepository.findById(personId!!).get(),
+                    academy = academyRepository.findById(academyId!!).get(),
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
+                    dayOfWeek = dayOfWeek,
+                    active = active
+                )
+            }
+
+            personAcademyTimeRepository.findById(id!!).isPresent -> {
+                personAcademyTimeRepository.findById(id!!).get().copy(
+                    person = personRepository.findById(personId!!).get(),
+                    academy = academyRepository.findById(academyId!!).get(),
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
+                    dayOfWeek = dayOfWeek,
+                    active = active
+                )
+            }
+
+            else -> {
+                PersonAcademyTime(
+                    id = id!!,
+                    person = personRepository.findById(personId!!).get(),
+                    academy = academyRepository.findById(academyId!!).get(),
+                    timeStart = timeStart,
+                    timeEnd = timeEnd,
+                    dayOfWeek = dayOfWeek,
+                    active = active
+                )
+            }
+        }
     }
 }

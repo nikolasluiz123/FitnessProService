@@ -5,8 +5,8 @@ import br.com.fitnesspro.service.models.base.AuditableModel
 import org.springframework.data.repository.NoRepositoryBean
 
 @NoRepositoryBean
-interface IAuditableFitnessProRepository<T: br.com.fitnesspro.service.models.base.AuditableModel>:
-    br.com.fitnesspro.service.repository.common.IFitnessProServiceRepository<T> {
+interface IAuditableFitnessProRepository<T: AuditableModel>:
+    IFitnessProServiceRepository<T> {
 
     override fun <S : T> save(entity: S): S {
         if (entity.id != null) {
