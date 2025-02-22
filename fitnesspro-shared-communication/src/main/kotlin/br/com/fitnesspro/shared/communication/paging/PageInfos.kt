@@ -2,5 +2,5 @@ package br.com.fitnesspro.shared.communication.paging
 
 interface PageInfos {
     val pageSize: Int
-    val pageNumber: Int
+    var pageNumber: Int
 }

@@ -10,6 +10,7 @@ object EndPointsV1 {
     const val PERSON_ACADEMY_TIME_EXPORT = "/academy/time/export"
     const val PERSON_IMPORT = "/import"
     const val PERSON_ACADEMY_TIME_IMPORT = "/academy/time/import"
+    const val PERSON_USER_IMPORT = "/user/import"
 
     const val ACADEMY = "academy"
     const val ACADEMY_V1 = "$API_V1/$ACADEMY"

@@ -12,5 +12,5 @@ data class ImportPageInfos(
 
     @Schema(description = "Número da página", example = "0", required = true)
     @field:Min(value = 0, message = "O número da página deve ser no mínimo 0")
-    override val pageNumber: Int = 0
+    override var pageNumber: Int = 0
 ): PageInfos

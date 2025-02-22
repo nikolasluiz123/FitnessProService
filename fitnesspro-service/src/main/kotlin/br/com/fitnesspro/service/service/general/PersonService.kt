@@ -65,6 +65,10 @@ class PersonService(
         return customPersonRepository.getPersonsImport(filter, pageInfos).map { it.toPersonDTO() }
     }
 
+    fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<UserDTO> {
+        return customPersonRepository.getUsersImport(filter, pageInfos).map { it.toUserDTO() }
+    }
+
     private fun Person.toPersonDTO(): PersonDTO {
         return PersonDTO(
             id = id,

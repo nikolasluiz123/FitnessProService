@@ -7,6 +7,7 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
+import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -66,6 +67,14 @@ class PersonController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun importPersons(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<PersonDTO>> {
         val users = personService.getPersonsImport(filter, pageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
+    }
+
+    @PostMapping(EndPointsV1.PERSON_USER_IMPORT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importUsers(@RequestBody filter: CommonImportFilter, pageInfos: ImportPageInfos): ResponseEntity<ReadServiceResponse<UserDTO>> {
+        val users = personService.getUsersImport(filter, pageInfos)
         return ResponseEntity.ok(ReadServiceResponse(values = users, code = HttpStatus.OK.value(), success = true))
     }
 
