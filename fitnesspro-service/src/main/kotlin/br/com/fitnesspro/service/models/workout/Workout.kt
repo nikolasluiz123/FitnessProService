@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.models.workout
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
+import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.Person
 import jakarta.persistence.*
 import java.time.LocalDate
@@ -28,6 +28,9 @@ data class Workout(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "transmission_date", nullable = false)
+    override var transmissionDate: LocalDateTime = dateTimeNow(),
+
     @JoinColumn(name = "academy_member_person_id", nullable = false)
     @ManyToOne
     var academyMemberPerson: Person? = null,
@@ -41,4 +44,4 @@ data class Workout(
 
     @Column(name = "date_end", nullable = false)
     var dateEnd: LocalDate? = null,
-) : AuditableModel()
+) : IntegratedModel()

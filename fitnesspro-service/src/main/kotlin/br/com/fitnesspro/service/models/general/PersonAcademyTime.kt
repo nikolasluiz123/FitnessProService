@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.IntegratedModel
 import jakarta.persistence.*
 import java.time.DayOfWeek
 import java.time.LocalDateTime
@@ -27,13 +28,16 @@ data class PersonAcademyTime(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "transmission_date", nullable = false)
+    override var transmissionDate: LocalDateTime = dateTimeNow(),
+
     @ManyToOne
     @JoinColumn(name = "person_id", nullable = false)
-    var person: br.com.fitnesspro.service.models.general.Person? = null,
+    var person: Person? = null,
 
     @ManyToOne
     @JoinColumn(name = "academy_id", nullable = false)
-    var academy: br.com.fitnesspro.service.models.general.Academy? = null,
+    var academy: Academy? = null,
 
     @Column(name = "time_start", nullable = false)
     var timeStart: LocalTime? = null,
@@ -43,4 +47,4 @@ data class PersonAcademyTime(
 
     @Column(name = "day_week", nullable = false)
     var dayOfWeek: DayOfWeek? = null,
-): br.com.fitnesspro.service.models.base.AuditableModel()
+): IntegratedModel()

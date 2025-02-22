@@ -32,7 +32,7 @@ class AcademyController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademy(@RequestBody @Valid academyDTO: AcademyDTO): ResponseEntity<PersistenceServiceResponse> {
         academyService.saveAcademy(academyDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
     }
 
     @PostMapping(EndPointsV1.ACADEMY_EXPORT)
@@ -40,7 +40,7 @@ class AcademyController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademyBatch(@RequestBody @Valid academyDTOList: List<AcademyDTO>): ResponseEntity<PersistenceServiceResponse> {
         academyService.saveAcademyBatch(academyDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
     }
 
     @PostMapping(EndPointsV1.ACADEMY_IMPORT)

@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.models.scheduler
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.base.AuditableModel
+import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.Person
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -27,6 +27,9 @@ data class SchedulerConfig(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "transmission_date", nullable = false)
+    override var transmissionDate: LocalDateTime = dateTimeNow(),
+
     var alarm: Boolean = false,
 
     var notification: Boolean = false,
@@ -40,4 +43,4 @@ data class SchedulerConfig(
     @OneToOne
     @JoinColumn(name = "person_id", nullable = false)
     var person: Person? = null
-): AuditableModel()
+): IntegratedModel()

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping(EndPointsV1.PERSON_V1)
@@ -33,7 +34,7 @@ class PersonController(
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse> {
         personService.savePerson(personDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
     }
 
     @PostMapping(EndPointsV1.PERSON_EXPORT)
@@ -41,7 +42,7 @@ class PersonController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonBatch(@RequestBody @Valid personDTOList: List<PersonDTO>): ResponseEntity<PersistenceServiceResponse> {
         personService.savePersonList(personDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
     }
 
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME)
@@ -49,7 +50,7 @@ class PersonController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonAcademyTime(@RequestBody @Valid personAcademyTimeDTO: PersonAcademyTimeDTO): ResponseEntity<PersistenceServiceResponse> {
         academyService.savePersonAcademyTime(personAcademyTimeDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
     }
 
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_EXPORT)
@@ -57,7 +58,7 @@ class PersonController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonAcademyTimeBatch(@RequestBody @Valid personAcademyTimeDTOList: List<PersonAcademyTimeDTO>): ResponseEntity<PersistenceServiceResponse> {
         academyService.savePersonAcademyTimeBatch(personAcademyTimeDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
     }
 
     @PostMapping(EndPointsV1.PERSON_IMPORT)

@@ -2,6 +2,7 @@ package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.general.enums.EnumUserType
+import br.com.fitnesspro.service.models.base.IntegratedModel
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -26,6 +27,9 @@ data class User(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "transmission_date", nullable = false)
+    override var transmissionDate: LocalDateTime = dateTimeNow(),
+
     @Column(unique = true, nullable = false, length = 64)
     var email: String? = null,
 
@@ -36,7 +40,7 @@ data class User(
     var type: EnumUserType? = null,
 
     var authenticated: Boolean = false,
-): br.com.fitnesspro.service.models.base.AuditableModel(), UserDetails {
+): IntegratedModel(), UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(type!!.name))

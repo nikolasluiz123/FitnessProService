@@ -1,9 +1,10 @@
 package br.com.fitnesspro.service.models.scheduler
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
+import br.com.fitnesspro.service.models.base.IntegratedModel
+import br.com.fitnesspro.service.models.general.Person
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -30,13 +31,16 @@ data class Scheduler(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "transmission_date", nullable = false)
+    override var transmissionDate: LocalDateTime = dateTimeNow(),
+
     @ManyToOne
     @JoinColumn(name = "academy_member_person_id", nullable = false)
-    var academyMemberPerson: br.com.fitnesspro.service.models.general.Person? = null,
+    var academyMemberPerson: Person? = null,
 
     @ManyToOne
     @JoinColumn(name = "professional_person_id", nullable = false)
-    var professionalPerson: br.com.fitnesspro.service.models.general.Person? = null,
+    var professionalPerson: Person? = null,
 
     @Column(name = "scheduled_date", nullable = false)
     var scheduledDate: LocalDate? = null,
@@ -58,4 +62,4 @@ data class Scheduler(
 
     @Column(length = 4096)
     var observation: String? = null
-): br.com.fitnesspro.service.models.base.AuditableModel()
+): IntegratedModel()

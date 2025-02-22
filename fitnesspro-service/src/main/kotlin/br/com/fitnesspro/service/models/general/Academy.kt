@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.IntegratedModel
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -22,6 +23,9 @@ data class Academy(
     @Column(name = "update_date", nullable = false)
     override var updateDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "transmission_date", nullable = false)
+    override var transmissionDate: LocalDateTime = dateTimeNow(),
+
     @Column(nullable = false, length = 512)
     var name: String? = null,
 
@@ -30,4 +34,4 @@ data class Academy(
 
     @Column(length = 11)
     var phone: String? = null,
-): br.com.fitnesspro.service.models.base.AuditableModel()
+): IntegratedModel()
