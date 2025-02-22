@@ -1,5 +1,6 @@
 package br.com.fitnesspro.service.controller.scheduler
 
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.service.scheduler.SchedulerService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping(EndPointsV1.SCHEDULER_V1)
@@ -33,7 +33,7 @@ class SchedulerController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveScheduler(schedulerDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
@@ -41,14 +41,14 @@ class SchedulerController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerBatch(schedulerDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfig(schedulerConfigDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
@@ -56,7 +56,7 @@ class SchedulerController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_IMPORT)

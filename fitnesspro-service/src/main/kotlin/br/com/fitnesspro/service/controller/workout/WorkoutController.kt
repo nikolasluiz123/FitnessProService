@@ -1,5 +1,6 @@
 package br.com.fitnesspro.service.controller.workout
 
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.service.workout.WorkoutService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
@@ -29,7 +30,7 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkout(@RequestBody @Valid workoutDTO: WorkoutDTO): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkout(workoutDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
@@ -37,7 +38,7 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<WorkoutDTO>): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkoutBatch(workoutDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP)
@@ -45,7 +46,7 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkoutGroup(workoutGroupDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)
@@ -53,6 +54,6 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupDTO>): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkoutGroupBatch(workoutGroupList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = LocalDateTime.now()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
     }
 }
