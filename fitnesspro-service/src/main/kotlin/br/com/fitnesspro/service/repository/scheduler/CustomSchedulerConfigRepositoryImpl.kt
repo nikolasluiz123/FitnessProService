@@ -45,10 +45,6 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
-            if (filter.onlyActives) {
-                add(" and config.active = true ")
-            }
-
             filter.lastUpdateDate?.let {
                 add(" and config.update_date >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))

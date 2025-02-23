@@ -101,10 +101,6 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
-            if (filter.onlyActives) {
-                add(" and pat.active = true ")
-            }
-
             filter.lastUpdateDate?.let {
                 add(" and pat.update_date >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))

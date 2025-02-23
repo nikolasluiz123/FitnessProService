@@ -33,10 +33,6 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
-            if (filter.onlyActives) {
-                add(" and p.active = true ")
-            }
-
             filter.lastUpdateDate?.let {
                 add(" and p.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
@@ -72,10 +68,6 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
-
-            if (filter.onlyActives) {
-                add(" and u.active = true ")
-            }
 
             filter.lastUpdateDate?.let {
                 add(" and u.updateDate >= :pLastUpdateDate ")
