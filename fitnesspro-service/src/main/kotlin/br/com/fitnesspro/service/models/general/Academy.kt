@@ -2,15 +2,18 @@ package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.models.base.IntegratedModel
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-@Table(name = "academy")
+@Table(
+    name = "academy",
+    indexes = [
+        Index(name = "idx_academy_creation_user_id", columnList = "creation_user_id"),
+        Index(name = "idx_academy_update_user_id", columnList = "update_user_id")
+    ]
+)
 data class Academy(
     @Id
     override val id: String = UUID.randomUUID().toString(),
@@ -25,6 +28,14 @@ data class Academy(
 
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
+
+    @ManyToOne
+    @JoinColumn(name = "creation_user_id", nullable = false)
+    override var creationUser: User? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "update_user_id", nullable = false)
+    override var updateUser: User? = null,
 
     @Column(nullable = false, length = 512)
     var name: String? = null,

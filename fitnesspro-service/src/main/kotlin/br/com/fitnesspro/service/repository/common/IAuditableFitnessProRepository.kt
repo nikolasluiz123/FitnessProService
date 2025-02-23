@@ -9,9 +9,7 @@ interface IAuditableFitnessProRepository<T: AuditableModel>:
     IFitnessProServiceRepository<T> {
 
     override fun <S : T> save(entity: S): S {
-        if (entity.id != null) {
-            entity.updateDate = dateTimeNow()
-        }
+        entity.updateDate = dateTimeNow()
 
         return saveAndFlush(entity)
     }
@@ -20,9 +18,7 @@ interface IAuditableFitnessProRepository<T: AuditableModel>:
         val entitiesList = entities.toList()
 
         entitiesList.forEach { entity ->
-            if (entity.id != null) {
-                entity.updateDate = dateTimeNow()
-            }
+            entity.updateDate = dateTimeNow()
         }
 
         return saveAllAndFlush(entitiesList)

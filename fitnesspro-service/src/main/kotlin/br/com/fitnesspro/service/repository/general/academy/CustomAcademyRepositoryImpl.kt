@@ -1,12 +1,13 @@
 package br.com.fitnesspro.service.repository.general.academy
 
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.service.models.general.PersonAcademyTime
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -19,7 +20,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getPersonAcademyTimeList(personId: String, academyId: String?, dayOfWeek: DayOfWeek?): List<br.com.fitnesspro.service.models.general.PersonAcademyTime> {
+    override fun getPersonAcademyTimeList(personId: String, academyId: String?, dayOfWeek: DayOfWeek?): List<PersonAcademyTime> {
         val params = mutableListOf<Parameter>()
         params.add(Parameter("pPersonId", personId))
 
@@ -28,7 +29,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${br.com.fitnesspro.service.models.general.PersonAcademyTime::class.java.name} pat ")
+            add(" from ${PersonAcademyTime::class.java.name} pat ")
         }
 
         val where = StringJoiner(QR_NL).apply {
@@ -52,7 +53,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), br.com.fitnesspro.service.models.general.PersonAcademyTime::class.java)
+        val query = entityManager.createQuery(sql.toString(), PersonAcademyTime::class.java)
         query.setParameters(params)
 
         return query.resultList
@@ -65,6 +66,8 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(" select a.id as id, ")
             add("        a.creation_date as creationDate, ")
             add("        a.update_date as updateDate, ")
+            add("        a.creation_user_id as creationUserId, ")
+            add("        a.update_user_id as updateUserId, ")
             add("        a.name as name, ")
             add("        a.address as address, ")
             add("        a.phone as phone, ")

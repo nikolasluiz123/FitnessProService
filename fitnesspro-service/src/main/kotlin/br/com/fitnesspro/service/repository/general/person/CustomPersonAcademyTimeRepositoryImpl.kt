@@ -1,13 +1,13 @@
 package br.com.fitnesspro.service.repository.general.person
 
 import br.com.fitnesspro.service.models.general.PersonAcademyTime
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
@@ -89,7 +89,9 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
             add("        pat.day_week as dayOfWeek, ")
             add("        pat.active as active, ")
             add("        pat.creation_date as creationDate, ")
-            add("        pat.update_date as updateDate ")
+            add("        pat.update_date as updateDate, ")
+            add("        pat.creation_user_id as creationUserId, ")
+            add("        pat.update_user_id as updateUserId ")
         }
 
         val from = StringJoiner(QR_NL).apply {

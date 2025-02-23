@@ -19,6 +19,12 @@ data class PersonAcademyTimeDTO(
     @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
 
+    @Schema(description = "Usuário que criou o registro", required = false)
+    override var creationUserId: String? = null,
+
+    @Schema(description = "Usuário que atualizou o registro", required = false)
+    override var updateUserId: String? = null,
+
     @Schema(description = "Identificador da pessoa", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
     @field:NotNull(message = "O identificador da pessoa é obrigatório")
     val personId: String? = null,

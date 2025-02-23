@@ -11,7 +11,9 @@ import java.util.*
 @Table(
     name = "person",
     indexes = [
-        Index(name = "idx_person_user_id", columnList = "user_id")
+        Index(name = "idx_person_user_id", columnList = "user_id"),
+        Index(name = "idx_person_creation_user_id", columnList = "creation_user_id"),
+        Index(name = "idx_person_update_user_id", columnList = "update_user_id")
     ]
 )
 data class Person(
@@ -28,6 +30,14 @@ data class Person(
 
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
+
+    @ManyToOne
+    @JoinColumn(name = "creation_user_id", nullable = false)
+    override var creationUser: User? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "update_user_id", nullable = false)
+    override var updateUser: User? = null,
 
     @Column(nullable = false, length = 512)
     var name: String? = null,

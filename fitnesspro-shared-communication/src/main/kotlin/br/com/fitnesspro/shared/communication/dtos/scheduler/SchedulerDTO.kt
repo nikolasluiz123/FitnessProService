@@ -1,9 +1,9 @@
 package br.com.fitnesspro.shared.communication.dtos.scheduler
 
-import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
+import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.FutureOrPresent
 import jakarta.validation.constraints.NotNull
@@ -22,6 +22,12 @@ data class SchedulerDTO(
 
     @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
+
+    @Schema(description = "Usuário que criou o registro", required = false)
+    override var creationUserId: String? = null,
+
+    @Schema(description = "Usuário que atualizou o registro", required = false)
+    override var updateUserId: String? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "O campo ativo é obrigatório")

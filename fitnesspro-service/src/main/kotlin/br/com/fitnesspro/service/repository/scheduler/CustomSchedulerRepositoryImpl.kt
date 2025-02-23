@@ -2,13 +2,13 @@ package br.com.fitnesspro.service.repository.scheduler
 
 import br.com.fitnesspro.models.general.enums.EnumUserType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
@@ -99,6 +99,8 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
             add(" select s.id as id, ")
             add("        s.creation_date as creationDate, ")
             add("        s.update_date as updateDate, ")
+            add("        s.creation_user_id as creationUserId, ")
+            add("        s.update_user_id as updateUserId, ")
             add("        s.active as active, ")
             add("        s.academy_member_person_id as academyMemberPersonId, ")
             add("        s.professional_person_id as professionalPersonId, ")

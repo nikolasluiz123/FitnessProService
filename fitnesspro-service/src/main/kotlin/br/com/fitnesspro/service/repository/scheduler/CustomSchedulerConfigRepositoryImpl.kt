@@ -1,12 +1,12 @@
 package br.com.fitnesspro.service.repository.scheduler
 
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
-import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -28,6 +28,8 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
             add(" select config.id as id, ")
             add("        config.creation_date as creationDate, ")
             add("        config.update_date as updateDate, ")
+            add("        config.creation_user_id as creationUserId, ")
+            add("        config.update_user_id as updateUserId, ")
             add("        config.active as active, ")
             add("        config.alarm as alarm, ")
             add("        config.notification as notification, ")

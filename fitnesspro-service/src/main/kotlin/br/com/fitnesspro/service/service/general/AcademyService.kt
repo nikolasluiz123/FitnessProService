@@ -11,6 +11,7 @@ import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyReposi
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonAcademyTimeRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonAcademyTimeRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
+import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
@@ -25,6 +26,7 @@ class AcademyService(
     private val academyRepository: IAcademyRepository,
     private val customAcademyRepository: ICustomAcademyRepository,
     private val personRepository: IPersonRepository,
+    private val userRepository: IUserRepository
 ) {
 
     fun savePersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO) {
@@ -84,16 +86,21 @@ class AcademyService(
             name = name,
             phone = phone,
             address = address,
-            active = active
+            active = active,
+            updateUser = userRepository.findById(updateUserId!!).get(),
         ) ?: Academy(
             name = name,
             phone = phone,
             address = address,
-            active = active
+            active = active,
+            creationUser = userRepository.findById(creationUserId!!).get(),
+            updateUser = userRepository.findById(updateUserId!!).get()
         )
     }
 
     private fun PersonAcademyTimeDTO.toPersonAcademyTime(): PersonAcademyTime {
+        val personAcademyTime = personAcademyTimeRepository.findById(id!!)
+
         return when {
             id == null -> {
                 PersonAcademyTime(
@@ -102,18 +109,21 @@ class AcademyService(
                     timeStart = timeStart,
                     timeEnd = timeEnd,
                     dayOfWeek = dayOfWeek,
-                    active = active
+                    active = active,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            personAcademyTimeRepository.findById(id!!).isPresent -> {
-                personAcademyTimeRepository.findById(id!!).get().copy(
+            personAcademyTime.isPresent -> {
+                personAcademyTime.get().copy(
                     person = personRepository.findById(personId!!).get(),
                     academy = academyRepository.findById(academyId!!).get(),
                     timeStart = timeStart,
                     timeEnd = timeEnd,
                     dayOfWeek = dayOfWeek,
-                    active = active
+                    active = active,
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -125,7 +135,9 @@ class AcademyService(
                     timeStart = timeStart,
                     timeEnd = timeEnd,
                     dayOfWeek = dayOfWeek,
-                    active = active
+                    active = active,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

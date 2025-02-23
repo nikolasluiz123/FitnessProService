@@ -6,12 +6,14 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
 import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.scheduler.Scheduler
 import br.com.fitnesspro.service.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.models.workout.Workout
 import br.com.fitnesspro.service.models.workout.WorkoutGroup
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
+import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerConfigRepository
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.service.repository.scheduler.ISchedulerConfigRepository
@@ -34,7 +36,8 @@ class SchedulerService(
     private val customAcademyRepository: ICustomAcademyRepository,
     private val customSchedulerConfigRepository: ICustomSchedulerConfigRepository,
     private val workoutRepository: IWorkoutRepository,
-    private val workoutGroupRepository: IWorkoutGroupRepository
+    private val workoutGroupRepository: IWorkoutGroupRepository,
+    private val userRepository: IUserRepository
 ) {
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
         validateScheduler(schedulerDTO)
@@ -59,15 +62,24 @@ class SchedulerService(
 
                 validateConflictRecurrent(schedules)
 
+                val firstScheduler = schedules.first()
+
                 val workout = Workout(
-                    academyMemberPerson = schedules.first().academyMemberPerson,
-                    professionalPerson = schedules.first().professionalPerson,
-                    dateStart = schedules.first().scheduledDate,
-                    dateEnd = schedules.last().scheduledDate
+                    academyMemberPerson = firstScheduler.academyMemberPerson,
+                    professionalPerson = firstScheduler.professionalPerson,
+                    dateStart = firstScheduler.scheduledDate,
+                    dateEnd = schedules.last().scheduledDate,
+                    creationUser = firstScheduler.creationUser,
+                    updateUser = firstScheduler.updateUser
                 )
 
                 val workoutGroups = schedules.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
-                    WorkoutGroup(dayWeek = it, workout = workout)
+                    WorkoutGroup(
+                        dayWeek = it,
+                        workout = workout,
+                        creationUser = firstScheduler.creationUser,
+                        updateUser = firstScheduler.updateUser
+                    )
                 }
 
                 schedulerRepository.saveAll(schedules)
@@ -104,7 +116,7 @@ class SchedulerService(
     }
 
     @Throws(BusinessException::class)
-    private fun validateConflict(scheduler: Scheduler, person: br.com.fitnesspro.service.models.general.Person) {
+    private fun validateConflict(scheduler: Scheduler, person: Person) {
         val hasConflict = customSchedulerRepository.getHasSchedulerConflict(
             schedulerId = scheduler.id,
             personId = person.id,
@@ -253,6 +265,8 @@ class SchedulerService(
     }
 
     private fun SchedulerDTO.toScheduler(): Scheduler {
+        val scheduler = schedulerRepository.findById(id!!)
+
         return when {
             id == null -> {
                 Scheduler(
@@ -264,12 +278,14 @@ class SchedulerService(
                     canceledDate = canceledDate,
                     situation = situation,
                     compromiseType = compromiseType,
-                    observation = observation
+                    observation = observation,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            schedulerRepository.findById(id!!).isPresent -> {
-                schedulerRepository.findById(id!!).get().copy(
+            scheduler.isPresent -> {
+                scheduler.get().copy(
                     academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     scheduledDate = scheduledDate,
@@ -278,7 +294,8 @@ class SchedulerService(
                     canceledDate = canceledDate,
                     situation = situation,
                     compromiseType = compromiseType,
-                    observation = observation
+                    observation = observation,
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -293,13 +310,17 @@ class SchedulerService(
                     canceledDate = canceledDate,
                     situation = situation,
                     compromiseType = compromiseType,
-                    observation = observation
+                    observation = observation,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }
     }
 
     private fun SchedulerConfigDTO.toSchedulerConfig(): SchedulerConfig {
+        val schedulerConfig = schedulerConfigRepository.findById(id!!)
+
         return when {
             id == null -> {
                 SchedulerConfig(
@@ -308,18 +329,21 @@ class SchedulerService(
                     notification = notification,
                     minScheduleDensity = minScheduleDensity,
                     maxScheduleDensity = maxScheduleDensity,
-                    person = personRepository.findById(personId!!).get()
+                    person = personRepository.findById(personId!!).get(),
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            schedulerConfigRepository.findById(id!!).isPresent -> {
-                schedulerConfigRepository.findById(id!!).get().copy(
+            schedulerConfig.isPresent -> {
+                schedulerConfig.get().copy(
                     active = active,
                     alarm = alarm,
                     notification = notification,
                     minScheduleDensity = minScheduleDensity,
                     maxScheduleDensity = maxScheduleDensity,
-                    person = personRepository.findById(personId!!).get()
+                    person = personRepository.findById(personId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -331,7 +355,9 @@ class SchedulerService(
                     notification = notification,
                     minScheduleDensity = minScheduleDensity,
                     maxScheduleDensity = maxScheduleDensity,
-                    person = personRepository.findById(personId!!).get()
+                    person = personRepository.findById(personId!!).get(),
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

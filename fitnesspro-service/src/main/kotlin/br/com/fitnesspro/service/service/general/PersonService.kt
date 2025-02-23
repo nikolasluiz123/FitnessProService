@@ -77,27 +77,34 @@ class PersonService(
             name = name,
             birthDate = birthDate,
             phone = phone,
-            user = user?.toUserDTO()
+            user = user?.toUserDTO(),
+            creationUserId = creationUser?.id,
+            updateUserId = updateUser?.id,
         )
     }
 
     private fun PersonDTO.toPerson(): Person {
+        val person = personRepository.findById(id!!)
+
         return when {
             id == null -> {
                 Person(
                     name = name,
                     birthDate = birthDate,
                     phone = phone,
-                    user = user?.toUser()
+                    user = user?.toUser(),
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            personRepository.findById(id!!).isPresent -> {
-                personRepository.findById(id!!).get().copy(
+            person.isPresent -> {
+                person.get().copy(
                     name = name,
                     birthDate = birthDate,
                     phone = phone,
-                    user = user?.toUser()
+                    user = user?.toUser(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -107,7 +114,9 @@ class PersonService(
                     name = name,
                     birthDate = birthDate,
                     phone = phone,
-                    user = user?.toUser()
+                    user = user?.toUser(),
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }
@@ -122,27 +131,34 @@ class PersonService(
             email = email,
             password = password,
             type = type,
-            authenticated = authenticated
+            authenticated = authenticated,
+            creationUserId = creationUser?.id,
+            updateUserId = updateUser?.id,
         )
     }
 
     private fun UserDTO.toUser(): User {
+        val user = userRepository.findById(id!!)
+
         return when {
             id == null -> {
                 User(
                     email = email,
                     password = password,
                     type = type,
-                    active = active
+                    active = active,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            userRepository.findById(id!!).isPresent -> {
-                userRepository.findById(id!!).get().copy(
+            user.isPresent -> {
+                user.get().copy(
                     email = email,
                     password = password,
                     type = type,
-                    active = active
+                    active = active,
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -152,7 +168,9 @@ class PersonService(
                     email = email,
                     password = password,
                     type = type,
-                    active = active
+                    active = active,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

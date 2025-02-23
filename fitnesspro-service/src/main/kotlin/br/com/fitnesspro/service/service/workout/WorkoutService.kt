@@ -3,6 +3,7 @@ package br.com.fitnesspro.service.service.workout
 import br.com.fitnesspro.service.models.workout.Workout
 import br.com.fitnesspro.service.models.workout.WorkoutGroup
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
+import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.service.repository.workout.IWorkoutGroupRepository
 import br.com.fitnesspro.service.repository.workout.IWorkoutRepository
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Service
 class WorkoutService(
     private val workoutRepository: IWorkoutRepository,
     private val workoutGroupRepository: IWorkoutGroupRepository,
-    private val personRepository: IPersonRepository
+    private val personRepository: IPersonRepository,
+    private val userRepository: IUserRepository
 ) {
 
     fun saveWorkout(workout: WorkoutDTO) {
@@ -33,6 +35,8 @@ class WorkoutService(
     }
 
     private fun WorkoutDTO.toWorkout(): Workout {
+        val workout = workoutRepository.findById(id!!)
+
         return when {
             id == null -> {
                 Workout(
@@ -40,17 +44,20 @@ class WorkoutService(
                     academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     dateStart = dateStart,
-                    dateEnd = dateEnd
+                    dateEnd = dateEnd,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            workoutRepository.findById(id!!).isPresent -> {
-                workoutRepository.findById(id!!).get().copy(
+            workout.isPresent -> {
+                workout.get().copy(
                     active = active,
                     academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     dateStart = dateStart,
-                    dateEnd = dateEnd
+                    dateEnd = dateEnd,
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -61,25 +68,50 @@ class WorkoutService(
                     academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     dateStart = dateStart,
-                    dateEnd = dateEnd
+                    dateEnd = dateEnd,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }
     }
 
     private fun WorkoutGroupDTO.toWorkoutGroup(): WorkoutGroup {
-        return id?.let {
-            workoutGroupRepository.findById(it).get().copy(
-                active = active,
-                name = name!!,
-                workout = workoutRepository.findById(workoutId!!).get(),
-                dayWeek = dayWeek!!
-            )
-        } ?: WorkoutGroup(
-            active = active,
-            name = name!!,
-            workout = workoutRepository.findById(workoutId!!).get(),
-            dayWeek = dayWeek!!
-        )
+        val workoutGroup = workoutGroupRepository.findById(id!!)
+
+        return when {
+            id == null -> {
+                WorkoutGroup(
+                    active = active,
+                    name = name!!,
+                    workout = workoutRepository.findById(workoutId!!).get(),
+                    dayWeek = dayWeek!!,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
+                )
+            }
+
+            workoutGroup.isPresent -> {
+                workoutGroup.get().copy(
+                    active = active,
+                    name = name!!,
+                    workout = workoutRepository.findById(workoutId!!).get(),
+                    dayWeek = dayWeek!!,
+                    updateUser = userRepository.findById(updateUserId!!).get()
+                )
+            }
+
+            else -> {
+                WorkoutGroup(
+                    id = id!!,
+                    active = active,
+                    name = name!!,
+                    workout = workoutRepository.findById(workoutId!!).get(),
+                    dayWeek = dayWeek!!,
+                    creationUser = userRepository.findById(creationUserId!!).get(),
+                    updateUser = userRepository.findById(updateUserId!!).get()
+                )
+            }
+        }
     }
 }
