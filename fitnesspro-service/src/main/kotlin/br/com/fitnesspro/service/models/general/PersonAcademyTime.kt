@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import jakarta.persistence.*
 import java.time.DayOfWeek
@@ -57,4 +58,4 @@ data class PersonAcademyTime(
 
     @Column(name = "day_week", nullable = false)
     var dayOfWeek: DayOfWeek? = null,
-): IntegratedModel()
+): IntegratedModel, AuditableModel

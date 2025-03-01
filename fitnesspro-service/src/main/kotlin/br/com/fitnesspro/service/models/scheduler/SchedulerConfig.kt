@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.scheduler
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
@@ -54,4 +55,4 @@ data class SchedulerConfig(
     @OneToOne
     @JoinColumn(name = "person_id", nullable = false)
     var person: Person? = null
-): IntegratedModel()
+): IntegratedModel, AuditableModel

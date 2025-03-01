@@ -1,11 +1,14 @@
 package br.com.fitnesspro.service.service.logs
 
-import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType.*
 import br.com.fitnesspro.service.models.executions.ExecutionLog
+import br.com.fitnesspro.service.repository.executions.ICustomExecutionsLogRepository
 import br.com.fitnesspro.service.repository.executions.IExecutionsLogRepository
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
+import br.com.fitnesspro.shared.communication.filter.ExecutionLogsFilter
+import br.com.fitnesspro.shared.communication.paging.PageInfos
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
@@ -13,7 +16,8 @@ import java.time.LocalDateTime
 
 @Service
 class ExecutionsLogService(
-    private val logRepository: IExecutionsLogRepository
+    private val logRepository: IExecutionsLogRepository,
+    private val customLogRepository: ICustomExecutionsLogRepository
 ) {
 
     fun saveLogPreHandle(request: HttpServletRequest) {
@@ -62,8 +66,12 @@ class ExecutionsLogService(
         logRepository.save(log)
     }
 
-    fun getAllLogs(): List<ExecutionLogDTO> {
-        return logRepository.findAll().map { it.toExecutionLogDTO() }
+    fun getListExecutionLog(filter: ExecutionLogsFilter, pageInfos: PageInfos): List<ExecutionLogDTO> {
+        return customLogRepository.getListExecutionLog(filter, pageInfos).map { it.toExecutionLogDTO() }
+    }
+
+    fun getCountListExecutionLog(filter: ExecutionLogsFilter): Int {
+        return customLogRepository.getCountListExecutionLog(filter)
     }
 
     private fun ExecutionLog.toExecutionLogDTO(): ExecutionLogDTO {

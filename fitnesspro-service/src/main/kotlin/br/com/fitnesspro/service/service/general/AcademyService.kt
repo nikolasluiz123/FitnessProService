@@ -82,13 +82,15 @@ class AcademyService(
     }
 
     private fun AcademyDTO.toAcademy(): Academy {
-        return academyRepository.findById(id!!).getOrNull()?.copy(
-            name = name,
-            phone = phone,
-            address = address,
-            active = active,
-            updateUser = userRepository.findById(updateUserId!!).get(),
-        ) ?: Academy(
+        return id?.let {
+            academyRepository.findById(it).getOrNull()?.copy(
+                name = name,
+                phone = phone,
+                address = address,
+                active = active,
+                updateUser = userRepository.findById(updateUserId!!).get(),
+            )
+        } ?: Academy(
             name = name,
             phone = phone,
             address = address,
@@ -99,7 +101,7 @@ class AcademyService(
     }
 
     private fun PersonAcademyTimeDTO.toPersonAcademyTime(): PersonAcademyTime {
-        val personAcademyTime = personAcademyTimeRepository.findById(id!!)
+        val personAcademyTime = id?.let { personAcademyTimeRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -115,8 +117,8 @@ class AcademyService(
                 )
             }
 
-            personAcademyTime.isPresent -> {
-                personAcademyTime.get().copy(
+            personAcademyTime?.isPresent ?: false -> {
+                personAcademyTime!!.get().copy(
                     person = personRepository.findById(personId!!).get(),
                     academy = academyRepository.findById(academyId!!).get(),
                     timeStart = timeStart,

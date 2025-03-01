@@ -265,7 +265,7 @@ class SchedulerService(
     }
 
     private fun SchedulerDTO.toScheduler(): Scheduler {
-        val scheduler = schedulerRepository.findById(id!!)
+        val scheduler = id?.let { schedulerRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -284,8 +284,8 @@ class SchedulerService(
                 )
             }
 
-            scheduler.isPresent -> {
-                scheduler.get().copy(
+            scheduler?.isPresent ?: false -> {
+                scheduler!!.get().copy(
                     academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     scheduledDate = scheduledDate,
@@ -319,7 +319,7 @@ class SchedulerService(
     }
 
     private fun SchedulerConfigDTO.toSchedulerConfig(): SchedulerConfig {
-        val schedulerConfig = schedulerConfigRepository.findById(id!!)
+        val schedulerConfig = id?.let { schedulerConfigRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -335,8 +335,8 @@ class SchedulerService(
                 )
             }
 
-            schedulerConfig.isPresent -> {
-                schedulerConfig.get().copy(
+            schedulerConfig?.isPresent ?: false -> {
+                schedulerConfig!!.get().copy(
                     active = active,
                     alarm = alarm,
                     notification = notification,

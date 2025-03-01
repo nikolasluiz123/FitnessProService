@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.workout
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.User
 import jakarta.persistence.*
@@ -49,4 +50,4 @@ data class WorkoutGroup(
 
     @Column(name = "day_week", nullable = false)
     var dayWeek: DayOfWeek? = null,
-) : IntegratedModel()
+) : IntegratedModel, AuditableModel

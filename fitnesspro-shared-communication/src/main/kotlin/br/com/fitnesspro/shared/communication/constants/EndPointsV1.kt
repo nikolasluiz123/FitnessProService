@@ -38,5 +38,7 @@ object EndPointsV1 {
     const val WORKOUT_GROUP_EXPORT = "/group/export"
     const val WORKOUT_GROUP_IMPORT = "/group/import"
 
-    const val LOGS_V1 = "$API_V1/logs"
+    const val LOGS = "logs"
+    const val LOGS_V1 = "$API_V1/$LOGS"
+    const val LOGS_COUNT = "/count"
 }

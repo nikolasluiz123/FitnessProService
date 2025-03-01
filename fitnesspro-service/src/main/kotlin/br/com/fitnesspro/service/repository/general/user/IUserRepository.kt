@@ -1,13 +1,29 @@
 package br.com.fitnesspro.service.repository.general.user
 
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.models.general.User
-import br.com.fitnesspro.service.repository.common.IAuditableFitnessProRepository
+import br.com.fitnesspro.service.repository.common.IFitnessProServiceRepository
 
-interface IUserRepository:
-    br.com.fitnesspro.service.repository.common.IAuditableFitnessProRepository<br.com.fitnesspro.service.models.general.User> {
+interface IUserRepository: IFitnessProServiceRepository<User> {
 
-    fun findByEmailAndPassword(email: String, password: String): br.com.fitnesspro.service.models.general.User?
+    override fun <S : User?> save(entity: S & Any): S & Any {
+        entity.updateDate = dateTimeNow()
 
-    fun findByEmail(email: String): br.com.fitnesspro.service.models.general.User?
+        return saveAndFlush(entity)
+    }
+
+    override fun <S : User> saveAll(entities: Iterable<S>): List<S> {
+        val entitiesList = entities.toList()
+
+        entitiesList.forEach { entity ->
+            entity.updateDate = dateTimeNow()
+        }
+
+        return saveAllAndFlush(entitiesList)
+    }
+    
+    fun findByEmailAndPassword(email: String, password: String): User?
+
+    fun findByEmail(email: String): User?
 
 }

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.workout
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
@@ -55,4 +56,4 @@ data class Workout(
 
     @Column(name = "date_end", nullable = false)
     var dateEnd: LocalDate? = null,
-) : IntegratedModel()
+) : IntegratedModel, AuditableModel

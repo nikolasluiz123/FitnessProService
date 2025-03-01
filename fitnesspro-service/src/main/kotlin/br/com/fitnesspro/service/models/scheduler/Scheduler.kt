@@ -3,6 +3,7 @@ package br.com.fitnesspro.service.models.scheduler
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
+import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
@@ -73,4 +74,4 @@ data class Scheduler(
 
     @Column(length = 4096)
     var observation: String? = null
-): IntegratedModel()
+): IntegratedModel, AuditableModel

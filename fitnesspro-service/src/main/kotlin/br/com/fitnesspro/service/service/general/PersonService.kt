@@ -78,13 +78,11 @@ class PersonService(
             birthDate = birthDate,
             phone = phone,
             user = user?.toUserDTO(),
-            creationUserId = creationUser?.id,
-            updateUserId = updateUser?.id,
         )
     }
 
     private fun PersonDTO.toPerson(): Person {
-        val person = personRepository.findById(id!!)
+        val person = id?.let { personRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -93,18 +91,15 @@ class PersonService(
                     birthDate = birthDate,
                     phone = phone,
                     user = user?.toUser(),
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            person.isPresent -> {
-                person.get().copy(
+            person?.isPresent ?: false -> {
+                person!!.get().copy(
                     name = name,
                     birthDate = birthDate,
                     phone = phone,
                     user = user?.toUser(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -115,8 +110,6 @@ class PersonService(
                     birthDate = birthDate,
                     phone = phone,
                     user = user?.toUser(),
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }
@@ -132,13 +125,11 @@ class PersonService(
             password = password,
             type = type,
             authenticated = authenticated,
-            creationUserId = creationUser?.id,
-            updateUserId = updateUser?.id,
         )
     }
 
     private fun UserDTO.toUser(): User {
-        val user = userRepository.findById(id!!)
+        val user = id?.let { userRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -147,18 +138,15 @@ class PersonService(
                     password = password,
                     type = type,
                     active = active,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
-            user.isPresent -> {
-                user.get().copy(
+            user?.isPresent ?: false -> {
+                user!!.get().copy(
                     email = email,
                     password = password,
                     type = type,
                     active = active,
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -169,8 +157,6 @@ class PersonService(
                     password = password,
                     type = type,
                     active = active,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

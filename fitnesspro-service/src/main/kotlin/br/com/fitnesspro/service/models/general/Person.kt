@@ -12,8 +12,6 @@ import java.util.*
     name = "person",
     indexes = [
         Index(name = "idx_person_user_id", columnList = "user_id"),
-        Index(name = "idx_person_creation_user_id", columnList = "creation_user_id"),
-        Index(name = "idx_person_update_user_id", columnList = "update_user_id")
     ]
 )
 data class Person(
@@ -23,21 +21,13 @@ data class Person(
     override var active: Boolean = true,
 
     @Column(name = "creation_date", nullable = false)
-    override var creationDate: LocalDateTime = dateTimeNow(),
+    var creationDate: LocalDateTime = dateTimeNow(),
 
     @Column(name = "update_date", nullable = false)
-    override var updateDate: LocalDateTime = dateTimeNow(),
+    var updateDate: LocalDateTime = dateTimeNow(),
 
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
-
-    @ManyToOne
-    @JoinColumn(name = "creation_user_id", nullable = false)
-    override var creationUser: User? = null,
-
-    @ManyToOne
-    @JoinColumn(name = "update_user_id", nullable = false)
-    override var updateUser: User? = null,
 
     @Column(nullable = false, length = 512)
     var name: String? = null,
@@ -51,4 +41,4 @@ data class Person(
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     var user: User? = null
-): IntegratedModel()
+): IntegratedModel

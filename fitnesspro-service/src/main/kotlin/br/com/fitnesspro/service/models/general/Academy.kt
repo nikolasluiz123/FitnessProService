@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
+import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -45,4 +46,4 @@ data class Academy(
 
     @Column(length = 11)
     var phone: String? = null,
-): IntegratedModel()
+): IntegratedModel, AuditableModel

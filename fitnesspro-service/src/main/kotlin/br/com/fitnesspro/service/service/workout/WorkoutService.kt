@@ -35,7 +35,7 @@ class WorkoutService(
     }
 
     private fun WorkoutDTO.toWorkout(): Workout {
-        val workout = workoutRepository.findById(id!!)
+        val workout = id?.let { workoutRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -50,8 +50,8 @@ class WorkoutService(
                 )
             }
 
-            workout.isPresent -> {
-                workout.get().copy(
+            workout?.isPresent ?: false -> {
+                workout!!.get().copy(
                     active = active,
                     academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
@@ -77,7 +77,7 @@ class WorkoutService(
     }
 
     private fun WorkoutGroupDTO.toWorkoutGroup(): WorkoutGroup {
-        val workoutGroup = workoutGroupRepository.findById(id!!)
+        val workoutGroup = id?.let { workoutGroupRepository.findById(it) }
 
         return when {
             id == null -> {
@@ -91,8 +91,8 @@ class WorkoutService(
                 )
             }
 
-            workoutGroup.isPresent -> {
-                workoutGroup.get().copy(
+            workoutGroup?.isPresent ?: false -> {
+                workoutGroup!!.get().copy(
                     active = active,
                     name = name!!,
                     workout = workoutRepository.findById(workoutId!!).get(),
