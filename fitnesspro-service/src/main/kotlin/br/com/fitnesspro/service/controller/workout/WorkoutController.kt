@@ -30,7 +30,7 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkout(@RequestBody @Valid workoutDTO: WorkoutDTO): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkout(workoutDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
@@ -38,7 +38,7 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<WorkoutDTO>): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkoutBatch(workoutDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP)
@@ -46,7 +46,7 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkoutGroup(workoutGroupDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)
@@ -54,6 +54,6 @@ class WorkoutController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupDTO>): ResponseEntity<PersistenceServiceResponse> {
         workoutService.saveWorkoutGroupBatch(workoutGroupList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 }

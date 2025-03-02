@@ -33,7 +33,7 @@ class SchedulerController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveScheduler(schedulerDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
@@ -41,14 +41,14 @@ class SchedulerController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerBatch(schedulerDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfig(schedulerConfigDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
@@ -56,7 +56,7 @@ class SchedulerController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_IMPORT)

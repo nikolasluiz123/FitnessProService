@@ -1,7 +1,6 @@
 package br.com.fitnesspro.shared.communication.responses
 
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDateTime
 
 @Schema(description = "Resposta padrão do serviço de persistência")
 data class PersistenceServiceResponse(
@@ -11,6 +10,4 @@ data class PersistenceServiceResponse(
     override var success: Boolean = false,
     @Schema(description = "Mensagem de erro, caso exista", required = false)
     override var error: String? = null,
-    @Schema(description = "Data de transmissão que foi gerada pelo serviço", required = true)
-    var transmissionDate: LocalDateTime? = null
 ): IFitnessProServiceResponse

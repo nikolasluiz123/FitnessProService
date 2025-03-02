@@ -1,6 +1,5 @@
 package br.com.fitnesspro.service.controller.general
 
-import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.service.general.AcademyService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
@@ -33,7 +32,7 @@ class AcademyController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademy(@RequestBody @Valid academyDTO: AcademyDTO): ResponseEntity<PersistenceServiceResponse> {
         academyService.saveAcademy(academyDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.ACADEMY_EXPORT)
@@ -41,7 +40,7 @@ class AcademyController(
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademyBatch(@RequestBody @Valid academyDTOList: List<AcademyDTO>): ResponseEntity<PersistenceServiceResponse> {
         academyService.saveAcademyBatch(academyDTOList)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, transmissionDate = dateTimeNow()))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.ACADEMY_IMPORT)
