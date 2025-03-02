@@ -43,6 +43,7 @@ class AuthenticationController(
                 AuthenticationServiceResponse(
                     code = HttpStatus.NOT_FOUND.value(),
                     success = false,
+                    error = "Credenciais inválidas, por favor, redigite."
                 )
             )
         }
