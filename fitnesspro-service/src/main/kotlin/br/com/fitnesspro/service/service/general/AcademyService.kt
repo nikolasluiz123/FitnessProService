@@ -88,15 +88,12 @@ class AcademyService(
                 phone = phone,
                 address = address,
                 active = active,
-                updateUser = userRepository.findById(updateUserId!!).get(),
             )
         } ?: Academy(
             name = name,
             phone = phone,
             address = address,
             active = active,
-            creationUser = userRepository.findById(creationUserId!!).get(),
-            updateUser = userRepository.findById(updateUserId!!).get()
         )
     }
 
@@ -112,8 +109,6 @@ class AcademyService(
                     timeEnd = timeEnd,
                     dayOfWeek = dayOfWeek,
                     active = active,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -125,7 +120,6 @@ class AcademyService(
                     timeEnd = timeEnd,
                     dayOfWeek = dayOfWeek,
                     active = active,
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -138,8 +132,6 @@ class AcademyService(
                     timeEnd = timeEnd,
                     dayOfWeek = dayOfWeek,
                     active = active,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

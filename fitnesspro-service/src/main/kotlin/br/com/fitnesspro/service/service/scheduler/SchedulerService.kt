@@ -69,16 +69,12 @@ class SchedulerService(
                     professionalPerson = firstScheduler.professionalPerson,
                     dateStart = firstScheduler.scheduledDate,
                     dateEnd = schedules.last().scheduledDate,
-                    creationUser = firstScheduler.creationUser,
-                    updateUser = firstScheduler.updateUser
                 )
 
                 val workoutGroups = schedules.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
                     WorkoutGroup(
                         dayWeek = it,
                         workout = workout,
-                        creationUser = firstScheduler.creationUser,
-                        updateUser = firstScheduler.updateUser
                     )
                 }
 
@@ -279,8 +275,6 @@ class SchedulerService(
                     situation = situation,
                     compromiseType = compromiseType,
                     observation = observation,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -295,7 +289,6 @@ class SchedulerService(
                     situation = situation,
                     compromiseType = compromiseType,
                     observation = observation,
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -311,8 +304,6 @@ class SchedulerService(
                     situation = situation,
                     compromiseType = compromiseType,
                     observation = observation,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }
@@ -330,8 +321,6 @@ class SchedulerService(
                     minScheduleDensity = minScheduleDensity,
                     maxScheduleDensity = maxScheduleDensity,
                     person = personRepository.findById(personId!!).get(),
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -343,7 +332,6 @@ class SchedulerService(
                     minScheduleDensity = minScheduleDensity,
                     maxScheduleDensity = maxScheduleDensity,
                     person = personRepository.findById(personId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -356,8 +344,6 @@ class SchedulerService(
                     minScheduleDensity = minScheduleDensity,
                     maxScheduleDensity = maxScheduleDensity,
                     person = personRepository.findById(personId!!).get(),
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

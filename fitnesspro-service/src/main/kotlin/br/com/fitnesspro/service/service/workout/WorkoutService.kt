@@ -45,8 +45,6 @@ class WorkoutService(
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     dateStart = dateStart,
                     dateEnd = dateEnd,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -57,7 +55,6 @@ class WorkoutService(
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     dateStart = dateStart,
                     dateEnd = dateEnd,
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -69,8 +66,6 @@ class WorkoutService(
                     professionalPerson = personRepository.findById(professionalPersonId!!).get(),
                     dateStart = dateStart,
                     dateEnd = dateEnd,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }
@@ -86,8 +81,6 @@ class WorkoutService(
                     name = name!!,
                     workout = workoutRepository.findById(workoutId!!).get(),
                     dayWeek = dayWeek!!,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -97,7 +90,6 @@ class WorkoutService(
                     name = name!!,
                     workout = workoutRepository.findById(workoutId!!).get(),
                     dayWeek = dayWeek!!,
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
 
@@ -108,8 +100,6 @@ class WorkoutService(
                     name = name!!,
                     workout = workoutRepository.findById(workoutId!!).get(),
                     dayWeek = dayWeek!!,
-                    creationUser = userRepository.findById(creationUserId!!).get(),
-                    updateUser = userRepository.findById(updateUserId!!).get()
                 )
             }
         }

@@ -15,8 +15,6 @@ import java.util.*
     indexes = [
         Index(name = "idx_person_academy_time_person_id", columnList = "person_id"),
         Index(name = "idx_person_academy_time_academy_id", columnList = "academy_id"),
-        Index(name = "idx_person_academy_time_creation_user_id", columnList = "creation_user_id"),
-        Index(name = "idx_person_academy_time_update_user_id", columnList = "update_user_id")
     ]
 )
 data class PersonAcademyTime(
@@ -33,14 +31,6 @@ data class PersonAcademyTime(
 
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
-
-    @ManyToOne
-    @JoinColumn(name = "creation_user_id", nullable = false)
-    override var creationUser: User? = null,
-
-    @ManyToOne
-    @JoinColumn(name = "update_user_id", nullable = false)
-    override var updateUser: User? = null,
 
     @ManyToOne
     @JoinColumn(name = "person_id", nullable = false)

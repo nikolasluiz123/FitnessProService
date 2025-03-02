@@ -19,8 +19,6 @@ import java.util.*
     indexes = [
         Index(name = "idx_scheduler_academy_member_person_id", columnList = "academy_member_person_id"),
         Index(name = "idx_scheduler_professional_person_id", columnList = "professional_person_id"),
-        Index(name = "idx_scheduler_creation_user_id", columnList = "creation_user_id"),
-        Index(name = "idx_scheduler_update_user_id", columnList = "update_user_id")
     ]
 )
 data class Scheduler(
@@ -37,14 +35,6 @@ data class Scheduler(
 
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
-
-    @ManyToOne
-    @JoinColumn(name = "creation_user_id", nullable = false)
-    override var creationUser: User? = null,
-
-    @ManyToOne
-    @JoinColumn(name = "update_user_id", nullable = false)
-    override var updateUser: User? = null,
 
     @ManyToOne
     @JoinColumn(name = "academy_member_person_id", nullable = false)

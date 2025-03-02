@@ -19,12 +19,6 @@ data class PersonDTO(
     @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
 
-    @Schema(description = "Usuário que criou o registro", required = false)
-    override var creationUserId: String? = null,
-
-    @Schema(description = "Usuário que atualizou o registro", required = false)
-    override var updateUserId: String? = null,
-
     @Schema(description = "Nome", example = "João da Silva", required = true)
     @field:Size(min = 1, max = 512, message = "O nome deve ter entre 1 e 512 caracteres")
     var name: String? = null,
