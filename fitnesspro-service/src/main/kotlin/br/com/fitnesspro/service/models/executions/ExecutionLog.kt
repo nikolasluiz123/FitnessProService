@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.models.executions
 
-import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
@@ -32,6 +32,9 @@ data class ExecutionLog(
 
     @Column(name = "end_point", nullable = false)
     var endPoint: String? = null,
+
+    @Column(name = "method_name")
+    var methodName: String? = null,
 
     @Column(name = "request_body", columnDefinition = "TEXT")
     var requestBody: String? = null,

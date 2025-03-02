@@ -12,6 +12,7 @@ import br.com.fitnesspro.shared.communication.paging.PageInfos
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
+import org.springframework.web.method.HandlerMethod
 import java.time.LocalDateTime
 
 @Service
@@ -20,12 +21,13 @@ class ExecutionsLogService(
     private val customLogRepository: ICustomExecutionsLogRepository
 ) {
 
-    fun saveLogPreHandle(request: HttpServletRequest) {
+    fun saveLogPreHandle(request: HttpServletRequest, handler: HandlerMethod) {
         val log = ExecutionLog(
             type = getExecutionType(request.method, request.requestURI),
             executionStart = LocalDateTime.now(),
             endPoint = request.requestURI,
-            state = EnumExecutionState.RUNNING
+            state = EnumExecutionState.RUNNING,
+            methodName = handler.method.name
         )
 
         request.setAttribute("logId", log.id)
@@ -83,7 +85,8 @@ class ExecutionsLogService(
             executionEnd = executionEnd,
             endPoint = endPoint,
             requestBody = requestBody,
-            error = error
+            error = error,
+            methodName = methodName
         )
     }
 }

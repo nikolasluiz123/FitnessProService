@@ -4,6 +4,7 @@ import br.com.fitnesspro.service.service.logs.ExecutionsLogService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Component
+import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 
 @Component
@@ -16,7 +17,9 @@ class LoggingInterceptor(
         response: HttpServletResponse,
         handler: Any
     ): Boolean {
-        logService.saveLogPreHandle(request)
+        if (handler is HandlerMethod) {
+            logService.saveLogPreHandle(request, handler)
+        }
         return true
     }
 

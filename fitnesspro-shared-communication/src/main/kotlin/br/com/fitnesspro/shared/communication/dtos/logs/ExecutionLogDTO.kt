@@ -1,8 +1,8 @@
 package br.com.fitnesspro.shared.communication.dtos.logs
 
+import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
-import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -22,8 +22,11 @@ data class ExecutionLogDTO(
     @Schema(description = "Data que a execução terminou", required = false, readOnly = true)
     val executionEnd: LocalDateTime? = null,
 
-    @Schema(description = "End poin que foi chamado", required = true, readOnly = true)
+    @Schema(description = "End point que foi chamado", required = true, readOnly = true)
     val endPoint: String? = null,
+
+    @Schema(description = "Nome do método da classe Controller que foi invocado", required = true, readOnly = true)
+    val methodName: String? = null,
 
     @Schema(description = "Request body enviado na requisição", required = false, readOnly = true)
     val requestBody: String? = null,
