@@ -45,7 +45,7 @@ data class UserDTO(
     @field:NotNull(message = "O tipo de usuário é obrigatório")
     var type: EnumUserType? = null,
 
-    @Schema(description = "Valor booleano que representa se o usuário está autenticado", required = true)
+    @Schema(description = "Valor booleano que representa se o usuário está autenticado", required = true, readOnly = true)
     @field:NotNull(message = "O campo autenticado é obrigatório")
     var authenticated: Boolean = false,
 ): AuditableDTO

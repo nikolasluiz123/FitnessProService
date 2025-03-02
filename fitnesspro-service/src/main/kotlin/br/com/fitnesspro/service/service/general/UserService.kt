@@ -2,7 +2,7 @@ package br.com.fitnesspro.service.service.general
 
 import br.com.fitnesspro.core.helper.HashHelper
 import br.com.fitnesspro.service.config.application.JWTService
-import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.service.exception.UserNotFoundException
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
 import org.springframework.stereotype.Service
@@ -23,7 +23,7 @@ class UserService(
             userRepository.save(user)
 
             jwtService.generateToken(user)
-        } ?: throw BusinessException("Usuário não encontrado")
+        } ?: throw UserNotFoundException("Usuário não encontrado")
     }
 
     fun logout(authenticationDTO: AuthenticationDTO) {

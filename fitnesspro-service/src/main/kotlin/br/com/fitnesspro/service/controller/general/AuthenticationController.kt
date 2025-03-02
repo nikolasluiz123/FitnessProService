@@ -1,5 +1,6 @@
 package br.com.fitnesspro.service.controller.general
 
+import br.com.fitnesspro.service.exception.UserNotFoundException
 import br.com.fitnesspro.service.service.general.UserService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
@@ -27,15 +28,24 @@ class AuthenticationController(
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGIN)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun login(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
-        val token = userService.login(authenticationDTO)
+        return try {
+            val token = userService.login(authenticationDTO)
 
-        return ResponseEntity.ok(
-            AuthenticationServiceResponse(
-                code = HttpStatus.OK.value(),
-                success = true,
-                token = token
+            ResponseEntity.ok(
+                AuthenticationServiceResponse(
+                    code = HttpStatus.OK.value(),
+                    success = true,
+                    token = token
+                )
             )
-        )
+        } catch (exception: UserNotFoundException) {
+            ResponseEntity.ok(
+                AuthenticationServiceResponse(
+                    code = HttpStatus.NOT_FOUND.value(),
+                    success = false,
+                )
+            )
+        }
     }
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGOUT)
