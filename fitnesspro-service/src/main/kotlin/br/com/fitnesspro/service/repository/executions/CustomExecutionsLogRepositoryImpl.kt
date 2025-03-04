@@ -29,7 +29,10 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         val where = getWhereListExecutionLog(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by log.executionStart desc ")
+            val sortField = filter.sort?.field!!
+            val order = if (filter.sort?.asc!!) "asc" else "desc"
+
+            add(" order by log.$sortField $order ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
