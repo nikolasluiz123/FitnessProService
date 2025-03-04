@@ -16,6 +16,8 @@ object EndPointsV1 {
     const val ACADEMY_V1 = "$API_V1/$ACADEMY"
     const val ACADEMY_EXPORT = "/export"
     const val ACADEMY_IMPORT = "/import"
+    const val ACADEMY_LIST = "/list"
+    const val ACADEMY_COUNT = "/count"
 
     const val AUTHENTICATION = "authentication"
     const val AUTHENTICATION_V1 = "$API_V1/$AUTHENTICATION"

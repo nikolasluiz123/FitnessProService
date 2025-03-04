@@ -10,4 +10,5 @@ data class PersistenceServiceResponse(
     override var success: Boolean = false,
     @Schema(description = "Mensagem de erro, caso exista", required = false)
     override var error: String? = null,
+    val id: String? = null,
 ): IFitnessProServiceResponse

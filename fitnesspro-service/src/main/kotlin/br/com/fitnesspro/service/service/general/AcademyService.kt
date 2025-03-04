@@ -11,10 +11,11 @@ import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyReposi
 import br.com.fitnesspro.service.repository.general.person.ICustomPersonAcademyTimeRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonAcademyTimeRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
-import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
+import br.com.fitnesspro.shared.communication.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
@@ -25,8 +26,7 @@ class AcademyService(
     private val customPersonAcademyTimeRepository: ICustomPersonAcademyTimeRepository,
     private val academyRepository: IAcademyRepository,
     private val customAcademyRepository: ICustomAcademyRepository,
-    private val personRepository: IPersonRepository,
-    private val userRepository: IUserRepository
+    private val personRepository: IPersonRepository
 ) {
 
     fun savePersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO) {
@@ -61,6 +61,8 @@ class AcademyService(
     fun saveAcademy(academyDTO: AcademyDTO) {
         val academy = academyDTO.toAcademy()
         academyRepository.save(academy)
+
+        academyDTO.id = academy.id
     }
 
     fun saveAcademyBatch(academyDTOList: List<AcademyDTO>) {
@@ -81,6 +83,14 @@ class AcademyService(
         return customAcademyRepository.getAcademiesImport(filter, pageInfos)
     }
 
+    fun getListAcademy(filter: AcademyFilter, pageInfos: CommonPageInfos): List<AcademyDTO> {
+        return customAcademyRepository.getListAcademy(filter, pageInfos).map { it.toAcademyDTO() }
+    }
+
+    fun getCountListAcademy(filter: AcademyFilter): Int {
+        return customAcademyRepository.getCountListAcademy(filter)
+    }
+
     private fun AcademyDTO.toAcademy(): Academy {
         return id?.let {
             academyRepository.findById(it).getOrNull()?.copy(
@@ -90,6 +100,18 @@ class AcademyService(
                 active = active,
             )
         } ?: Academy(
+            name = name,
+            phone = phone,
+            address = address,
+            active = active,
+        )
+    }
+
+    private fun Academy.toAcademyDTO(): AcademyDTO {
+        return AcademyDTO(
+            id = id,
+            creationDate = creationDate,
+            updateDate = updateDate,
             name = name,
             phone = phone,
             address = address,
