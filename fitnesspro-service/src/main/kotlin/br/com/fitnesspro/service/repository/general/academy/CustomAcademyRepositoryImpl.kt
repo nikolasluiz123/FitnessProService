@@ -156,6 +156,10 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
                 add(" and a.address like :address ")
                 queryParams.add(Parameter(name = "address", value = "%$it%"))
             }
+
+            if(filter.onlyActives) {
+                add(" and a.active = true ")
+            }
         }
     }
 
