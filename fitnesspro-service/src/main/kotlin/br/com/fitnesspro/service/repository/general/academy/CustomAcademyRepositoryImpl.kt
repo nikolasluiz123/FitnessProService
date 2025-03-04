@@ -118,7 +118,10 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         val where = getWhereListAcademy(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by a.name ")
+            val sortField = filter.sort?.field!!
+            val order = if (filter.sort?.asc!!) "asc" else "desc"
+
+            add(" order by a.$sortField $order ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
