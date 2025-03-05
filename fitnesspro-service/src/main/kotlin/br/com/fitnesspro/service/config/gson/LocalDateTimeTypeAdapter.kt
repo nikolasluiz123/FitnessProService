@@ -1,16 +1,16 @@
-package br.com.fitnesspro.service.config.advice.gson.adapter
+package br.com.fitnesspro.service.config.gson
 
 import com.google.gson.*
 import java.lang.reflect.Type
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class LocalDateTypeAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+class LocalDateTimeTypeAdapter : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
 
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun serialize(
-        src: LocalDate?,
+        src: LocalDateTime?,
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
@@ -21,7 +21,7 @@ class LocalDateTypeAdapter : JsonSerializer<LocalDate>, JsonDeserializer<LocalDa
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): LocalDate {
-        return LocalDate.parse(json?.asString, formatter)
+    ): LocalDateTime {
+        return LocalDateTime.parse(json?.asString, formatter)
     }
 }

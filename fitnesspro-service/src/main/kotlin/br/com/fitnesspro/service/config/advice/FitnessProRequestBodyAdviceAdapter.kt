@@ -1,8 +1,8 @@
 package br.com.fitnesspro.service.config.advice
 
-import br.com.fitnesspro.service.config.advice.gson.adapter.LocalDateTimeTypeAdapter
-import br.com.fitnesspro.service.config.advice.gson.adapter.LocalDateTypeAdapter
-import br.com.fitnesspro.service.config.advice.gson.adapter.LocalTimeTypeAdapter
+import br.com.fitnesspro.service.config.gson.LocalDateTimeTypeAdapter
+import br.com.fitnesspro.service.config.gson.LocalDateTypeAdapter
+import br.com.fitnesspro.service.config.gson.LocalTimeTypeAdapter
 import com.google.gson.GsonBuilder
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpInputMessage

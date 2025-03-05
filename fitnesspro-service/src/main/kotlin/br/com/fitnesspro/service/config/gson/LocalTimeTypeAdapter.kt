@@ -1,4 +1,4 @@
-package br.com.fitnesspro.service.config.advice.gson.adapter
+package br.com.fitnesspro.service.config.gson
 
 import com.google.gson.*
 import java.lang.reflect.Type
