@@ -16,11 +16,17 @@ data class ExecutionLogDTO(
     @Schema(description = "Estado da execução", required = true, readOnly = true)
     val state: EnumExecutionState? = null,
 
-    @Schema(description = "Data que a execução começou", required = true, readOnly = true)
-    val executionStart: LocalDateTime? = null,
+    @Schema(description = "Momento que o serviço começou a executar a operação", required = true, readOnly = true)
+    val serviceExecutionStart: LocalDateTime? = null,
 
-    @Schema(description = "Data que a execução terminou", required = false, readOnly = true)
-    val executionEnd: LocalDateTime? = null,
+    @Schema(description = "Momento que o serviço terminou de executar a operação", required = false, readOnly = true)
+    val serviceExecutionEnd: LocalDateTime? = null,
+
+    @Schema(description = "Momento que o client começou a executar a operação. Nem toda execução vai registrar isso.", required = false, readOnly = true)
+    var clientExecutionStart: LocalDateTime? = null,
+
+    @Schema(description = "Momento que o client terminou de executar a operação. Nem toda execução vai registrar isso.", required = false, readOnly = true)
+    var clientExecutionEnd: LocalDateTime? = null,
 
     @Schema(description = "End point que foi chamado", required = true, readOnly = true)
     val endPoint: String? = null,

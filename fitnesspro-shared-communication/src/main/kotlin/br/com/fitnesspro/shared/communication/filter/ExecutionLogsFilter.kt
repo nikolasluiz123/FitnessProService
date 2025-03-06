@@ -8,7 +8,9 @@ data class ExecutionLogsFilter(
     var type: EnumExecutionType? = null,
     var state: EnumExecutionState? = null,
     var endPoint: String? = null,
-    var executionStart: Pair<LocalDateTime, LocalDateTime>? = null,
-    var executionEnd: Pair<LocalDateTime, LocalDateTime>? = null,
+    var serviceExecutionStart: Pair<LocalDateTime, LocalDateTime>? = null,
+    var serviceExecutionEnd: Pair<LocalDateTime, LocalDateTime>? = null,
+    var clientExecutionStart: Pair<LocalDateTime, LocalDateTime>? = null,
+    var clientExecutionEnd: Pair<LocalDateTime, LocalDateTime>? = null,
     var sort: Sort? = null
 )

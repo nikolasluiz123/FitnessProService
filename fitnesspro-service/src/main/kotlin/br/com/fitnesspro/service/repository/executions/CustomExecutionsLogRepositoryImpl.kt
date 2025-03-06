@@ -79,16 +79,28 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
                 queryParams.add(Parameter(name = "endPoint", value = "%$it%"))
             }
 
-            filter.executionStart?.let {
-                add(" and log.executionStart between :startExecutionStart and :endExecutionStart ")
-                queryParams.add(Parameter(name = "startExecutionStart", value = it.first))
-                queryParams.add(Parameter(name = "endExecutionStart", value = it.second))
+            filter.serviceExecutionStart?.let {
+                add(" and log.serviceExecutionStart between :startServiceExecutionStart and :endServiceExecutionStart ")
+                queryParams.add(Parameter(name = "startServiceExecutionStart", value = it.first))
+                queryParams.add(Parameter(name = "endServiceExecutionStart", value = it.second))
             }
 
-            filter.executionEnd?.let {
-                add(" and log.executionEnd between :startExecutionEnd and :endExecutionEnd ")
-                queryParams.add(Parameter(name = "startExecutionEnd", value = it.first))
-                queryParams.add(Parameter(name = "endExecutionEnd", value = it.second))
+            filter.serviceExecutionEnd?.let {
+                add(" and log.serviceExecutionEnd between :startServiceExecutionEnd and :endServiceExecutionEnd ")
+                queryParams.add(Parameter(name = "startServiceExecutionEnd", value = it.first))
+                queryParams.add(Parameter(name = "endServiceExecutionEnd", value = it.second))
+            }
+
+            filter.clientExecutionStart?.let {
+                add(" and log.clientExecutionStart between :startClientExecutionStart and :endClientExecutionStart ")
+                queryParams.add(Parameter(name = "startClientExecutionStart", value = it.first))
+                queryParams.add(Parameter(name = "endClientExecutionStart", value = it.second))
+            }
+
+            filter.clientExecutionEnd?.let {
+                add(" and log.clientExecutionEnd between :startClientExecutionEnd and :endClientExecutionEnd ")
+                queryParams.add(Parameter(name = "startClientExecutionEnd", value = it.first))
+                queryParams.add(Parameter(name = "endClientExecutionEnd", value = it.second))
             }
         }
     }

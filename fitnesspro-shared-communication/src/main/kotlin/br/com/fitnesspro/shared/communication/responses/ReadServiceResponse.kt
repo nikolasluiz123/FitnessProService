@@ -3,7 +3,7 @@ package br.com.fitnesspro.shared.communication.responses
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "Resposta padrão do serviço de consultas")
-class ReadServiceResponse<DTO>(
+open class ReadServiceResponse<DTO>(
     @Schema(description = "Lista dos resultados", required = true)
     var values: List<DTO> = emptyList(),
     @Schema(description = "Código HTTP de resposta da requisição", required = true, example = "200")

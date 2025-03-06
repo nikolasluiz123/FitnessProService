@@ -24,11 +24,17 @@ data class ExecutionLog(
     @Column(nullable = false)
     var state: EnumExecutionState = EnumExecutionState.PENDING,
 
-    @Column(name = "execution_start", nullable = false)
-    var executionStart: LocalDateTime? = null,
+    @Column(name = "service_execution_start", nullable = false)
+    var serviceExecutionStart: LocalDateTime? = null,
 
-    @Column(name = "execution_end")
-    var executionEnd: LocalDateTime? = null,
+    @Column(name = "service_execution_end")
+    var serviceExecutionEnd: LocalDateTime? = null,
+
+    @Column(name = "client_execution_start")
+    var clientExecutionStart: LocalDateTime? = null,
+
+    @Column(name = "client_execution_end")
+    var clientExecutionEnd: LocalDateTime? = null,
 
     @Column(name = "end_point", nullable = false)
     var endPoint: String? = null,

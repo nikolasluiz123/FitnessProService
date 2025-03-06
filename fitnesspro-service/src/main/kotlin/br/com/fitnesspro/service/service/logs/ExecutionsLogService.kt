@@ -6,9 +6,11 @@ import br.com.fitnesspro.service.models.executions.ExecutionLog
 import br.com.fitnesspro.service.repository.executions.ICustomExecutionsLogRepository
 import br.com.fitnesspro.service.repository.executions.IExecutionsLogRepository
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.paging.PageInfos
+import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
@@ -24,7 +26,7 @@ class ExecutionsLogService(
     fun saveLogPreHandle(request: HttpServletRequest, handler: HandlerMethod) {
         val log = ExecutionLog(
             type = getExecutionType(request.method, request.requestURI),
-            executionStart = LocalDateTime.now(),
+            serviceExecutionStart = LocalDateTime.now(),
             endPoint = request.requestURI,
             state = EnumExecutionState.RUNNING,
             methodName = handler.method.name
@@ -54,7 +56,7 @@ class ExecutionsLogService(
         val requestBody = request.getAttribute("logData") as? String
 
         val log = logRepository.findById(logId).orElseThrow()
-        log.executionEnd = LocalDateTime.now()
+        log.serviceExecutionEnd = LocalDateTime.now()
 
         if (ex == null) {
             log.state = EnumExecutionState.FINISHED
@@ -81,12 +83,23 @@ class ExecutionsLogService(
             id = id,
             type = type,
             state = state,
-            executionStart = executionStart,
-            executionEnd = executionEnd,
+            serviceExecutionStart = serviceExecutionStart,
+            serviceExecutionEnd = serviceExecutionEnd,
             endPoint = endPoint,
             requestBody = requestBody,
             error = error,
             methodName = methodName
         )
+    }
+
+    fun updateLogWithClientInformation(id: String, clientInformation: UpdatableExecutionLogInfosDTO) {
+        val log = logRepository.findById(id).orElseThrow {
+            throw EntityNotFoundException("Não foi encontrado um ExecutionLog com o identificador $id")
+        }
+
+        clientInformation.clientExecutionStart?.let { log.clientExecutionStart = it }
+        clientInformation.clientExecutionEnd?.let { log.clientExecutionEnd = it }
+
+        logRepository.save(log)
     }
 }

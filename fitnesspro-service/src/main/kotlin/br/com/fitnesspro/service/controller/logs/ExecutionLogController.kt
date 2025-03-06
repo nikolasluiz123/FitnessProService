@@ -5,8 +5,10 @@ import br.com.fitnesspro.service.service.logs.ExecutionsLogService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import com.google.gson.GsonBuilder
@@ -15,10 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(EndPointsV1.LOGS_V1)
@@ -26,6 +25,14 @@ import org.springframework.web.bind.annotation.RestController
 class ExecutionLogController(
     private val logService: ExecutionsLogService
 ) {
+
+    @PutMapping("/{id}")
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun updateExecutionLog(@PathVariable id: String, @RequestParam clientInformation: UpdatableExecutionLogInfosDTO): ResponseEntity<PersistenceServiceResponse> {
+        logService.updateLogWithClientInformation(id, clientInformation)
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
 
     @GetMapping
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
