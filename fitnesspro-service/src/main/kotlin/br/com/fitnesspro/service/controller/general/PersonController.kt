@@ -48,6 +48,15 @@ class PersonController(
         return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
     }
 
+    @PostMapping(EndPointsV1.PERSON_MOCK)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun savePersonMock(): ResponseEntity<PersistenceServiceResponse> {
+        personService.savePersonMock()
+
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
+
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")

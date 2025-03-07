@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.service.general
 
 import br.com.fitnesspro.core.helper.HashHelper
+import br.com.fitnesspro.models.general.enums.EnumUserType
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
@@ -13,6 +14,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class PersonService(
@@ -160,5 +162,26 @@ class PersonService(
                 )
             }
         }
+    }
+
+    fun savePersonMock() {
+        val persons = mutableListOf<PersonDTO>()
+
+        for (i in 0..50000) {
+            persons.add(
+                PersonDTO(
+                    name = "Academia $i",
+                    phone = "$i",
+                    birthDate = LocalDate.of(2000, 5, 31),
+                    user = UserDTO(
+                        email = "email$i@gmail.com",
+                        password = "123",
+                        type = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST, EnumUserType.ACADEMY_MEMBER).random()
+                    )
+                )
+            )
+        }
+
+        savePersonList(persons)
     }
 }
