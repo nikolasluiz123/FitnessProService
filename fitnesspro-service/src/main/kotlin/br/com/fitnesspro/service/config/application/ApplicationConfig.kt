@@ -49,6 +49,12 @@ class ApplicationConfig(
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(loggingInterceptor)
             .addPathPatterns("/**")
-            .excludePathPatterns("/health-check", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/logs", "/api/v1/logs/**")
+            .excludePathPatterns(
+                "/health-check",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/api/v1/logs",
+                "/api/v1/logs/**",
+                "**/mock")
     }
 }

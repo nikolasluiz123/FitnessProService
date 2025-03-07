@@ -46,6 +46,15 @@ class AcademyController(
         return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
     }
 
+    @PostMapping(EndPointsV1.ACADEMY_MOCK)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun saveMock(): ResponseEntity<PersistenceServiceResponse> {
+        academyService.createMockData()
+
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
+
     @GetMapping(EndPointsV1.ACADEMY_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")

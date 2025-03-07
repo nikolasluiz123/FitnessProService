@@ -158,4 +158,21 @@ class AcademyService(
             }
         }
     }
+
+    fun createMockData() {
+        val academies = mutableListOf<AcademyDTO>()
+
+        for (i in 0..10000) {
+            academies.add(
+                AcademyDTO(
+                    name = "Academia $i",
+                    address = "Endereço $i",
+                    phone = "$i"
+                )
+            )
+        }
+
+        saveAcademyBatch(academies)
+    }
+
 }
