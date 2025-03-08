@@ -40,7 +40,7 @@ class ExecutionLogController(
     fun getListExecutionLog(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<ExecutionLogDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, ExecutionLogsFilter::class.java)
-        val commonPageInfos = defaultGSon.fromJson(filter, CommonPageInfos::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, CommonPageInfos::class.java)
 
         val logs = logService.getListExecutionLog(queryFilter, commonPageInfos)
         return ResponseEntity.ok(ReadServiceResponse(values = logs, code = HttpStatus.OK.value(), success = true))

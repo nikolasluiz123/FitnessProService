@@ -69,7 +69,7 @@ class SchedulerController(
     fun importScheduler(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<SchedulerDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
-        val importPageInfos = defaultGSon.fromJson(filter, ImportPageInfos::class.java)
+        val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = schedulerService.getSchedulesImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute("logId") as String
@@ -82,7 +82,7 @@ class SchedulerController(
     fun importSchedulerConfig(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<SchedulerConfigDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
-        val importPageInfos = defaultGSon.fromJson(filter, ImportPageInfos::class.java)
+        val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = schedulerService.getSchedulerConfigsImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute("logId") as String

@@ -61,7 +61,7 @@ class AcademyController(
     fun importAcademies(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<AcademyDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
-        val importPageInfos = defaultGSon.fromJson(filter, ImportPageInfos::class.java)
+        val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = academyService.getAcademiesImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute("logId") as String
@@ -74,7 +74,7 @@ class AcademyController(
     fun getListAcademy(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<AcademyDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, AcademyFilter::class.java)
-        val commonPageInfos = defaultGSon.fromJson(filter, CommonPageInfos::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, CommonPageInfos::class.java)
 
         val values = academyService.getListAcademy(queryFilter, commonPageInfos)
         return ResponseEntity.ok(ReadServiceResponse(values = values, code = HttpStatus.OK.value(), success = true))

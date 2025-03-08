@@ -81,7 +81,7 @@ class PersonController(
     fun importPersons(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<PersonDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
-        val commonPageInfos = defaultGSon.fromJson(filter, ImportPageInfos::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = personService.getPersonsImport(queryFilter, commonPageInfos)
         val logId = request.getAttribute("logId") as String
@@ -94,7 +94,7 @@ class PersonController(
     fun importUsers(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<UserDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
-        val commonPageInfos = defaultGSon.fromJson(filter, ImportPageInfos::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = personService.getUsersImport(queryFilter, commonPageInfos)
         val logId = request.getAttribute("logId") as String
@@ -107,7 +107,7 @@ class PersonController(
     fun importPersonAcademyTime(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<PersonAcademyTimeDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
-        val commonPageInfos = defaultGSon.fromJson(filter, ImportPageInfos::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = academyService.getPersonAcademyTimesImport(queryFilter, commonPageInfos)
         val logId = request.getAttribute("logId") as String
