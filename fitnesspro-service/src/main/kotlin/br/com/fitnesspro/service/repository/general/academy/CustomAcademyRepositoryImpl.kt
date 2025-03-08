@@ -6,7 +6,6 @@ import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -62,30 +61,22 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         return query.resultList
     }
 
-    override fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
+    override fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<Academy> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select a.id as id, ")
-            add("        a.creation_date as creationDate, ")
-            add("        a.update_date as updateDate, ")
-            add("        a.creation_user_id as creationUserId, ")
-            add("        a.update_user_id as updateUserId, ")
-            add("        a.name as name, ")
-            add("        a.address as address, ")
-            add("        a.phone as phone, ")
-            add("        a.active as active ")
+            add(" select a ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from academy a ")
+            add(" from ${Academy::class.java.name} a ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDate?.let {
-                add(" and a.update_date >= :pLastUpdateDate ")
+                add(" and a.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -96,12 +87,12 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createNativeQuery(sql.toString())
+        val query = entityManager.createQuery(sql.toString(), Academy::class.java)
         query.setParameters(params)
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        val result = query.getResultList(AcademyDTO::class.java)
+        val result = query.getResultList(Academy::class.java)
 
         return result
     }

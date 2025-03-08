@@ -29,7 +29,7 @@ class ExecutionLogController(
     @PutMapping("/{id}")
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun updateExecutionLog(@PathVariable id: String, @RequestParam clientInformation: UpdatableExecutionLogInfosDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun updateExecutionLog(@PathVariable id: String, @RequestBody clientInformation: UpdatableExecutionLogInfosDTO): ResponseEntity<PersistenceServiceResponse> {
         logService.updateLogWithClientInformation(id, clientInformation)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }

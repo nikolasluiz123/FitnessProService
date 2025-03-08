@@ -80,7 +80,7 @@ class AcademyService(
     }
 
     fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
-        return customAcademyRepository.getAcademiesImport(filter, pageInfos)
+        return customAcademyRepository.getAcademiesImport(filter, pageInfos).map { it.toAcademyDTO() }
     }
 
     fun getListAcademy(filter: AcademyFilter, pageInfos: CommonPageInfos): List<AcademyDTO> {

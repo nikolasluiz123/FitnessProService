@@ -2,7 +2,6 @@ package br.com.fitnesspro.service.repository.general.academy
 
 import br.com.fitnesspro.service.models.general.Academy
 import br.com.fitnesspro.service.models.general.PersonAcademyTime
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -17,7 +16,7 @@ interface ICustomAcademyRepository {
         dayOfWeek: DayOfWeek? = null
     ): List<PersonAcademyTime>
 
-    fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO>
+    fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<Academy>
 
     fun getListAcademy(filter: AcademyFilter, pageInfos: PageInfos): List<Academy>
 
