@@ -8,7 +8,7 @@ import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
@@ -45,7 +45,15 @@ class PersonController(
         personService.savePersonList(personDTOList)
 
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @PostMapping(EndPointsV1.PERSON_MOCK)
@@ -72,7 +80,15 @@ class PersonController(
         academyService.savePersonAcademyTimeBatch(personAcademyTimeDTOList)
 
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.PERSON_IMPORT)
@@ -85,7 +101,16 @@ class PersonController(
 
         val values = personService.getPersonsImport(queryFilter, commonPageInfos)
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ImportationServiceResponse(executionLogId = logId, values = values, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.PERSON_USER_IMPORT)
@@ -98,7 +123,16 @@ class PersonController(
 
         val values = personService.getUsersImport(queryFilter, commonPageInfos)
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ImportationServiceResponse(executionLogId = logId, values = values, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.PERSON_ACADEMY_TIME_IMPORT)
@@ -111,7 +145,16 @@ class PersonController(
 
         val values = academyService.getPersonAcademyTimesImport(queryFilter, commonPageInfos)
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ImportationServiceResponse(executionLogId = logId, values = values, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
     }
 
 }

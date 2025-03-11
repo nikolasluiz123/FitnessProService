@@ -2,6 +2,7 @@ package br.com.fitnesspro.shared.communication.responses
 
 class ImportationServiceResponse<DTO>(
     val executionLogId: String,
+    val executionLogPackageId: String,
     values: List<DTO> = emptyList(),
     code: Int = 0,
     success: Boolean = false,

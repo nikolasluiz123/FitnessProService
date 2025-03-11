@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.repository.general.person
 
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import java.time.DayOfWeek

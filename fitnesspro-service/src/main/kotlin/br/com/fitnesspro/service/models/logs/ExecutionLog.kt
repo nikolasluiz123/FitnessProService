@@ -1,6 +1,8 @@
-package br.com.fitnesspro.service.models.executions
+package br.com.fitnesspro.service.models.logs
 
+import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
+import br.com.fitnesspro.service.models.general.User
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -11,6 +13,7 @@ import java.util.*
     indexes = [
         Index(name = "idx_execution_log_type", columnList = "type"),
         Index(name = "idx_execution_log_state", columnList = "state"),
+        Index(name = "idx_execution_log_user_id", columnList = "user_id"),
     ]
 )
 @Entity
@@ -24,27 +27,22 @@ data class ExecutionLog(
     @Column(nullable = false)
     var state: EnumExecutionState = EnumExecutionState.PENDING,
 
-    @Column(name = "service_execution_start", nullable = false)
-    var serviceExecutionStart: LocalDateTime? = null,
-
-    @Column(name = "service_execution_end")
-    var serviceExecutionEnd: LocalDateTime? = null,
-
-    @Column(name = "client_execution_start")
-    var clientExecutionStart: LocalDateTime? = null,
-
-    @Column(name = "client_execution_end")
-    var clientExecutionEnd: LocalDateTime? = null,
-
     @Column(name = "end_point", nullable = false)
     var endPoint: String? = null,
 
     @Column(name = "method_name")
     var methodName: String? = null,
 
-    @Column(name = "request_body", columnDefinition = "TEXT")
-    var requestBody: String? = null,
+    @Column(name = "page_size")
+    var pageSize: Int? = null,
 
-    @Column(name = "error", columnDefinition = "TEXT")
-    var error: String? = null
+    @Column(name = "last_update_date")
+    var lastUpdateDate: LocalDateTime? = null,
+
+    @JoinColumn(name = "user_id", nullable = true)
+    @ManyToOne
+    var user: User? = null,
+
+    @Column(name = "creation_date", nullable = false)
+    var creationDate: LocalDateTime = dateTimeNow()
 )

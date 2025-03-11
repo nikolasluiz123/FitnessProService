@@ -17,7 +17,7 @@ class JWTService {
         private const val SECRET_KEY: String = "5368566B5970337336763979244226452948404D635166546A576E5A71347437"
     }
 
-    fun extractUsername(token: String): String? {
+    fun extractEmail(token: String): String? {
         return extractClaim(token, Claims::getSubject)
     }
 
@@ -49,7 +49,7 @@ class JWTService {
     }
 
     fun isTokenValid(token: String, userDetails: UserDetails): Boolean {
-        val username = extractUsername(token)
+        val username = extractEmail(token)
         return username == userDetails.username && !isTokenExpired(token)
     }
 

@@ -13,8 +13,8 @@ import br.com.fitnesspro.service.repository.general.person.IPersonAcademyTimeRep
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
-import br.com.fitnesspro.shared.communication.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import org.springframework.stereotype.Service

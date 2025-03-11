@@ -5,8 +5,8 @@ import br.com.fitnesspro.service.service.general.AcademyService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
-import br.com.fitnesspro.shared.communication.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.*
@@ -43,7 +43,15 @@ class AcademyController(
         academyService.saveAcademyBatch(academyDTOList)
 
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @PostMapping(EndPointsV1.ACADEMY_MOCK)
@@ -65,7 +73,16 @@ class AcademyController(
 
         val values = academyService.getAcademiesImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ImportationServiceResponse(executionLogId = logId, values = values, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.ACADEMY_LIST)

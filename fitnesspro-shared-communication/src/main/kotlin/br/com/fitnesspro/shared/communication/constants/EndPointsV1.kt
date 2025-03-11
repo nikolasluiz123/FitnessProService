@@ -45,4 +45,6 @@ object EndPointsV1 {
     const val LOGS = "logs"
     const val LOGS_V1 = "$API_V1/$LOGS"
     const val LOGS_COUNT = "/count"
+    const val LOGS_PACKAGE = "/package"
+    const val LOGS_PACKAGE_COUNT = "$LOGS_PACKAGE/count"
 }

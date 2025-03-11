@@ -2,6 +2,7 @@ package br.com.fitnesspro.shared.communication.responses
 
 class ExportationServiceResponse(
     var executionLogId: String,
+    var executionLogPackageId: String,
     code: Int = 0,
     success: Boolean = false,
     error: String? = null,

@@ -1,4 +1,4 @@
-package br.com.fitnesspro.shared.communication.filter
+package br.com.fitnesspro.shared.communication.query.filter
 
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime

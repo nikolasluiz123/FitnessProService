@@ -6,7 +6,7 @@ import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
@@ -43,7 +43,15 @@ class SchedulerController(
         schedulerService.saveSchedulerBatch(schedulerDTOList)
 
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
@@ -60,7 +68,15 @@ class SchedulerController(
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
 
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ExportationServiceResponse(executionLogId = logId, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.SCHEDULER_IMPORT)
@@ -73,7 +89,16 @@ class SchedulerController(
 
         val values = schedulerService.getSchedulesImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ImportationServiceResponse(executionLogId = logId, values = values, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.SCHEDULER_CONFIG_IMPORT)
@@ -86,7 +111,16 @@ class SchedulerController(
 
         val values = schedulerService.getSchedulerConfigsImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute("logId") as String
-        return ResponseEntity.ok(ImportationServiceResponse(executionLogId = logId, values = values, code = HttpStatus.OK.value(), success = true))
+        val logPackageId = request.getAttribute("logPackageId") as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
     }
 
 }

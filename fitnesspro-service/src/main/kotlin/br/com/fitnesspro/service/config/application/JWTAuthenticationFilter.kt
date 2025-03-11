@@ -29,7 +29,7 @@ class JWTAuthenticationFilter(
         }
 
         val token = authHeader.substring(7)
-        val userEmail = service.extractUsername(token)
+        val userEmail = service.extractEmail(token)
 
         if (userEmail != null && SecurityContextHolder.getContext().authentication == null) {
             val userDetails = userDetailsService.loadUserByUsername(userEmail)

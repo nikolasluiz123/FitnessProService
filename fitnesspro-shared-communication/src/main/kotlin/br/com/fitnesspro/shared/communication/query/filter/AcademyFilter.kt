@@ -1,4 +1,6 @@
-package br.com.fitnesspro.shared.communication.filter
+package br.com.fitnesspro.shared.communication.query.filter
+
+import br.com.fitnesspro.shared.communication.query.sort.Sort
 
 data class AcademyFilter(
     var name: String? = null,
