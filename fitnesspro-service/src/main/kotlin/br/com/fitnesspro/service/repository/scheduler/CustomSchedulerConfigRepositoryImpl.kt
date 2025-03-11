@@ -28,8 +28,6 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
             add(" select config.id as id, ")
             add("        config.creation_date as creationDate, ")
             add("        config.update_date as updateDate, ")
-            add("        config.creation_user_id as creationUserId, ")
-            add("        config.update_user_id as updateUserId, ")
             add("        config.active as active, ")
             add("        config.alarm as alarm, ")
             add("        config.notification as notification, ")

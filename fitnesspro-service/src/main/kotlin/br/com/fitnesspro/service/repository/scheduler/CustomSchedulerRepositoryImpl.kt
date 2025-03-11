@@ -99,8 +99,6 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
             add(" select s.id as id, ")
             add("        s.creation_date as creationDate, ")
             add("        s.update_date as updateDate, ")
-            add("        s.creation_user_id as creationUserId, ")
-            add("        s.update_user_id as updateUserId, ")
             add("        s.active as active, ")
             add("        s.academy_member_person_id as academyMemberPersonId, ")
             add("        s.professional_person_id as professionalPersonId, ")
