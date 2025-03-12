@@ -38,14 +38,14 @@ jobs:
     needs: build
     steps:
       - name: SSH and deploy
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo "${{ secrets.SERVER_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} << EOF
+            docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
             docker pull nikolasluiz123/fitnesspro-service
-            docker stop spring-app || true # Ignora erro se o container não estiver rodando
-            docker rm spring-app || true # Ignora erro se o container não existir
+            docker stop spring-app || true
+            docker rm spring-app || true
             docker run -d -p 8080:8080 --name spring-app nikolasluiz123/fitnesspro-service
+          EOF
+          rm private_key.pem
