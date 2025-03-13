@@ -23,7 +23,7 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Build with Maven
-        run: ./mvnw clean package assembly:single
+        run: ./mvnw clean package
 
       - name: Build Docker image
         run: docker build -t nikolasluiz123/fitnesspro-service .
