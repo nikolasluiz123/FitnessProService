@@ -65,6 +65,10 @@ jobs:
             docker pull nikolasluiz123/fitnesspro-service
             docker stop spring-app || true
             docker rm spring-app || true
-            docker run -d -p 8080:8080 --name spring-app nikolasluiz123/fitnesspro-service
+            docker run -d -p 8080:8080 \
+          --env FITNESS_PRO_DB_USER="${{ secrets.FITNESS_PRO_DB_USER }}" \
+          --env FITNESS_PRO_DB_PASSWORD="${{ secrets.FITNESS_PRO_DB_PASSWORD }}" \
+          --env SPRING_PROFILES_ACTIVE=remote \
+          --name spring-app nikolasluiz123/fitnesspro-service
           EOF
           rm private_key.pem
