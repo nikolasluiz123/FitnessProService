@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fitnesspro-service-jar
-          path: fitnesspro-service/target/*-SNAPSHOT.jar  # Adjusted path
+          path: fitnesspro-service/target/*-SNAPSHOT.jar
 
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
@@ -37,9 +37,15 @@ jobs:
           name: fitnesspro-service-jar
           path: docker-build
 
-      - name: Build Docker image
+      - name: Create Docker context directory
+        run: mkdir -p docker
+
+      - name: Copy JAR to Docker context
         run: |
-          docker build -t nikolasluiz123/fitnesspro-service .
+          cp docker-build/*-SNAPSHOT.jar docker/app.jar # Copia e renomeia o JAR
+
+      - name: Build Docker image
+        run: docker build -t nikolasluiz123/fitnesspro-service:latest docker
 
       - name: Push Docker image to Docker Hub
         run: |
