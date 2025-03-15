@@ -16,6 +16,14 @@
     <name>fitnesspro</name>
     <description>FitnessPro Service</description>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub nikolasluiz123</name>
+            <url>https://maven.pkg.github.com/nikolasluiz123/FitnessProService</url>
+        </repository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
 			<dependency>
