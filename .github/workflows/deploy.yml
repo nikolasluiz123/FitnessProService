@@ -18,6 +18,14 @@ jobs:
           java-version: '21'
           distribution: 'adopt'
 
+      - name: Verify Maven Wrapper
+        run: |
+          if [ ! -f mvnw ]; then
+            echo "Maven Wrapper (mvnw) not found in the root of the repository."
+            exit 1
+          fi
+          chmod +x ./mvnw
+
       - name: Publish fitnesspro-shared-communication
         run: |
           mkdir -p ~/.m2
@@ -32,9 +40,7 @@ jobs:
             </servers>
           </settings>
           " > ~/.m2/settings.xml
-          chmod +x ./mvnw
-          cd fitnesspro-shared-communication
-          ./mvnw clean deploy -DskipTests
+          ./mvnw clean deploy -DskipTests -pl fitnesspro-shared-communication -am
         env:
           PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
   build:
