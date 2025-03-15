@@ -18,6 +18,7 @@
         <springdoc.web.version>2.8.4</springdoc.web.version>
         <jjwt.version>0.11.5</jjwt.version>
         <jack.version>2.18.2</jack.version>
+        <maven.plugin.version>3.1.1</maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -53,10 +54,28 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub nikolasluiz123</name>
+            <url>https://maven.pkg.github.com/nikolasluiz123/FitnessProService</url>
+        </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <name>GitHub nikolasluiz123</name>
+            <url>https://maven.pkg.github.com/nikolasluiz123/FitnessProService</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven.plugin.version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
