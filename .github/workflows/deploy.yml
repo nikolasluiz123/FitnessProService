@@ -102,6 +102,7 @@ jobs:
             docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
             docker pull nikolasluiz123/fitnesspro-service
             docker stop spring-app
+            docker image prune -a -f
             docker rm spring-app
             docker run -d -p 8081:8081 \
           --env FITNESS_PRO_DB_USER="${{ secrets.FITNESS_PRO_DB_USER }}" \
