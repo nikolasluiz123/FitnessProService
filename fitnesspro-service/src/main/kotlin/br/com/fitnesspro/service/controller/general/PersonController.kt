@@ -8,8 +8,8 @@ import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -34,6 +34,7 @@ class PersonController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse> {
+        throw Exception("Erro inesperado.")
         personService.savePerson(personDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }

@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.exception.handler
 
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.hibernate.TransactionException
@@ -61,14 +61,14 @@ class ExceptionHandler {
         )
     }
 
-    @ExceptionHandler(Exception::class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handlerExceptions(exception: Exception): PersistenceServiceResponse {
-        exception.printStackTrace()
-
-        return PersistenceServiceResponse(
-            code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            error = exception.message ?: "Ocorreu um erro não tratado."
-        )
-    }
+//    @ExceptionHandler(Exception::class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    fun handlerExceptions(exception: Exception): PersistenceServiceResponse {
+//        exception.printStackTrace()
+//
+//        return PersistenceServiceResponse(
+//            code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//            error = exception.message ?: "Ocorreu um erro não tratado."
+//        )
+//    }
 }
