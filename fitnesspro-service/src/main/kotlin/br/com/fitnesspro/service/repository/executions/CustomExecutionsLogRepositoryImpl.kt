@@ -57,7 +57,7 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
     private fun getFromListExecutionLog(): StringJoiner {
         return StringJoiner(QR_NL).apply {
             add(" from ${ExecutionLog::class.java.name} log ")
-            add(" inner join log.user user ")
+            add(" left join log.user user ")
         }
     }
 
@@ -180,10 +180,10 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         val where = getWhereListExecutionLogPackage(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            val sortField = filter.sort?.field?.fieldName!!
+            val sortField = filter.sort?.field
             val order = if (filter.sort?.asc!!) "asc" else "desc"
 
-            add(" order by log.$sortField $order ")
+            add(" order by lp.$sortField $order ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -208,6 +208,8 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
     ): StringJoiner {
         val where = StringJoiner(QR_NL).apply {
             add(" where lp.executionLog.id = :pExecutionLogId ")
+
+            queryParams.add(Parameter(name = "pExecutionLogId", value = filter.executionLogId!!))
 
             filter.serviceExecutionStart?.let {
                 add(" and lp.serviceExecutionStart between :startServiceExecutionStart and :endServiceExecutionStart ")
@@ -247,7 +249,7 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         val queryParams = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select count(log.id) ")
+            add(" select count(lp.id) ")
         }
 
         val from = getFromListExecutionLogPackage()

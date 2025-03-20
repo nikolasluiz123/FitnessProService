@@ -40,15 +40,24 @@ class ExecutionsLogService(
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             val token = authorizationHeader.substring(7)
             val user = userRepository.findByEmail(jwtService.extractEmail(token)!!)
+            val executionType = getExecutionType(request.method, request.requestURI)
 
-            val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
-                userEmail = user!!.email!!,
-                executionType = getExecutionType(request.method, request.requestURI),
-                endPoint = request.requestURI,
-                methodName = handler.method.name
-            )
+            if (executionType in listOf(IMPORTATION, EXPORTATION)) {
+                // TODO - Client precisa enviar que terminou de executar. O servico nao tem como saber isso.
 
-            notFinishedExecutionLog?.let { createExecutionPackageLog(it, request) } ?: createExecutionLog(request, handler, user)
+                val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
+                    userEmail = user!!.email!!,
+                    executionType = executionType,
+                    endPoint = request.requestURI,
+                    methodName = handler.method.name
+                )
+
+                notFinishedExecutionLog?.let { createExecutionPackageLog(it, request) } ?: createExecutionLog(request, handler, user)
+
+            } else {
+                createExecutionLog(request, handler, user)
+            }
+
         } else {
             createExecutionLog(request, handler)
         }
@@ -60,6 +69,7 @@ class ExecutionsLogService(
             serviceExecutionStart = LocalDateTime.now()
         )
 
+        request.setAttribute("logId", notFinishedExecutionLog.id)
         request.setAttribute("logPackageId", logPackage.id)
 
         logPackageRepository.save(logPackage)
@@ -115,6 +125,10 @@ class ExecutionsLogService(
             logPackage.error = ex.stackTraceToString()
         }
 
+        if (log.type !in listOf(IMPORTATION, EXPORTATION)) {
+            log.state = EnumExecutionState.FINISHED
+        }
+
         logRepository.save(log)
         logPackageRepository.save(logPackage)
     }
@@ -142,9 +156,10 @@ class ExecutionsLogService(
             state = state,
             endPoint = endPoint,
             methodName = methodName,
-            userEmail = user?.id,
+            userEmail = user?.email,
             pageSize = pageSize,
-            lastUpdateDate = lastUpdateDate
+            lastUpdateDate = lastUpdateDate,
+            creationDate = creationDate
         )
     }
 

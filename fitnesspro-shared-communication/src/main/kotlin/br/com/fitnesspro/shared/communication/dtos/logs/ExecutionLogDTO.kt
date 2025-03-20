@@ -23,11 +23,14 @@ data class ExecutionLogDTO(
     val methodName: String? = null,
 
     @Schema(description = "E-mail do usuário que disparou a execução", required = true)
-    val userEmail: String?,
+    val userEmail: String? = null,
 
     @Schema(description = "Quantidade de itens por página", required = false)
     var pageSize: Int? = null,
 
     @Schema(description = "Data da última atualização. Utilizado na importação de dados.", required = false)
     var lastUpdateDate: LocalDateTime? = null,
+
+    @Schema(description = "Data de criação do log de execução", required = true)
+    var creationDate: LocalDateTime? = null
 ): BaseDTO
