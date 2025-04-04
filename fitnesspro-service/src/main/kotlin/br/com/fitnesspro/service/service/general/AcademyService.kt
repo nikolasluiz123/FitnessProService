@@ -13,10 +13,10 @@ import br.com.fitnesspro.service.repository.general.person.IPersonAcademyTimeRep
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
-import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
@@ -162,7 +162,7 @@ class AcademyService(
     fun createMockData() {
         val academies = mutableListOf<AcademyDTO>()
 
-        for (i in 0..50000) {
+        for (i in 0..20000) {
             academies.add(
                 AcademyDTO(
                     name = "Academia $i",

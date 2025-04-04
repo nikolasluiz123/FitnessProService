@@ -11,8 +11,8 @@ import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -167,7 +167,7 @@ class PersonService(
     fun savePersonMock() {
         val persons = mutableListOf<PersonDTO>()
 
-        for (i in 0..50000) {
+        for (i in 0..2000) {
             persons.add(
                 PersonDTO(
                     name = "Academia $i",
