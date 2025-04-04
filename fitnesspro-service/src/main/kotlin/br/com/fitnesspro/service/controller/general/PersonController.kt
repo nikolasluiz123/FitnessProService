@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.controller.general
 
 import br.com.fitnesspro.service.config.gson.defaultGSon
+import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.service.general.AcademyService
 import br.com.fitnesspro.service.service.general.PersonService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
@@ -34,7 +35,6 @@ class PersonController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse> {
-        throw Exception("Erro inesperado.")
         personService.savePerson(personDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
@@ -45,8 +45,8 @@ class PersonController(
     fun savePersonBatch(@RequestBody @Valid personDTOList: List<PersonDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         personService.savePersonList(personDTOList)
 
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ExportationServiceResponse(
                 executionLogId = logId,
@@ -80,8 +80,8 @@ class PersonController(
     fun savePersonAcademyTimeBatch(@RequestBody @Valid personAcademyTimeDTOList: List<PersonAcademyTimeDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         academyService.savePersonAcademyTimeBatch(personAcademyTimeDTOList)
 
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ExportationServiceResponse(
                 executionLogId = logId,
@@ -101,8 +101,8 @@ class PersonController(
         val commonPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = personService.getPersonsImport(queryFilter, commonPageInfos)
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ImportationServiceResponse(
                 executionLogId = logId,
@@ -123,8 +123,8 @@ class PersonController(
         val commonPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = personService.getUsersImport(queryFilter, commonPageInfos)
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ImportationServiceResponse(
                 executionLogId = logId,
@@ -145,8 +145,8 @@ class PersonController(
         val commonPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = academyService.getPersonAcademyTimesImport(queryFilter, commonPageInfos)
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ImportationServiceResponse(
                 executionLogId = logId,

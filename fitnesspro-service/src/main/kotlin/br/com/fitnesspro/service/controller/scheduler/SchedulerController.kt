@@ -1,13 +1,14 @@
 package br.com.fitnesspro.service.controller.scheduler
 
 import br.com.fitnesspro.service.config.gson.defaultGSon
+import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.service.scheduler.SchedulerService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -42,8 +43,8 @@ class SchedulerController(
     fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         schedulerService.saveSchedulerBatch(schedulerDTOList)
 
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ExportationServiceResponse(
                 executionLogId = logId,
@@ -67,8 +68,8 @@ class SchedulerController(
     fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
 
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ExportationServiceResponse(
                 executionLogId = logId,
@@ -88,8 +89,8 @@ class SchedulerController(
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = schedulerService.getSchedulesImport(commonImportFilter, importPageInfos)
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ImportationServiceResponse(
                 executionLogId = logId,
@@ -110,8 +111,8 @@ class SchedulerController(
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = schedulerService.getSchedulerConfigsImport(commonImportFilter, importPageInfos)
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ImportationServiceResponse(
                 executionLogId = logId,

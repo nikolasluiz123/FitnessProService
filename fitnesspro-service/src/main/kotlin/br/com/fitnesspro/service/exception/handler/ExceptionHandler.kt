@@ -1,5 +1,6 @@
 package br.com.fitnesspro.service.exception.handler
 
+import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import jakarta.persistence.EntityNotFoundException
@@ -20,6 +21,8 @@ class ExceptionHandler {
         exception: TransactionException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
+
         return PersistenceServiceResponse(
             code = HttpStatus.REQUEST_TIMEOUT.value(),
             error = "A requisição excedeu o tempo e a conexão com o serviço foi desfeita."
@@ -32,6 +35,8 @@ class ExceptionHandler {
         exception: EntityNotFoundException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
+
         return PersistenceServiceResponse(
             code = HttpStatus.NOT_FOUND.value(),
             error = exception.message
@@ -44,6 +49,8 @@ class ExceptionHandler {
         exception: MethodArgumentNotValidException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
+
         val errors = exception.bindingResult.fieldErrors.mapNotNull { it.defaultMessage }
 
         return PersistenceServiceResponse(
@@ -54,21 +61,29 @@ class ExceptionHandler {
 
     @ExceptionHandler(BusinessException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handlerValidationExceptions(exception: BusinessException): PersistenceServiceResponse {
+    fun handlerValidationExceptions(
+        exception: BusinessException,
+        request: HttpServletRequest
+    ): PersistenceServiceResponse {
+        request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
+
         return PersistenceServiceResponse(
             code = HttpStatus.BAD_REQUEST.value(),
             error = exception.message
         )
     }
 
-//    @ExceptionHandler(Exception::class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    fun handlerExceptions(exception: Exception): PersistenceServiceResponse {
-//        exception.printStackTrace()
-//
-//        return PersistenceServiceResponse(
-//            code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//            error = exception.message ?: "Ocorreu um erro não tratado."
-//        )
-//    }
+    @ExceptionHandler(Exception::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handlerExceptions(
+        exception: Exception,
+        request: HttpServletRequest
+    ): PersistenceServiceResponse {
+        request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
+
+        return PersistenceServiceResponse(
+            code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            error = exception.message ?: "Ocorreu um erro não tratado."
+        )
+    }
 }

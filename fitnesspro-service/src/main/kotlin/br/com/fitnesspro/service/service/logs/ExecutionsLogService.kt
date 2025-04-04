@@ -3,6 +3,7 @@ package br.com.fitnesspro.service.service.logs
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType.*
 import br.com.fitnesspro.service.config.application.JWTService
+import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.models.general.User
 import br.com.fitnesspro.service.models.logs.ExecutionLog
 import br.com.fitnesspro.service.models.logs.ExecutionLogPackage
@@ -69,8 +70,8 @@ class ExecutionsLogService(
             serviceExecutionStart = LocalDateTime.now()
         )
 
-        request.setAttribute("logId", notFinishedExecutionLog.id)
-        request.setAttribute("logPackageId", logPackage.id)
+        request.setAttribute(EnumRequestAttributes.LOG_ID.name, notFinishedExecutionLog.id)
+        request.setAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name, logPackage.id)
 
         logPackageRepository.save(logPackage)
     }
@@ -89,8 +90,8 @@ class ExecutionsLogService(
             serviceExecutionStart = LocalDateTime.now()
         )
 
-        request.setAttribute("logId", log.id)
-        request.setAttribute("logPackageId", logPackage.id)
+        request.setAttribute(EnumRequestAttributes.LOG_ID.name, log.id)
+        request.setAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name, logPackage.id)
 
         logRepository.save(log)
         logPackageRepository.save(logPackage)
@@ -110,22 +111,21 @@ class ExecutionsLogService(
         }
     }
 
-    fun updateLogAfterCompletion(request: HttpServletRequest, response: HttpServletResponse, ex: Exception?) {
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
-        val requestBody = request.getAttribute("logData") as String?
+    fun updateLogAfterCompletion(request: HttpServletRequest, response: HttpServletResponse) {
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
+        val requestBody = request.getAttribute(EnumRequestAttributes.REQUEST_BODY_DATA.name) as String?
+        val exception = request.getAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name) as Exception?
 
         val log = logRepository.findById(logId).orElseThrow()
         val logPackage = logPackageRepository.findById(logPackageId).orElseThrow()
         logPackage.serviceExecutionEnd = LocalDateTime.now()
         logPackage.requestBody = requestBody
 
-        if (ex != null) {
+        if (exception != null) {
             log.state = EnumExecutionState.ERROR
-            logPackage.error = ex.stackTraceToString()
-        }
-
-        if (log.type !in listOf(IMPORTATION, EXPORTATION)) {
+            logPackage.error = exception.stackTraceToString()
+        } else if (log.type !in listOf(IMPORTATION, EXPORTATION)) {
             log.state = EnumExecutionState.FINISHED
         }
 

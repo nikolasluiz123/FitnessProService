@@ -1,14 +1,15 @@
 package br.com.fitnesspro.service.controller.general
 
 import br.com.fitnesspro.service.config.gson.defaultGSon
+import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.service.general.AcademyService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
-import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.*
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -42,8 +43,8 @@ class AcademyController(
     fun saveAcademyBatch(@RequestBody @Valid academyDTOList: List<AcademyDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         academyService.saveAcademyBatch(academyDTOList)
 
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ExportationServiceResponse(
                 executionLogId = logId,
@@ -72,8 +73,8 @@ class AcademyController(
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
         val values = academyService.getAcademiesImport(commonImportFilter, importPageInfos)
-        val logId = request.getAttribute("logId") as String
-        val logPackageId = request.getAttribute("logPackageId") as String
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
             ImportationServiceResponse(
                 executionLogId = logId,
