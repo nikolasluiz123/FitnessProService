@@ -162,7 +162,7 @@ class AcademyService(
     fun createMockData() {
         val academies = mutableListOf<AcademyDTO>()
 
-        for (i in 0..20000) {
+        for (i in 0..2000) {
             academies.add(
                 AcademyDTO(
                     name = "Academia $i",

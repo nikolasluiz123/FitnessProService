@@ -21,6 +21,8 @@ class ExceptionHandler {
         exception: TransactionException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        exception.printStackTrace()
+
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
         return PersistenceServiceResponse(
@@ -35,6 +37,8 @@ class ExceptionHandler {
         exception: EntityNotFoundException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        exception.printStackTrace()
+
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
         return PersistenceServiceResponse(
@@ -49,6 +53,8 @@ class ExceptionHandler {
         exception: MethodArgumentNotValidException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        exception.printStackTrace()
+
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
         val errors = exception.bindingResult.fieldErrors.mapNotNull { it.defaultMessage }
@@ -65,6 +71,8 @@ class ExceptionHandler {
         exception: BusinessException,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        exception.printStackTrace()
+
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
         return PersistenceServiceResponse(
@@ -79,6 +87,8 @@ class ExceptionHandler {
         exception: Exception,
         request: HttpServletRequest
     ): PersistenceServiceResponse {
+        exception.printStackTrace()
+
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
         return PersistenceServiceResponse(
