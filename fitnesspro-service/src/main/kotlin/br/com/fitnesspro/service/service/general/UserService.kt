@@ -13,8 +13,6 @@ class UserService(
     private val jwtService: JWTService
 ) {
     fun login(authenticationDTO: AuthenticationDTO): String {
-        throw Exception("Teste de exception")
-
         if (!HashHelper.isHashed(authenticationDTO.password!!)) {
             authenticationDTO.password = HashHelper.applyHash(authenticationDTO.password!!)
         }
