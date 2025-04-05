@@ -187,6 +187,7 @@ class ExecutionsLogService(
         log.apply {
             dto.pageSize?.let { pageSize = it }
             dto.lastUpdateDate?.let { lastUpdateDate = it }
+            dto.state?.let { state = it }
         }
 
         logRepository.save(log)
