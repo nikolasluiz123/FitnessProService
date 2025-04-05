@@ -40,7 +40,7 @@ class ExecutionLogController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PutMapping("/${EndPointsV1.LOGS_PACKAGE}/{executionLogPackageId}")
+    @PutMapping("${EndPointsV1.LOGS_PACKAGE}/{executionLogPackageId}")
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun updateExecutionLogPackage(
