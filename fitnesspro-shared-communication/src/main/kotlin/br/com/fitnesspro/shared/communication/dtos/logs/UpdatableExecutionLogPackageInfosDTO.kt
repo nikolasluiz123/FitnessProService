@@ -18,4 +18,7 @@ data class UpdatableExecutionLogPackageInfosDTO(
 
     @Schema(description = "Momento que o client terminou de executar a operação.", required = false)
     var clientExecutionEnd: LocalDateTime? = null,
+
+    @Schema(description = "Stack de erro.", required = false)
+    var error: String? = null
 )

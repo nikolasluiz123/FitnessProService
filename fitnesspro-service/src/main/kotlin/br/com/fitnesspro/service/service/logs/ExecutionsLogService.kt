@@ -44,8 +44,6 @@ class ExecutionsLogService(
             val executionType = getExecutionType(request.method, request.requestURI)
 
             if (executionType in listOf(IMPORTATION, EXPORTATION)) {
-                // TODO - Client precisa enviar que terminou de executar. O servico nao tem como saber isso.
-
                 val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
                     userEmail = user!!.email!!,
                     executionType = executionType,
@@ -204,6 +202,7 @@ class ExecutionsLogService(
             dto.allItemsCount?.let { allItemsCount = it }
             dto.clientExecutionStart?.let { clientExecutionStart = it }
             dto.clientExecutionEnd?.let { clientExecutionEnd = it }
+            dto.error?.let { error = it }
         }
 
         logPackageRepository.save(logPackage)

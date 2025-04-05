@@ -25,7 +25,7 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select config.* ")
+            add(" select config ")
         }
 
         val from = StringJoiner(QR_NL).apply {
