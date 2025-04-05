@@ -5,9 +5,8 @@ import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
-import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
@@ -77,32 +76,22 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
     override fun getPersonAcademyTimesImport(
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): List<PersonAcademyTimeDTO> {
+    ): List<PersonAcademyTime> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select pat.id as id, ")
-            add("        pat.person_id as personId, ")
-            add("        pat.academy_id as academyId, ")
-            add("        pat.time_start as timeStart, ")
-            add("        pat.time_end as timeEnd, ")
-            add("        pat.day_week as dayOfWeek, ")
-            add("        pat.active as active, ")
-            add("        pat.creation_date as creationDate, ")
-            add("        pat.update_date as updateDate, ")
-            add("        pat.creation_user_id as creationUserId, ")
-            add("        pat.update_user_id as updateUserId ")
+            add(" select pat ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from person_academy_time pat ")
+            add(" from ${PersonAcademyTime::class.java.name} pat ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDate?.let {
-                add(" and pat.update_date >= :pLastUpdateDate ")
+                add(" and pat.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -113,14 +102,13 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
             add(where.toString())
         }
 
-        val query = entityManager.createNativeQuery(sql.toString())
+        val query = entityManager.createQuery(sql.toString(), PersonAcademyTime::class.java)
         query.setParameters(params)
+
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        val result = query.getResultList(PersonAcademyTimeDTO::class.java)
-
-        return result
+        return query.getResultList(PersonAcademyTime::class.java)
     }
 
 }

@@ -76,7 +76,7 @@ class AcademyService(
     }
 
     fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonAcademyTimeDTO> {
-        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos)
+        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map { it.toPersonAcademyTimeDTO() }
     }
 
     fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
@@ -157,6 +157,20 @@ class AcademyService(
                 )
             }
         }
+    }
+
+    private fun PersonAcademyTime.toPersonAcademyTimeDTO(): PersonAcademyTimeDTO {
+        return PersonAcademyTimeDTO(
+            id = id,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            personId = person?.id,
+            academyId = academy?.id,
+            timeStart = timeStart,
+            timeEnd = timeEnd,
+            dayOfWeek = dayOfWeek,
+            active = active,
+        )
     }
 
     fun createMockData() {
