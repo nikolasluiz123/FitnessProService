@@ -2,13 +2,13 @@ package br.com.fitnesspro.service.repository.scheduler
 
 import br.com.fitnesspro.models.general.enums.EnumUserType
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
+import br.com.fitnesspro.service.models.scheduler.Scheduler
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
@@ -92,34 +92,22 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
         }
     }
 
-    override fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO> {
+    override fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<Scheduler> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select s.id as id, ")
-            add("        s.creation_date as creationDate, ")
-            add("        s.update_date as updateDate, ")
-            add("        s.active as active, ")
-            add("        s.academy_member_person_id as academyMemberPersonId, ")
-            add("        s.professional_person_id as professionalPersonId, ")
-            add("        s.scheduled_date as scheduledDate, ")
-            add("        s.time_start as timeStart, ")
-            add("        s.time_end as timeEnd, ")
-            add("        s.canceled_date as canceledDate, ")
-            add("        s.situation as situation, ")
-            add("        s.compromise_type as compromiseType, ")
-            add("        s.observation as observation ")
+            add(" select scheduler.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from scheduler s ")
+            add(" from ${Scheduler::class.java.name} scheduler ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDate?.let {
-                add(" and s.update_date >= :pLastUpdateDate ")
+                add(" and s.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -130,13 +118,11 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createNativeQuery(sql.toString())
+        val query = entityManager.createQuery(sql.toString(), Scheduler::class.java)
         query.setParameters(params)
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        val result = query.getResultList(SchedulerDTO::class.java)
-
-        return result
+        return query.getResultList(Scheduler::class.java)
     }
 }

@@ -13,7 +13,6 @@ import br.com.fitnesspro.service.models.workout.Workout
 import br.com.fitnesspro.service.models.workout.WorkoutGroup
 import br.com.fitnesspro.service.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
-import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerConfigRepository
 import br.com.fitnesspro.service.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.service.repository.scheduler.ISchedulerConfigRepository
@@ -23,8 +22,8 @@ import br.com.fitnesspro.service.repository.workout.IWorkoutRepository
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import org.springframework.stereotype.Service
 
 @Service
@@ -36,8 +35,7 @@ class SchedulerService(
     private val customAcademyRepository: ICustomAcademyRepository,
     private val customSchedulerConfigRepository: ICustomSchedulerConfigRepository,
     private val workoutRepository: IWorkoutRepository,
-    private val workoutGroupRepository: IWorkoutGroupRepository,
-    private val userRepository: IUserRepository
+    private val workoutGroupRepository: IWorkoutGroupRepository
 ) {
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
         validateScheduler(schedulerDTO)
@@ -253,11 +251,11 @@ class SchedulerService(
     }
 
     fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO> {
-        return customSchedulerRepository.getSchedulesImport(filter, pageInfos)
+        return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map { it.toSchedulerDTO() }
     }
 
     fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfigDTO> {
-        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos)
+        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map { it.toSchedulerConfigDTO() }
     }
 
     private fun SchedulerDTO.toScheduler(): Scheduler {
@@ -347,5 +345,39 @@ class SchedulerService(
                 )
             }
         }
+    }
+
+    private fun SchedulerConfig.toSchedulerConfigDTO(): SchedulerConfigDTO {
+        return SchedulerConfigDTO(
+            id = id,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            active = active,
+            alarm = alarm,
+            notification = notification,
+            minScheduleDensity = minScheduleDensity,
+            maxScheduleDensity = maxScheduleDensity,
+            personId = person?.id,
+        )
+    }
+
+    private fun Scheduler.toSchedulerDTO(): SchedulerDTO {
+        return SchedulerDTO(
+            id = id,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            academyMemberPersonId = academyMemberPerson?.id,
+            professionalPersonId = professionalPerson?.id,
+            scheduledDate = scheduledDate,
+            timeStart = timeStart,
+            timeEnd = timeEnd,
+            canceledDate = canceledDate,
+            situation = situation,
+            compromiseType = compromiseType,
+            observation = observation,
+            recurrentConfig = null,
+            active = active,
+            type = null
+        )
     }
 }

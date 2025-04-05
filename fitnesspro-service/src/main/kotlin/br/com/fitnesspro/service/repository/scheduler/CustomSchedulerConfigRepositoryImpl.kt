@@ -1,12 +1,12 @@
 package br.com.fitnesspro.service.repository.scheduler
 
+import br.com.fitnesspro.service.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -21,30 +21,22 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
     override fun getSchedulerConfigImport(
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): List<SchedulerConfigDTO> {
+    ): List<SchedulerConfig> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select config.id as id, ")
-            add("        config.creation_date as creationDate, ")
-            add("        config.update_date as updateDate, ")
-            add("        config.active as active, ")
-            add("        config.alarm as alarm, ")
-            add("        config.notification as notification, ")
-            add("        config.min_schedule_density as minScheduleDensity, ")
-            add("        config.max_schedule_density as maxScheduleDensity, ")
-            add("        config.person_id as personId ")
+            add(" select config.* ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from scheduler_config config ")
+            add(" from ${SchedulerConfig::class.java.name} config ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDate?.let {
-                add(" and config.update_date >= :pLastUpdateDate ")
+                add(" and config.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -55,13 +47,11 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createNativeQuery(sql.toString())
+        val query = entityManager.createQuery(sql.toString(), SchedulerConfig::class.java)
         query.setParameters(params)
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        val result = query.getResultList(SchedulerConfigDTO::class.java)
-
-        return result
+        return query.getResultList(SchedulerConfig::class.java)
     }
 }

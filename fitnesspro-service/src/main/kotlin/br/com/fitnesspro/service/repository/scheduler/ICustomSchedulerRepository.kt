@@ -1,9 +1,9 @@
 package br.com.fitnesspro.service.repository.scheduler
 
 import br.com.fitnesspro.models.general.enums.EnumUserType
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.service.models.scheduler.Scheduler
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -18,5 +18,5 @@ interface ICustomSchedulerRepository {
         end: LocalTime
     ): Boolean
 
-    fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO>
+    fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<Scheduler>
 }
