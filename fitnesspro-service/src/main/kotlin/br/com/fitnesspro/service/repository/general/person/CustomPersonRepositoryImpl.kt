@@ -6,9 +6,10 @@ import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import jakarta.persistence.EntityManager
+import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -89,5 +90,36 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         val result = query.getResultList(User::class.java)
 
         return result
+    }
+
+    override fun findByEmail(email: String): Person? {
+        val params = mutableListOf(Parameter("pEmail", email))
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select person ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${Person::class.java.name} person ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where person.user.email = :pEmail ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), Person::class.java)
+        query.setParameters(params)
+
+        return try {
+            query.singleResult
+        } catch (ex: NoResultException) {
+            null
+        }
     }
 }

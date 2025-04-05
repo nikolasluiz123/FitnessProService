@@ -96,7 +96,7 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select scheduler.* ")
+            add(" select scheduler ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -107,7 +107,7 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDate?.let {
-                add(" and s.updateDate >= :pLastUpdateDate ")
+                add(" and scheduler.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

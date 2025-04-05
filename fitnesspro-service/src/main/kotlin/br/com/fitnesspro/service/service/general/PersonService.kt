@@ -184,4 +184,8 @@ class PersonService(
 
         savePersonList(persons)
     }
+
+    fun getPersonByEmail(email: String): PersonDTO? {
+        return customPersonRepository.findByEmail(email)?.toPersonDTO()
+    }
 }

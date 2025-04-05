@@ -7,6 +7,7 @@ object EndPointsV1 {
     const val PERSON_V1 = "$API_V1/$PERSON"
     const val PERSON_ACADEMY_TIME = "/academy/time"
     const val PERSON_EXPORT = "/export"
+    const val PERSON_EMAIL = "/email"
     const val PERSON_ACADEMY_TIME_EXPORT = "/academy/time/export"
     const val PERSON_IMPORT = "/import"
     const val PERSON_ACADEMY_TIME_IMPORT = "/academy/time/import"

@@ -14,6 +14,7 @@ import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -156,6 +157,13 @@ class PersonController(
                 success = true,
             )
         )
+    }
+
+    @GetMapping("${EndPointsV1.PERSON_EMAIL}/{email}")
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    fun getPersonByEmail(@PathVariable email: String): ResponseEntity<SingleValueServiceResponse<PersonDTO?>> {
+        val person = personService.getPersonByEmail(email)
+        return ResponseEntity.ok(SingleValueServiceResponse(value = person, code = HttpStatus.OK.value(), success = true))
     }
 
 }

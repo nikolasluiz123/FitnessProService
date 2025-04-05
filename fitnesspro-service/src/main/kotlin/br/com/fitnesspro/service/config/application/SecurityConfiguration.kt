@@ -24,6 +24,7 @@ class SecurityConfiguration(
         http.authorizeHttpRequests { config ->
             config.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
             config.requestMatchers(HttpMethod.POST, "/api/v1/person").permitAll()
+            config.requestMatchers(HttpMethod.GET, "/api/v1/person/email/{email}").permitAll()
             config.requestMatchers(HttpMethod.POST, "/api/v1/authentication/login").permitAll()
             config.requestMatchers(HttpMethod.POST, "/api/v1/scheduler/config").permitAll()
             config.anyRequest().authenticated()
