@@ -48,4 +48,10 @@ object EndPointsV1 {
     const val LOGS_COUNT = "/count"
     const val LOGS_PACKAGE = "/package"
     const val LOGS_PACKAGE_COUNT = "$LOGS_PACKAGE/count"
+
+    const val CACHE = "cache"
+    const val CACHE_V1 = "$API_V1/$CACHE"
+    const val CACHE_LIST = "/list"
+    const val CACHE_ENTRIES = "/entries"
+    const val CACHE_CLEAR = "/clear"
 }

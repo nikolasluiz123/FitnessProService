@@ -3,6 +3,8 @@ package br.com.fitnesspro.service.service.general
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
+import br.com.fitnesspro.service.config.application.cache.ACADEMY_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.config.application.cache.PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.models.general.Academy
 import br.com.fitnesspro.service.models.general.PersonAcademyTime
@@ -17,6 +19,8 @@ import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
@@ -29,6 +33,7 @@ class AcademyService(
     private val personRepository: IPersonRepository
 ) {
 
+    @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO) {
         val personAcademyTime = personAcademyTimeDTO.toPersonAcademyTime()
 
@@ -58,6 +63,7 @@ class AcademyService(
         }
     }
 
+    @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademy(academyDTO: AcademyDTO) {
         val academy = academyDTO.toAcademy()
         academyRepository.save(academy)
@@ -65,20 +71,24 @@ class AcademyService(
         academyDTO.id = academy.id
     }
 
+    @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademyBatch(academyDTOList: List<AcademyDTO>) {
         val academyList = academyDTOList.map { it.toAcademy() }
         academyRepository.saveAll(academyList)
     }
 
+    @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonAcademyTimeBatch(personAcademyTimeDTOList: List<PersonAcademyTimeDTO>) {
         val personAcademyTimeList = personAcademyTimeDTOList.map { it.toPersonAcademyTime() }
         personAcademyTimeRepository.saveAll(personAcademyTimeList)
     }
 
+    @Cacheable(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonAcademyTimeDTO> {
         return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map { it.toPersonAcademyTimeDTO() }
     }
 
+    @Cacheable(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
         return customAcademyRepository.getAcademiesImport(filter, pageInfos).map { it.toAcademyDTO() }
     }

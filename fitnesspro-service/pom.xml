@@ -16,6 +16,7 @@
         <java.version>21</java.version>
         <springdoc.web.version>2.8.4</springdoc.web.version>
         <jjwt.version>0.11.5</jjwt.version>
+        <caffeine.version>3.2.0</caffeine.version>
     </properties>
 
     <build>
@@ -120,6 +121,17 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.web.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
 
         <dependency>

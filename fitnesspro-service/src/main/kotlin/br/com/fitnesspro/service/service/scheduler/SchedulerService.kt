@@ -5,6 +5,8 @@ import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
+import br.com.fitnesspro.service.config.application.cache.SCHEDULER_CONFIG_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.config.application.cache.SCHEDULER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.scheduler.Scheduler
@@ -24,6 +26,8 @@ import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -37,6 +41,7 @@ class SchedulerService(
     private val workoutRepository: IWorkoutRepository,
     private val workoutGroupRepository: IWorkoutGroupRepository
 ) {
+    @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
         validateScheduler(schedulerDTO)
 
@@ -211,6 +216,7 @@ class SchedulerService(
         }
     }
 
+    @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerBatch(schedulerDTOList: List<SchedulerDTO>) {
         if (schedulerDTOList.any { it.type == EnumSchedulerType.RECURRENT }) {
             throw BusinessException("Não é possível realizar agendamentos recorrentes em lote. Tenha certeza que na lista de agendamentos não há agendamentos recorrentes.")
@@ -224,6 +230,7 @@ class SchedulerService(
         schedulerRepository.saveAll(schedules)
     }
 
+    @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerConfig(schedulerConfigDTO: SchedulerConfigDTO) {
         val config = schedulerConfigDTO.toSchedulerConfig()
 
@@ -239,6 +246,7 @@ class SchedulerService(
         }
     }
 
+    @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerConfigBatch(schedulerConfigDTOList: List<SchedulerConfigDTO>) {
         val configs = schedulerConfigDTOList.map {
             val config = it.toSchedulerConfig()
@@ -250,10 +258,12 @@ class SchedulerService(
         schedulerConfigRepository.saveAll(configs)
     }
 
+    @Cacheable(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO> {
         return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map { it.toSchedulerDTO() }
     }
 
+    @Cacheable(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfigDTO> {
         return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map { it.toSchedulerConfigDTO() }
     }

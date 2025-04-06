@@ -2,6 +2,8 @@ package br.com.fitnesspro.service.service.general
 
 import br.com.fitnesspro.core.helper.HashHelper
 import br.com.fitnesspro.models.general.enums.EnumUserType
+import br.com.fitnesspro.service.config.application.cache.PERSON_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.config.application.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.models.general.Person
 import br.com.fitnesspro.service.models.general.User
@@ -13,6 +15,8 @@ import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -24,6 +28,7 @@ class PersonService(
     private val customPersonRepository: ICustomPersonRepository
 ) {
 
+    @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePerson(personDTO: PersonDTO) {
         val person = personDTO.toPerson()
 
@@ -46,6 +51,7 @@ class PersonService(
         }
     }
 
+    @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonList(personDTOList: List<PersonDTO>) {
         val persons = personDTOList.map { it.toPerson() }
 
@@ -63,10 +69,12 @@ class PersonService(
         personRepository.saveAll(persons)
     }
 
+    @Cacheable(cacheNames = [PERSON_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonDTO> {
         return customPersonRepository.getPersonsImport(filter, pageInfos).map { it.toPersonDTO() }
     }
 
+    @Cacheable(cacheNames = [PERSON_USER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<UserDTO> {
         return customPersonRepository.getUsersImport(filter, pageInfos).map { it.toUserDTO() }
     }
@@ -170,7 +178,7 @@ class PersonService(
         for (i in 0..2000) {
             persons.add(
                 PersonDTO(
-                    name = "Academia $i",
+                    name = "Pessoa $i",
                     phone = "$i",
                     birthDate = LocalDate.of(2000, 5, 31),
                     user = UserDTO(
