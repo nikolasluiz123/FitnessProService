@@ -8,6 +8,7 @@ import br.com.fitnesspro.service.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ServiceTokenFilter
 import jakarta.persistence.EntityManager
+import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -113,5 +114,39 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
         query.setParameters(queryParams)
 
         return query.singleResult.toInt()
+    }
+
+    override fun findValidServiceToken(jwtToken: String): ServiceToken? {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select t ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${ServiceToken::class.java.name} t ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where t.jwtToken = :pJwtToken ")
+            add(" and (t.expirationDate > current_timestamp or t.expirationDate is null) ")
+
+            queryParams.add(Parameter(name = "pJwtToken", value = jwtToken))
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), ServiceToken::class.java)
+        query.setParameters(queryParams)
+
+        return try {
+            query.singleResult
+        } catch (ex: NoResultException) {
+            null
+        }
     }
 }

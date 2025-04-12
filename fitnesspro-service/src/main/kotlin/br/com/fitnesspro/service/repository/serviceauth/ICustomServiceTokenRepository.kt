@@ -9,4 +9,6 @@ interface ICustomServiceTokenRepository {
     fun getListServiceToken(filter: ServiceTokenFilter, pageInfos: PageInfos): List<ServiceToken>
 
     fun getCountListServiceToken(filter: ServiceTokenFilter): Int
+
+    fun findValidServiceToken(jwtToken: String): ServiceToken?
 }
