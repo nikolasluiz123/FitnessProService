@@ -1,5 +1,7 @@
 package br.com.fitnesspro.shared.communication.responses
 
+import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
+
 class ImportationServiceResponse<DTO>(
     val executionLogId: String,
     val executionLogPackageId: String,
@@ -7,4 +9,5 @@ class ImportationServiceResponse<DTO>(
     code: Int = 0,
     success: Boolean = false,
     error: String? = null,
-): ReadServiceResponse<DTO>(values, code, success, error)
+    errorType: EnumErrorType? = null
+): ReadServiceResponse<DTO>(values, code, success, error, errorType)

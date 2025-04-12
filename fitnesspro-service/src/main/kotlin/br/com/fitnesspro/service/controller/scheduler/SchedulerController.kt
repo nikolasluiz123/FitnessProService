@@ -57,6 +57,7 @@ class SchedulerController(
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse> {
         schedulerService.saveSchedulerConfig(schedulerConfigDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))

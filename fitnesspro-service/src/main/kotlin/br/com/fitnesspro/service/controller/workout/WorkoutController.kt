@@ -1,6 +1,5 @@
 package br.com.fitnesspro.service.controller.workout
 
-import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.service.workout.WorkoutService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts

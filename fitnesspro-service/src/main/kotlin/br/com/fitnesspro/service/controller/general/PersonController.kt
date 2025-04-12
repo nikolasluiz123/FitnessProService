@@ -35,6 +35,7 @@ class PersonController(
 
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
     fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse> {
         personService.savePerson(personDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
@@ -161,6 +162,7 @@ class PersonController(
 
     @GetMapping("${EndPointsV1.PERSON_EMAIL}/{email}")
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
     fun getPersonByEmail(@PathVariable email: String): ResponseEntity<SingleValueServiceResponse<PersonDTO?>> {
         val person = personService.getPersonByEmail(email)
         return ResponseEntity.ok(SingleValueServiceResponse(value = person, code = HttpStatus.OK.value(), success = true))

@@ -27,6 +27,7 @@ class AuthenticationController(
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGIN)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
     fun login(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
         return try {
             val token = userService.login(authenticationDTO)

@@ -1,16 +1,18 @@
 package br.com.fitnesspro.service.service.general
 
 import br.com.fitnesspro.core.helper.HashHelper
-import br.com.fitnesspro.service.config.application.JWTService
 import br.com.fitnesspro.service.exception.UserNotFoundException
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
+import br.com.fitnesspro.service.service.serviceauth.TokenService
 import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenGenerationDTO
+import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
     private val userRepository: IUserRepository,
-    private val jwtService: JWTService
+    private val tokenService: TokenService
 ) {
     fun login(authenticationDTO: AuthenticationDTO): String {
         if (!HashHelper.isHashed(authenticationDTO.password!!)) {
@@ -22,7 +24,8 @@ class UserService(
 
             userRepository.save(user)
 
-            jwtService.generateToken(user)
+            val serviceTokenGenerationDTO = ServiceTokenGenerationDTO(type = EnumTokenType.USER_AUTHENTICATION_TOKEN, userId = user.id)
+            tokenService.generateServiceToken(serviceTokenGenerationDTO).jwtToken
         } ?: throw UserNotFoundException("Usuário não encontrado")
     }
 

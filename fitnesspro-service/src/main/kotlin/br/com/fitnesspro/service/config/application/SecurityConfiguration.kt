@@ -2,7 +2,6 @@ package br.com.fitnesspro.service.config.application
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -23,10 +22,6 @@ class SecurityConfiguration(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests { config ->
             config.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-            config.requestMatchers(HttpMethod.POST, "/api/v1/person").permitAll()
-            config.requestMatchers(HttpMethod.GET, "/api/v1/person/email/{email}").permitAll()
-            config.requestMatchers(HttpMethod.POST, "/api/v1/authentication/login").permitAll()
-            config.requestMatchers(HttpMethod.POST, "/api/v1/scheduler/config").permitAll()
             config.anyRequest().authenticated()
         }.httpBasic(Customizer.withDefaults())
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }

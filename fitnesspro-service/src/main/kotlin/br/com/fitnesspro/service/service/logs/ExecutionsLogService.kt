@@ -2,19 +2,23 @@ package br.com.fitnesspro.service.service.logs
 
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType.*
-import br.com.fitnesspro.service.config.application.JWTService
 import br.com.fitnesspro.service.config.request.EnumRequestAttributes
-import br.com.fitnesspro.service.models.general.User
 import br.com.fitnesspro.service.models.logs.ExecutionLog
 import br.com.fitnesspro.service.models.logs.ExecutionLogPackage
 import br.com.fitnesspro.service.repository.executions.ICustomExecutionsLogRepository
 import br.com.fitnesspro.service.repository.executions.IExecutionsLogPackageRepository
 import br.com.fitnesspro.service.repository.executions.IExecutionsLogRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
+import br.com.fitnesspro.service.repository.serviceauth.IApplicationRepository
+import br.com.fitnesspro.service.repository.serviceauth.IDeviceRepository
+import br.com.fitnesspro.service.service.serviceauth.TokenService
+import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogPackageDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
@@ -31,34 +35,46 @@ class ExecutionsLogService(
     private val logRepository: IExecutionsLogRepository,
     private val logPackageRepository: IExecutionsLogPackageRepository,
     private val customLogRepository: ICustomExecutionsLogRepository,
-    private val jwtService: JWTService,
-    private val userRepository: IUserRepository
+    private val tokenService: TokenService,
+    private val userRepository: IUserRepository,
+    private val deviceRepository: IDeviceRepository,
+    private val applicationRepository: IApplicationRepository
 ) {
 
     fun saveLogPreHandle(request: HttpServletRequest, handler: HandlerMethod) {
         val authorizationHeader = request.getHeader("Authorization")
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            val token = authorizationHeader.substring(7)
-            val user = userRepository.findByEmail(jwtService.extractEmail(token)!!)
-            val executionType = getExecutionType(request.method, request.requestURI)
+        val token = authorizationHeader.substring(7)
+        val serviceTokenDTO = tokenService.getServiceTokenDTO(token)
+        val executionType = getExecutionType(request.method, request.requestURI)
 
-            if (executionType in listOf(IMPORTATION, EXPORTATION)) {
-                val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
-                    userEmail = user!!.email!!,
-                    executionType = executionType,
-                    endPoint = request.requestURI,
-                    methodName = handler.method.name
-                )
+        when {
+            serviceTokenDTO?.userDTO != null -> {
+                if (executionType in listOf(IMPORTATION, EXPORTATION)) {
+                    val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
+                        userEmail = serviceTokenDTO.userDTO?.email!!,
+                        executionType = executionType,
+                        endPoint = request.requestURI,
+                        methodName = handler.method.name
+                    )
 
-                notFinishedExecutionLog?.let { createExecutionPackageLog(it, request) } ?: createExecutionLog(request, handler, user)
-
-            } else {
-                createExecutionLog(request, handler, user)
+                    if (notFinishedExecutionLog != null) {
+                        createExecutionPackageLog(notFinishedExecutionLog, request)
+                    } else {
+                        createExecutionLog(request, handler, userDTO = serviceTokenDTO.userDTO!!)
+                    }
+                } else {
+                    createExecutionLog(request, handler, userDTO = serviceTokenDTO.userDTO!!)
+                }
             }
 
-        } else {
-            createExecutionLog(request, handler)
+            serviceTokenDTO?.deviceDTO != null -> {
+                createExecutionLog(request, handler, deviceDTO = serviceTokenDTO.deviceDTO!!)
+            }
+
+            serviceTokenDTO?.applicationDTO != null -> {
+                createExecutionLog(request, handler, applicationDTO = serviceTokenDTO.applicationDTO!!)
+            }
         }
     }
 
@@ -74,13 +90,21 @@ class ExecutionsLogService(
         logPackageRepository.save(logPackage)
     }
 
-    private fun createExecutionLog(request: HttpServletRequest, handler: HandlerMethod, user: User? = null) {
+    private fun createExecutionLog(
+        request: HttpServletRequest,
+        handler: HandlerMethod,
+        userDTO: UserDTO? = null,
+        deviceDTO: DeviceDTO? = null,
+        applicationDTO: ApplicationDTO? = null
+    ) {
         val log = ExecutionLog(
             type = getExecutionType(request.method, request.requestURI),
             endPoint = request.requestURI,
             state = EnumExecutionState.RUNNING,
             methodName = handler.method.name,
-            user = user
+            user = userDTO?.email?.let { userRepository.findByEmail(it) },
+            device = deviceDTO?.id?.let { deviceRepository.findById(it).get() },
+            application = applicationDTO?.id?.let { applicationRepository.findById(it).get() }
         )
 
         val logPackage = ExecutionLogPackage(

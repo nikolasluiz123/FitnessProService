@@ -1,4 +1,4 @@
-package br.com.fitnesspro.models.scheduler.enums
+package br.com.fitnesspro.shared.communication.enums.scheduler
 
 enum class EnumSchedulerSituation {
     SCHEDULED,

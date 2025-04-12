@@ -2,11 +2,10 @@ package br.com.fitnesspro.service.models.scheduler
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import br.com.fitnesspro.service.models.general.Person
-import br.com.fitnesspro.service.models.general.User
 import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime

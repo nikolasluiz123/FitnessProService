@@ -54,4 +54,18 @@ object EndPointsV1 {
     const val CACHE_LIST = "/list"
     const val CACHE_ENTRIES = "/entries"
     const val CACHE_CLEAR = "/clear"
+
+    const val TOKEN = "token"
+    const val TOKEN_V1 = "$API_V1/$TOKEN"
+    const val TOKEN_INVALIDATE = "/invalidate/{id}"
+    const val TOKEN_INVALIDATE_ALL = "/invalidate"
+    const val TOKEN_SECRET = "/secret"
+    const val TOKENS_COUNT = "/count"
+
+    const val DEVICE = "device"
+    const val DEVICE_V1 = "$API_V1/$DEVICE"
+    const val DEVICE_COUNT = "/count"
+
+    const val APPLICATION = "application"
+    const val APPLICATION_V1 = "$API_V1/$APPLICATION"
 }

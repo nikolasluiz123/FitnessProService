@@ -3,6 +3,8 @@ package br.com.fitnesspro.service.models.logs
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.executions.enums.EnumExecutionType
 import br.com.fitnesspro.service.models.general.User
+import br.com.fitnesspro.service.models.serviceauth.Application
+import br.com.fitnesspro.service.models.serviceauth.Device
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -14,6 +16,7 @@ import java.util.*
         Index(name = "idx_execution_log_type", columnList = "type"),
         Index(name = "idx_execution_log_state", columnList = "state"),
         Index(name = "idx_execution_log_user_id", columnList = "user_id"),
+        Index(name = "idx_execution_log_device_id", columnList = "device_id"),
     ]
 )
 @Entity
@@ -42,6 +45,14 @@ data class ExecutionLog(
     @JoinColumn(name = "user_id", nullable = true)
     @ManyToOne
     var user: User? = null,
+
+    @JoinColumn(name = "device_id", nullable = true)
+    @ManyToOne
+    var device: Device? = null,
+
+    @JoinColumn(name = "application_id", nullable = true)
+    @ManyToOne
+    var application: Application? = null,
 
     @Column(name = "creation_date", nullable = false)
     var creationDate: LocalDateTime = dateTimeNow()

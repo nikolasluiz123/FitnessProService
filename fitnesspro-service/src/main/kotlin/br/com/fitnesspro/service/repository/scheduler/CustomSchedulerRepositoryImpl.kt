@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.repository.scheduler
 
 import br.com.fitnesspro.models.general.enums.EnumUserType
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerSituation
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.service.models.scheduler.Scheduler
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
