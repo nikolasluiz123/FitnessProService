@@ -40,8 +40,6 @@ data class User(
 
     @Column(nullable = false)
     var type: EnumUserType? = null,
-
-    var authenticated: Boolean = false,
 ): IntegratedModel, UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {

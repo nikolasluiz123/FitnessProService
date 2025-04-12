@@ -80,7 +80,6 @@ class TokenService(
                         email = user.email,
                         password = user.password,
                         type = user.type,
-                        authenticated = user.authenticated,
                     )
                 )
 
@@ -140,6 +139,16 @@ class TokenService(
         serviceToken.expirationDate = dateTimeNow()
 
         tokenRepository.save(serviceToken)
+    }
+
+    fun invalidateAllUserTokens(userId: String) {
+        val tokens = tokenRepository.findByUserIdAndExpirationDateIsNull(userId)
+
+        tokens.forEach {
+            it.expirationDate = dateTimeNow()
+        }
+
+        tokenRepository.saveAll(tokens)
     }
 
     fun invalidateAllTokens() {
@@ -220,7 +229,6 @@ class TokenService(
                 email = email,
                 password = password,
                 type = type,
-                authenticated = authenticated,
             )
         }
     }

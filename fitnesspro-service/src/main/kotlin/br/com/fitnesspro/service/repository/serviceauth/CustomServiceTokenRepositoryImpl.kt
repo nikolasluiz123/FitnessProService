@@ -144,7 +144,7 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
         query.setParameters(queryParams)
 
         return try {
-            query.singleResult
+            query.resultList.firstOrNull()
         } catch (ex: NoResultException) {
             null
         }

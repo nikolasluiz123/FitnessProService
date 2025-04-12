@@ -20,10 +20,6 @@ class UserService(
         }
 
         return userRepository.findByEmailAndPassword(authenticationDTO.email!!, authenticationDTO.password!!)?.let { user ->
-            user.authenticated = true
-
-            userRepository.save(user)
-
             val serviceTokenGenerationDTO = ServiceTokenGenerationDTO(type = EnumTokenType.USER_AUTHENTICATION_TOKEN, userId = user.id)
             tokenService.generateServiceToken(serviceTokenGenerationDTO).jwtToken
         } ?: throw UserNotFoundException("Usuário não encontrado")
@@ -31,9 +27,7 @@ class UserService(
 
     fun logout(authenticationDTO: AuthenticationDTO) {
         userRepository.findByEmail(authenticationDTO.email!!)?.let { user ->
-            user.authenticated = false
-
-            userRepository.save(user)
+            tokenService.invalidateAllUserTokens(user.id!!)
         }
     }
 }

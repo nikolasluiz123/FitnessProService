@@ -134,7 +134,6 @@ class PersonService(
             email = email,
             password = password,
             type = type,
-            authenticated = authenticated,
         )
     }
 
