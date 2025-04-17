@@ -55,7 +55,10 @@ class DeviceService(
     private fun Device.toDeviceDTO(): DeviceDTO {
         return DeviceDTO(
             id = id,
-            model = model
+            model = model,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            active = active
         )
     }
 }
