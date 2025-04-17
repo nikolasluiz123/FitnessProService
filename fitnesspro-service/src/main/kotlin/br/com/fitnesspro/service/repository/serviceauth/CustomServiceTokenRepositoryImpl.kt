@@ -31,10 +31,19 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
         val where = getWhereListServiceToken(filter, params)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            val sortField = filter.sort?.field
-            val order = if (filter.sort?.asc!!) "asc" else "desc"
+            if (filter.sort.isEmpty()) {
+                add(" order by t.creationDate desc, t.type asc ")
+            } else {
+                add(" order by ")
 
-            add(" order by t.$sortField $order ")
+                filter.sort.forEachIndexed { index, sort ->
+                    val sortField = sort.field.fieldName
+                    val order = if (sort.asc) "asc" else "desc"
+                    val comma = if (index == filter.sort.lastIndex) "" else ", "
+
+                    add(" t.$sortField $order$comma ")
+                }
+            }
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -55,18 +64,20 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
         return result
     }
 
-    private fun getFromListServiceToken() {
-        StringJoiner(QR_NL).apply {
+    private fun getFromListServiceToken(): StringJoiner {
+        return StringJoiner(QR_NL).apply {
             add(" from ${ServiceToken::class.java.name} t ")
             add(" left join t.user user ")
+            add(" left join t.application application ")
+            add(" left join t.device device ")
         }
     }
 
     private fun getWhereListServiceToken(
         filter: ServiceTokenFilter,
         params: MutableList<Parameter>
-    ) {
-        StringJoiner(QR_NL).apply {
+    ): StringJoiner {
+        return StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
             filter.creationDate?.let {
@@ -81,14 +92,24 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
                 params.add(Parameter(name = "pExpirationDateEnd", value = it.second))
             }
 
+            filter.tokenType?.let {
+                add(" and t.type = :pTokenType ")
+                params.add(Parameter(name = "pTokenType", value = it))
+            }
+
             filter.userEmail?.let {
                 add(" and user.email = :pUserEmail ")
                 params.add(Parameter(name = "pUserEmail", value = it))
             }
 
             filter.deviceId?.let {
-                add(" and t.deviceId = :pDeviceId ")
+                add(" and device.id = :pDeviceId ")
                 params.add(Parameter(name = "pDeviceId", value = it))
+            }
+
+            filter.applicationName?.let {
+                add(" and application.name :pApplicationName ")
+                params.add(Parameter(name = "pApplicationName", value = "%$it%"))
             }
         }
     }
@@ -97,7 +118,7 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
         val queryParams = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select count(log.id) ")
+            add(" select count(t.id) ")
         }
 
         val from = getFromListServiceToken()

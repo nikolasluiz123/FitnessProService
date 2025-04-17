@@ -15,7 +15,10 @@ class DeviceService(
 ) {
 
     fun saveDevice(deviceDTO: DeviceDTO) {
-        deviceRepository.save(deviceDTO.toDevice())
+        val device = deviceDTO.toDevice()
+
+        deviceRepository.save(device)
+        deviceDTO.id = device.id
     }
 
     fun getListDevice(filter: DeviceFilter, pageInfos: PageInfos): List<DeviceDTO> {

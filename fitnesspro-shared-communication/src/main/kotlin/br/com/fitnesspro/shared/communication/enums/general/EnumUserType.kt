@@ -1,4 +1,4 @@
-package br.com.fitnesspro.models.general.enums
+package br.com.fitnesspro.shared.communication.enums.general
 
 enum class EnumUserType {
     PERSONAL_TRAINER,

@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.models.general.enums.EnumUserType
+import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.service.models.base.IntegratedModel
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

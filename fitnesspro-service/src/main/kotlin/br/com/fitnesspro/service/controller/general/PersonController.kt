@@ -9,12 +9,11 @@ import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
-import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
+import br.com.fitnesspro.shared.communication.query.filter.PersonFilter
+import br.com.fitnesspro.shared.communication.responses.*
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -166,6 +165,29 @@ class PersonController(
     fun getPersonByEmail(@PathVariable email: String): ResponseEntity<SingleValueServiceResponse<PersonDTO?>> {
         val person = personService.getPersonByEmail(email)
         return ResponseEntity.ok(SingleValueServiceResponse(value = person, code = HttpStatus.OK.value(), success = true))
+    }
+
+    @GetMapping(EndPointsV1.PERSON_LIST)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun getListPerson(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<PersonDTO>> {
+        val defaultGSon = GsonBuilder().defaultGSon()
+        val queryFilter = defaultGSon.fromJson(filter, PersonFilter::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, CommonPageInfos::class.java)
+
+        val persons = personService.getListPersons(filter = queryFilter, pageInfos = commonPageInfos)
+        return ResponseEntity.ok(ReadServiceResponse(values = persons, code = HttpStatus.OK.value(), success = true))
+    }
+
+    @GetMapping(EndPointsV1.PERSON_COUNT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun getCountListPerson(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
+        val defaultGSon = GsonBuilder().defaultGSon()
+        val queryFilter = defaultGSon.fromJson(filter, PersonFilter::class.java)
+
+        val count = personService.getCountListPersons(filter = queryFilter)
+        return ResponseEntity.ok(SingleValueServiceResponse(value = count, code = HttpStatus.OK.value(), success = true))
     }
 
 }

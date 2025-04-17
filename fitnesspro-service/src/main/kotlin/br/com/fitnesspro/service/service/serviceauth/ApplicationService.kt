@@ -4,7 +4,6 @@ import br.com.fitnesspro.service.models.serviceauth.Application
 import br.com.fitnesspro.service.repository.serviceauth.IApplicationRepository
 import br.com.fitnesspro.service.repository.serviceauth.ICustomApplicationRepository
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
-import br.com.fitnesspro.shared.communication.query.filter.ApplicationFilter
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,11 +13,14 @@ class ApplicationService(
 ) {
 
     fun saveApplication(applicationDTO: ApplicationDTO) {
-        applicationRepository.save(applicationDTO.toApplication())
+        val application = applicationDTO.toApplication()
+
+        applicationRepository.save(application)
+        applicationDTO.id = application.id
     }
 
-    fun getListApplications(filter: ApplicationFilter): List<ApplicationDTO> {
-        return customApplicationRepository.getListApplication(filter).map { it.toApplicationDTO() }
+    fun getListApplications(): List<ApplicationDTO> {
+        return customApplicationRepository.getListApplication().map { it.toApplicationDTO() }
     }
 
     private fun ApplicationDTO.toApplication(): Application {
@@ -41,7 +43,7 @@ class ApplicationService(
 
             else -> {
                 Application(
-                    id = id,
+                    id = id!!,
                     active = active,
                     name = name
                 )

@@ -28,7 +28,19 @@ class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
         val where = getWhereListDevice(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by d.creationDate desc ")
+            if (filter.sort.isEmpty()) {
+                add(" order by d.model, d.creationDate desc ")
+            } else {
+                add(" order by ")
+
+                filter.sort.forEachIndexed { index, sort ->
+                    val sortField = sort.field.fieldName
+                    val order = if (sort.asc) "asc" else "desc"
+                    val comma = if (index == filter.sort.lastIndex) "" else ", "
+
+                    add(" d.$sortField $order$comma ")
+                }
+            }
         }
 
         val sql = StringJoiner(QR_NL).apply {

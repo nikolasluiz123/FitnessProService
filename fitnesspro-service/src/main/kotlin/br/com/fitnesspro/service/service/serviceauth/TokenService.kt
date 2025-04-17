@@ -2,7 +2,6 @@ package br.com.fitnesspro.service.service.serviceauth
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.service.exception.BusinessException
-import br.com.fitnesspro.service.exception.NotFoundTokenException
 import br.com.fitnesspro.service.models.serviceauth.ServiceToken
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.service.repository.serviceauth.IApplicationRepository
@@ -16,6 +15,7 @@ import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenGenerationDTO
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
+import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ServiceTokenFilter
 import io.jsonwebtoken.Jwts
@@ -214,7 +214,8 @@ class TokenService(
         return serviceToken.device?.run {
             DeviceDTO(
                 id = id,
-                model = model
+                model = model,
+                active = active
             )
         }
     }

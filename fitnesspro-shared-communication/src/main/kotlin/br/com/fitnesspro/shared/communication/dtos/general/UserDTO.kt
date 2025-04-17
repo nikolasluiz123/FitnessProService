@@ -1,6 +1,6 @@
 package br.com.fitnesspro.shared.communication.dtos.general
 
-import br.com.fitnesspro.models.general.enums.EnumUserType
+import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Email

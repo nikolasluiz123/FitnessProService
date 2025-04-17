@@ -8,7 +8,7 @@ data class ApplicationDTO(
     override var id: String? = null,
 
     @Schema(description = "Nome da aplicação", required = true)
-    val name: String? = null,
+    var name: String? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     var active: Boolean = true,

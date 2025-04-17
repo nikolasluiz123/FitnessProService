@@ -1,7 +1,6 @@
 package br.com.fitnesspro.service.service.general
 
 import br.com.fitnesspro.core.helper.HashHelper
-import br.com.fitnesspro.models.general.enums.EnumUserType
 import br.com.fitnesspro.service.config.application.cache.PERSON_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.config.application.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.exception.BusinessException
@@ -13,8 +12,11 @@ import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
+import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.PersonFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
@@ -77,6 +79,14 @@ class PersonService(
     @Cacheable(cacheNames = [PERSON_USER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<UserDTO> {
         return customPersonRepository.getUsersImport(filter, pageInfos).map { it.toUserDTO() }
+    }
+
+    fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<PersonDTO> {
+        return customPersonRepository.getListPersons(filter, pageInfos)
+    }
+
+    fun getCountListPersons(filter: PersonFilter): Int {
+        return customPersonRepository.getCountListPersons(filter)
     }
 
     private fun Person.toPersonDTO(): PersonDTO {

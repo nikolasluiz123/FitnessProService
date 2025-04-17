@@ -14,7 +14,7 @@ data class ServiceTokenDTO(
     val jwtToken: String? = null,
 
     @Schema(description = "Tipo de token", required = true, readOnly = true)
-    val type: EnumTokenType? = null,
+    var type: EnumTokenType? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = true, readOnly = true)
     val creationDate: LocalDateTime? = null,
@@ -23,11 +23,11 @@ data class ServiceTokenDTO(
     val expirationDate: LocalDateTime? = null,
 
     @Schema(description = "DTO do usuário a qual o token pertence", required = false, readOnly = true)
-    val userDTO: UserDTO? = null,
+    var userDTO: UserDTO? = null,
 
     @Schema(description = "DTO do dispositivo a qual o token pertence", required = false, readOnly = true)
-    val deviceDTO: DeviceDTO? = null,
+    var deviceDTO: DeviceDTO? = null,
 
     @Schema(description = "DTO da aplicação a qual o token pertence", required = false, readOnly = true)
-    val applicationDTO: ApplicationDTO? = null
+    var applicationDTO: ApplicationDTO? = null
 ) : BaseDTO

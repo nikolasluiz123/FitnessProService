@@ -6,10 +6,10 @@ import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
-import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.paging.PageInfos
+import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
+import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -109,10 +109,14 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         val where = getWhereListAcademy(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            val sortField = filter.sort?.field!!
-            val order = if (filter.sort?.asc!!) "asc" else "desc"
+            if (filter.sort == null) {
+                add(" order by a.name ")
+            } else {
+                val sortField = filter.sort?.field?.fieldName!!
+                val order = if (filter.sort?.asc!!) "asc" else "desc"
 
-            add(" order by a.$sortField $order ")
+                add(" order by a.$sortField $order ")
+            }
         }
 
         val sql = StringJoiner(QR_NL).apply {

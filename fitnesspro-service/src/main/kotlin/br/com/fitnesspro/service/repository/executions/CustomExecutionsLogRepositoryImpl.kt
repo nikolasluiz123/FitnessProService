@@ -180,10 +180,14 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         val where = getWhereListExecutionLogPackage(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            val sortField = filter.sort?.field
-            val order = if (filter.sort?.asc!!) "asc" else "desc"
+            if (filter.sort == null) {
+                add(" order by lp.service_execution_start desc ")
+            } else {
+                val sortField = filter.sort?.field?.fieldName
+                val order = if (filter.sort?.asc!!) "asc" else "desc"
 
-            add(" order by lp.$sortField $order ")
+                add(" order by lp.$sortField $order ")
+            }
         }
 
         val sql = StringJoiner(QR_NL).apply {

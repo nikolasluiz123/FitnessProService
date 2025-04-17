@@ -7,17 +7,18 @@ import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.DeviceFilter
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(EndPointsV1.DEVICE_V1)
@@ -25,14 +26,6 @@ import org.springframework.web.bind.annotation.*
 class DeviceController(
     private val deviceService: DeviceService
 ) {
-
-    @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveDevice(@RequestBody @Valid deviceDTO: DeviceDTO): ResponseEntity<PersistenceServiceResponse> {
-        deviceService.saveDevice(deviceDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
-    }
 
     @GetMapping
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
@@ -49,7 +42,7 @@ class DeviceController(
     @GetMapping(EndPointsV1.DEVICE_COUNT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getCountListDevice(@RequestParam filter: String, ): ResponseEntity<SingleValueServiceResponse<Int>> {
+    fun getCountListDevice(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, DeviceFilter::class.java)
 

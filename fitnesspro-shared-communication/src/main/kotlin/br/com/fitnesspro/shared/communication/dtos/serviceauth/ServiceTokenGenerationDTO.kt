@@ -7,14 +7,14 @@ import jakarta.validation.constraints.NotNull
 data class ServiceTokenGenerationDTO(
     @Schema(description = "Tipo de token", required = true)
     @field:NotNull(message = "O tipo do token é obrigatório")
-    val type: EnumTokenType? = null,
+    var type: EnumTokenType? = null,
 
     @Schema(description = "Identificador do usuário a qual o token pertence", required = false)
-    val userId: String? = null,
+    var userId: String? = null,
 
     @Schema(description = "Identificador do dispositivo a qual o token pertence", required = false)
-    val deviceId: String? = null,
+    var deviceId: String? = null,
 
     @Schema(description = "Identificador da aplicação a qual o token pertence", required = false)
-    val applicationId: String? = null
+    var applicationId: String? = null
 )

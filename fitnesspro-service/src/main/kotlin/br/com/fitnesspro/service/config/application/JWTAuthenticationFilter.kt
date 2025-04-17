@@ -2,7 +2,7 @@ package br.com.fitnesspro.service.config.application
 
 import br.com.fitnesspro.service.config.application.customdetails.ApplicationUserDetails
 import br.com.fitnesspro.service.config.application.customdetails.DeviceUserDetails
-import br.com.fitnesspro.service.exception.NotFoundTokenException
+import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.service.service.serviceauth.TokenService
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType.*

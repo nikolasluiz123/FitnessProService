@@ -43,7 +43,7 @@ class ServiceTokenController(
         return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
-    @PostMapping(EndPointsV1.TOKEN_INVALIDATE)
+    @PostMapping(EndPointsV1.TOKEN_INVALIDATE_ALL)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
     fun invalidateAllTokens(): ResponseEntity<FitnessProServiceResponse> {
@@ -66,7 +66,7 @@ class ServiceTokenController(
     @GetMapping(EndPointsV1.TOKENS_COUNT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getCountListExecutionLog(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
+    fun getCountListServiceTokens(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultGSon()
         val queryFilter = defaultGSon.fromJson(filter, ServiceTokenFilter::class.java)
 
