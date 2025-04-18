@@ -143,7 +143,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
 
     private fun getWhereListAcademy(filter: AcademyFilter, queryParams: MutableList<Parameter>): StringJoiner {
         return StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where a.active = true ")
 
             filter.name?.let {
                 add(" and a.name like :name ")
@@ -155,8 +155,9 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
                 queryParams.add(Parameter(name = "address", value = "%$it%"))
             }
 
-            if(filter.onlyActives) {
-                add(" and a.active = true ")
+            filter.phone?.let {
+                add(" and a.phone like :phone ")
+                queryParams.add(Parameter(name = "phone", value = "%$it%"))
             }
         }
     }

@@ -7,4 +7,5 @@ enum class EnumAcademyFields(override val fieldName: String): IEnumFields {
     UPDATE_DATE("updateDate"),
     NAME("name"),
     ADDRESS("address"),
+    PHONE("phone")
 }
