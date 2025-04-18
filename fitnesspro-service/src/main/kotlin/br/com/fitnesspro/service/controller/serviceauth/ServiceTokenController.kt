@@ -82,4 +82,12 @@ class ServiceTokenController(
         return ResponseEntity.ok(SingleValueServiceResponse(value = secret, code = HttpStatus.OK.value(), success = true))
     }
 
+    @GetMapping(EndPointsV1.TOKEN_BY_ID)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun getToken(@PathVariable("id") tokenId: String): ResponseEntity<SingleValueServiceResponse<ServiceTokenDTO>> {
+        val token = tokenService.findServiceTokenDTOById(tokenId)
+        return ResponseEntity.ok(SingleValueServiceResponse(value = token, code = HttpStatus.OK.value(), success = true))
+    }
+
 }

@@ -63,6 +63,7 @@ object EndPointsV1 {
     const val TOKEN_INVALIDATE_ALL = "/invalidate"
     const val TOKEN_SECRET = "/secret"
     const val TOKENS_COUNT = "/count"
+    const val TOKEN_BY_ID = "/{id}"
 
     const val DEVICE = "device"
     const val DEVICE_V1 = "$API_V1/$DEVICE"

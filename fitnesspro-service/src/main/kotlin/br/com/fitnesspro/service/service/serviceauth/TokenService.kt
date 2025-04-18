@@ -26,6 +26,7 @@ import org.springframework.security.crypto.keygen.Base64StringKeyGenerator
 import org.springframework.stereotype.Service
 import java.security.Key
 import kotlin.jvm.optionals.getOrElse
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class TokenService(
@@ -187,6 +188,10 @@ class TokenService(
 
     fun getServiceTokenDTO(jwtToken: String): ServiceTokenDTO? {
         return customServiceTokenRepository.findValidServiceToken(jwtToken)?.toServiceTokenDTO()
+    }
+
+    fun findServiceTokenDTOById(tokenId: String): ServiceTokenDTO? {
+        return tokenRepository.findById(tokenId).getOrNull()?.toServiceTokenDTO()
     }
 
     fun getListServiceToken(filter: ServiceTokenFilter, pageInfos: CommonPageInfos): List<ServiceTokenDTO> {
