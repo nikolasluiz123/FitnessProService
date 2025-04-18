@@ -28,7 +28,7 @@ data class PersonDTO(
     var birthDate: LocalDate? = null,
 
     @Schema(description = "Telefone", example = "47999999999", required = false)
-    @field:Size(min = 1, max = 11, message = "O telefone deve ter entre 1 e 11 caracteres")
+    @field:Size(max = 11, message = "O telefone deve ter entre 1 e 11 caracteres")
     var phone: String? = null,
 
     @Schema(description = "Usuário da Pessoa", required = true)

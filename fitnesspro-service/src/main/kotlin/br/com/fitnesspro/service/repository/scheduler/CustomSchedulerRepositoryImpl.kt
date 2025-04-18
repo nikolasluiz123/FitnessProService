@@ -1,12 +1,12 @@
 package br.com.fitnesspro.service.repository.scheduler
 
-import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
-import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.service.models.scheduler.Scheduler
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.getResultList
 import br.com.fitnesspro.service.repository.common.query.setParameters
+import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import jakarta.persistence.EntityManager
@@ -69,6 +69,10 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
 
                 EnumUserType.ACADEMY_MEMBER -> {
                     add(" and academy_member_person_id = :pPersonId ")
+                }
+
+                EnumUserType.ADMINISTRATOR -> {
+                    throw IllegalArgumentException("Valor inválido para userType")
                 }
             }
 

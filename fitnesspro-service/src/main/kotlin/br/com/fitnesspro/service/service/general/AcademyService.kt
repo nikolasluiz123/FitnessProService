@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.service.general
 
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.service.config.application.cache.ACADEMY_IMPORT_CACHE_NAME
@@ -182,21 +182,4 @@ class AcademyService(
             active = active,
         )
     }
-
-    fun createMockData() {
-        val academies = mutableListOf<AcademyDTO>()
-
-        for (i in 0..2000) {
-            academies.add(
-                AcademyDTO(
-                    name = "Academia $i",
-                    address = "Endereço $i",
-                    phone = "$i"
-                )
-            )
-        }
-
-        saveAcademyBatch(academies)
-    }
-
 }

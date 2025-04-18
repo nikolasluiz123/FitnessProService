@@ -24,13 +24,13 @@ class ApplicationController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveApplication(@RequestBody @Valid applicationDTO: ApplicationDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun saveApplication(@RequestBody @Valid applicationDTO: ApplicationDTO): ResponseEntity<PersistenceServiceResponse<ApplicationDTO>> {
         applicationService.saveApplication(applicationDTO)
         return ResponseEntity.ok(
             PersistenceServiceResponse(
                 code = HttpStatus.OK.value(),
                 success = true,
-                id = applicationDTO.id
+                savedDTO = applicationDTO
             )
         )
     }

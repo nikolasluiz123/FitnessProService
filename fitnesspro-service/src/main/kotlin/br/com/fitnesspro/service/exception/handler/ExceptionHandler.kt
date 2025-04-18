@@ -2,6 +2,7 @@ package br.com.fitnesspro.service.exception.handler
 
 import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.exception.BusinessException
+import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
@@ -20,7 +21,7 @@ class ExceptionHandler {
     fun handlerServiceTimeout(
         exception: TransactionException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
@@ -36,7 +37,7 @@ class ExceptionHandler {
     fun handlerEntityNotFound(
         exception: EntityNotFoundException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
@@ -52,7 +53,7 @@ class ExceptionHandler {
     fun handlerFieldValidationExceptions(
         exception: MethodArgumentNotValidException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
@@ -70,7 +71,7 @@ class ExceptionHandler {
     fun handlerValidationExceptions(
         exception: BusinessException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
@@ -86,7 +87,7 @@ class ExceptionHandler {
     fun handlerExceptions(
         exception: Exception,
         request: HttpServletRequest
-    ): PersistenceServiceResponse {
+    ): PersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)

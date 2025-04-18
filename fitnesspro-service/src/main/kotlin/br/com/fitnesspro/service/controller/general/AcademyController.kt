@@ -32,9 +32,9 @@ class AcademyController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveAcademy(@RequestBody @Valid academyDTO: AcademyDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun saveAcademy(@RequestBody @Valid academyDTO: AcademyDTO): ResponseEntity<PersistenceServiceResponse<AcademyDTO>> {
         academyService.saveAcademy(academyDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, id = academyDTO.id))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = academyDTO))
     }
 
     @PostMapping(EndPointsV1.ACADEMY_EXPORT)
@@ -53,15 +53,6 @@ class AcademyController(
                 success = true
             )
         )
-    }
-
-    @PostMapping(EndPointsV1.ACADEMY_MOCK)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveMock(): ResponseEntity<PersistenceServiceResponse> {
-        academyService.createMockData()
-
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @GetMapping(EndPointsV1.ACADEMY_IMPORT)

@@ -35,9 +35,9 @@ class PersonController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse<PersonDTO>> {
         personService.savePerson(personDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = personDTO))
     }
 
     @PostMapping(EndPointsV1.PERSON_EXPORT)
@@ -58,21 +58,12 @@ class PersonController(
         )
     }
 
-    @PostMapping(EndPointsV1.PERSON_MOCK)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun savePersonMock(): ResponseEntity<PersistenceServiceResponse> {
-        personService.savePersonMock()
-
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
-    }
-
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun savePersonAcademyTime(@RequestBody @Valid personAcademyTimeDTO: PersonAcademyTimeDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun savePersonAcademyTime(@RequestBody @Valid personAcademyTimeDTO: PersonAcademyTimeDTO): ResponseEntity<PersistenceServiceResponse<PersonAcademyTimeDTO>> {
         academyService.savePersonAcademyTime(personAcademyTimeDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = personAcademyTimeDTO))
     }
 
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_EXPORT)

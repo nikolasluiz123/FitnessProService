@@ -12,7 +12,6 @@ import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
@@ -20,7 +19,6 @@ import br.com.fitnesspro.shared.communication.query.filter.PersonFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class PersonService(
@@ -44,6 +42,9 @@ class PersonService(
 
         userRepository.save(person.user!!)
         personRepository.save(person)
+
+        personDTO.id = person.id
+        personDTO.user?.id = person.user?.id
     }
 
     @Throws(BusinessException::class)
@@ -111,6 +112,7 @@ class PersonService(
                     birthDate = birthDate,
                     phone = phone,
                     user = user?.toUser(),
+                    active = active
                 )
             }
 
@@ -120,6 +122,7 @@ class PersonService(
                     birthDate = birthDate,
                     phone = phone,
                     user = user?.toUser(),
+                    active = active
                 )
             }
 
@@ -130,6 +133,7 @@ class PersonService(
                     birthDate = birthDate,
                     phone = phone,
                     user = user?.toUser(),
+                    active = active
                 )
             }
         }
@@ -179,27 +183,6 @@ class PersonService(
                 )
             }
         }
-    }
-
-    fun savePersonMock() {
-        val persons = mutableListOf<PersonDTO>()
-
-        for (i in 0..2000) {
-            persons.add(
-                PersonDTO(
-                    name = "Pessoa $i",
-                    phone = "$i",
-                    birthDate = LocalDate.of(2000, 5, 31),
-                    user = UserDTO(
-                        email = "email$i@gmail.com",
-                        password = "123",
-                        type = listOf(EnumUserType.PERSONAL_TRAINER, EnumUserType.NUTRITIONIST, EnumUserType.ACADEMY_MEMBER).random()
-                    )
-                )
-            )
-        }
-
-        savePersonList(persons)
     }
 
     fun getPersonByEmail(email: String): PersonDTO? {

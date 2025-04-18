@@ -22,7 +22,6 @@ object EndPointsV1 {
     const val ACADEMY_IMPORT = "/import"
     const val ACADEMY_LIST = "/list"
     const val ACADEMY_COUNT = "/count"
-    const val ACADEMY_MOCK = "/mock"
 
     const val AUTHENTICATION = "authentication"
     const val AUTHENTICATION_V1 = "$API_V1/$AUTHENTICATION"

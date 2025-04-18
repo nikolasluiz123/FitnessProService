@@ -2,6 +2,7 @@ package br.com.fitnesspro.shared.communication.dtos.general
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
 data class AuthenticationDTO(
@@ -13,5 +14,9 @@ data class AuthenticationDTO(
     @Schema(description = "Senha do usuário", example = "senha123", required = true)
     @field:NotBlank(message = "A senha é obrigatória")
     @field:Size(min = 1, max = 1024, message = "A senha deve ter entre 1 e 1024 caracteres")
-    var password: String? = null
+    var password: String? = null,
+
+    @Schema(description = "Indica se a autenticação é de um administrador. Isso implica em validações internas")
+    @field:NotNull(message = "O campo adminAuth é obrigatório")
+    var adminAuth: Boolean = false
 )

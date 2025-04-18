@@ -32,9 +32,9 @@ class SchedulerController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse<SchedulerDTO>> {
         schedulerService.saveScheduler(schedulerDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = schedulerDTO))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
@@ -58,9 +58,9 @@ class SchedulerController(
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse<SchedulerConfigDTO>> {
         schedulerService.saveSchedulerConfig(schedulerConfigDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = schedulerConfigDTO))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)

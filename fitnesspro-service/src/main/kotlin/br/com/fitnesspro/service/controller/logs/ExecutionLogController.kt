@@ -35,9 +35,9 @@ class ExecutionLogController(
     fun updateExecutionLog(
         @PathVariable executionLogId: String,
         @RequestBody dto: UpdatableExecutionLogInfosDTO
-    ): ResponseEntity<PersistenceServiceResponse> {
+    ): ResponseEntity<PersistenceServiceResponse<*>> {
         logService.updateExecutionLog(executionLogId, dto)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = null))
     }
 
     @PutMapping("${EndPointsV1.LOGS_PACKAGE}/{executionLogPackageId}")
@@ -46,9 +46,9 @@ class ExecutionLogController(
     fun updateExecutionLogPackage(
         @PathVariable executionLogPackageId: String,
         @RequestBody dto: UpdatableExecutionLogPackageInfosDTO
-    ): ResponseEntity<PersistenceServiceResponse> {
+    ): ResponseEntity<PersistenceServiceResponse<*>> {
         logService.updateExecutionLogPackage(executionLogPackageId, dto)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = null))
     }
 
     @GetMapping

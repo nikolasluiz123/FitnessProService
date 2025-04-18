@@ -27,15 +27,15 @@ class WorkoutController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkout(@RequestBody @Valid workoutDTO: WorkoutDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun saveWorkout(@RequestBody @Valid workoutDTO: WorkoutDTO): ResponseEntity<PersistenceServiceResponse<WorkoutDTO>> {
         workoutService.saveWorkout(workoutDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = workoutDTO))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<WorkoutDTO>): ResponseEntity<PersistenceServiceResponse> {
+    fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<WorkoutDTO>): ResponseEntity<PersistenceServiceResponse<WorkoutDTO>> {
         workoutService.saveWorkoutBatch(workoutDTOList)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
@@ -43,15 +43,15 @@ class WorkoutController(
     @PostMapping(EndPointsV1.WORKOUT_GROUP)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse> {
+    fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse<WorkoutGroupDTO>> {
         workoutService.saveWorkoutGroup(workoutGroupDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = workoutGroupDTO))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupDTO>): ResponseEntity<PersistenceServiceResponse> {
+    fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupDTO>): ResponseEntity<PersistenceServiceResponse<WorkoutGroupDTO>> {
         workoutService.saveWorkoutGroupBatch(workoutGroupList)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
