@@ -47,17 +47,17 @@ class JWTAuthenticationFilter(
 
             when (serviceToken.type!!) {
                 USER_AUTHENTICATION_TOKEN -> {
-                    val userDetails = userDetailsService.loadUserByUsername(serviceToken.userDTO?.email!!)
+                    val userDetails = userDetailsService.loadUserByUsername(serviceToken.user?.email!!)
                     authenticate(userDetails, request)
                 }
 
                 DEVICE_TOKEN -> {
-                    val deviceDetails = DeviceUserDetails(serviceToken.deviceDTO?.id!!)
+                    val deviceDetails = DeviceUserDetails(serviceToken.device?.id!!)
                     authenticate(deviceDetails, request)
                 }
 
                 APPLICATION_TOKEN -> {
-                    val applicationDetails = ApplicationUserDetails(serviceToken.applicationDTO?.id!!)
+                    val applicationDetails = ApplicationUserDetails(serviceToken.application?.id!!)
                     authenticate(applicationDetails, request)
                 }
             }

@@ -49,10 +49,10 @@ class ExecutionsLogService(
         val executionType = getExecutionType(request.method, request.requestURI)
 
         when {
-            serviceTokenDTO?.userDTO != null -> {
+            serviceTokenDTO?.user != null -> {
                 if (executionType in listOf(IMPORTATION, EXPORTATION)) {
                     val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
-                        userEmail = serviceTokenDTO.userDTO?.email!!,
+                        userEmail = serviceTokenDTO.user?.email!!,
                         executionType = executionType,
                         endPoint = request.requestURI,
                         methodName = handler.method.name
@@ -61,19 +61,19 @@ class ExecutionsLogService(
                     if (notFinishedExecutionLog != null) {
                         createExecutionPackageLog(notFinishedExecutionLog, request)
                     } else {
-                        createExecutionLog(request, handler, userDTO = serviceTokenDTO.userDTO!!)
+                        createExecutionLog(request, handler, userDTO = serviceTokenDTO.user!!)
                     }
                 } else {
-                    createExecutionLog(request, handler, userDTO = serviceTokenDTO.userDTO!!)
+                    createExecutionLog(request, handler, userDTO = serviceTokenDTO.user!!)
                 }
             }
 
-            serviceTokenDTO?.deviceDTO != null -> {
-                createExecutionLog(request, handler, deviceDTO = serviceTokenDTO.deviceDTO!!)
+            serviceTokenDTO?.device != null -> {
+                createExecutionLog(request, handler, deviceDTO = serviceTokenDTO.device!!)
             }
 
-            serviceTokenDTO?.applicationDTO != null -> {
-                createExecutionLog(request, handler, applicationDTO = serviceTokenDTO.applicationDTO!!)
+            serviceTokenDTO?.application != null -> {
+                createExecutionLog(request, handler, applicationDTO = serviceTokenDTO.application!!)
             }
         }
     }

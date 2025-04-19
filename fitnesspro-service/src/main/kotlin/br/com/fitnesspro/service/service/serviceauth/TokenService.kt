@@ -73,7 +73,7 @@ class TokenService(
                     creationDate = creationDate,
                     expirationDate = expirationDate,
                     type = dto.type!!,
-                    userDTO = UserDTO(
+                    user = UserDTO(
                         id = user.id,
                         creationDate = user.creationDate,
                         updateDate = user.updateDate,
@@ -103,7 +103,7 @@ class TokenService(
                     creationDate = creationDate,
                     expirationDate = expirationDate,
                     type = dto.type!!,
-                    deviceDTO = DeviceDTO(
+                    device = DeviceDTO(
                         id = device.id,
                         model = device.model
                     )
@@ -122,7 +122,7 @@ class TokenService(
                     jwtToken = generateTokenJWT(dto.applicationId!!),
                     creationDate = creationDate,
                     type = dto.type!!,
-                    applicationDTO = ApplicationDTO(
+                    application = ApplicationDTO(
                         id = application.id,
                         name = application.name
                     )
@@ -166,9 +166,9 @@ class TokenService(
             creationDate = serviceToken.creationDate,
             expirationDate = serviceToken.expirationDate,
             type = serviceToken.type,
-            user = serviceToken.userDTO?.id?.let { userRepository.findById(it).get() },
-            device = serviceToken.deviceDTO?.id?.let { deviceRepository.findById(it).get() },
-            application = serviceToken.applicationDTO?.id?.let { applicationRepository.findById(it).get() }
+            user = serviceToken.user?.id?.let { userRepository.findById(it).get() },
+            device = serviceToken.device?.id?.let { deviceRepository.findById(it).get() },
+            application = serviceToken.application?.id?.let { applicationRepository.findById(it).get() }
         )
 
         tokenRepository.save(token)
@@ -209,9 +209,9 @@ class TokenService(
             creationDate = creationDate,
             expirationDate = expirationDate,
             type = type,
-            userDTO = getUserDTOFromServiceToken(this),
-            deviceDTO = getDeviceDTOFromServiceToken(this),
-            applicationDTO = getApplicationDTOFromServiceToken(this)
+            user = getUserDTOFromServiceToken(this),
+            device = getDeviceDTOFromServiceToken(this),
+            application = getApplicationDTOFromServiceToken(this)
         )
     }
 

@@ -23,11 +23,11 @@ data class ServiceTokenDTO(
     val expirationDate: LocalDateTime? = null,
 
     @Schema(description = "DTO do usuário a qual o token pertence", required = false, readOnly = true)
-    var userDTO: UserDTO? = null,
+    var user: UserDTO? = null,
 
     @Schema(description = "DTO do dispositivo a qual o token pertence", required = false, readOnly = true)
-    var deviceDTO: DeviceDTO? = null,
+    var device: DeviceDTO? = null,
 
     @Schema(description = "DTO da aplicação a qual o token pertence", required = false, readOnly = true)
-    var applicationDTO: ApplicationDTO? = null
+    var application: ApplicationDTO? = null
 ) : BaseDTO
