@@ -2,11 +2,11 @@ package br.com.fitnesspro.service.config.application
 
 import br.com.fitnesspro.service.config.application.customdetails.ApplicationUserDetails
 import br.com.fitnesspro.service.config.application.customdetails.DeviceUserDetails
-import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.service.service.serviceauth.TokenService
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType.*
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
+import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
@@ -33,16 +33,16 @@ class JWTAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val authHeader: String? = request.getHeader("Authorization")
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response)
-            return
-        }
-
-        val jwtToken = authHeader.substring(7)
-
         try {
+            val authHeader: String? = request.getHeader("Authorization")
+
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                throw NotFoundTokenException()
+            }
+
+            val jwtToken = authHeader.substring(7)
+
+
             val serviceToken = service.getValidatedServiceToken(jwtToken)
 
             when (serviceToken.type!!) {
