@@ -1,7 +1,5 @@
 package br.com.fitnesspro.service.service.logs
 
-import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
-import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType.*
 import br.com.fitnesspro.service.config.request.EnumRequestAttributes
 import br.com.fitnesspro.service.models.logs.ExecutionLog
 import br.com.fitnesspro.service.models.logs.ExecutionLogPackage
@@ -20,6 +18,8 @@ import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPac
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType.*
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
@@ -179,6 +179,8 @@ class ExecutionsLogService(
             endPoint = endPoint,
             methodName = methodName,
             userEmail = user?.email,
+            deviceId = device?.id,
+            applicationName = application?.name,
             pageSize = pageSize,
             lastUpdateDate = lastUpdateDate,
             creationDate = creationDate

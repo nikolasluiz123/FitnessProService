@@ -1,6 +1,5 @@
 package br.com.fitnesspro.service.repository.executions
 
-import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.service.models.logs.ExecutionLog
 import br.com.fitnesspro.service.models.logs.ExecutionLogPackage
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL
@@ -8,6 +7,7 @@ import br.com.fitnesspro.service.repository.common.query.Parameter
 import br.com.fitnesspro.service.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState.PENDING
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState.RUNNING
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
@@ -58,6 +58,8 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         return StringJoiner(QR_NL).apply {
             add(" from ${ExecutionLog::class.java.name} log ")
             add(" left join log.user user ")
+            add(" left join log.device device ")
+            add(" left join log.application application ")
         }
     }
 
@@ -89,8 +91,18 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
             }
 
             filter.userEmail?.let {
-                add(" and user.email = :userEmail ")
-                queryParams.add(Parameter(name = "userEmail", value = it))
+                add(" and user.email like :userEmail ")
+                queryParams.add(Parameter(name = "userEmail", value = "%$it%"))
+            }
+
+            filter.deviceId?.let {
+                add(" and device.id like :deviceId ")
+                queryParams.add(Parameter(name = "deviceId", value = "%$it%"))
+            }
+
+            filter.applicationName?.let {
+                add(" and application.name like :applicationName ")
+                queryParams.add(Parameter(name = "applicationName", value = "%$it%"))
             }
         }
     }

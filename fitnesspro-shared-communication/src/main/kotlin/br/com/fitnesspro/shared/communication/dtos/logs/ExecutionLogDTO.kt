@@ -1,8 +1,8 @@
 package br.com.fitnesspro.shared.communication.dtos.logs
 
-import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -22,8 +22,14 @@ data class ExecutionLogDTO(
     @Schema(description = "Nome do método da classe Controller que foi invocado", required = true)
     val methodName: String? = null,
 
-    @Schema(description = "E-mail do usuário que disparou a execução", required = true)
+    @Schema(description = "E-mail do usuário que disparou a execução", required = false)
     val userEmail: String? = null,
+
+    @Schema(description = "Id do dispositivo que disparou a execução", required = false)
+    val deviceId: String? = null,
+
+    @Schema(description = "Nome da aplicação que disparou a execução", required = false)
+    val applicationName: String? = null,
 
     @Schema(description = "Quantidade de itens por página", required = false)
     var pageSize: Int? = null,
