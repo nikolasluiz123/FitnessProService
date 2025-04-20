@@ -1,6 +1,6 @@
 package br.com.fitnesspro.shared.communication.query.filter
 
-import br.com.fitnesspro.models.executions.enums.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 
 data class ExecutionLogsFilter(

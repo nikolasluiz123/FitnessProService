@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.repository.executions
 
-import br.com.fitnesspro.models.executions.enums.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.service.models.logs.ExecutionLog
 import br.com.fitnesspro.service.models.logs.ExecutionLogPackage
 import br.com.fitnesspro.service.repository.common.helper.Constants.QR_NL

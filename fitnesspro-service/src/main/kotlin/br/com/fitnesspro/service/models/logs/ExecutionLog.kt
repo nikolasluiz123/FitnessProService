@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.models.logs
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.models.executions.enums.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.service.models.general.User
 import br.com.fitnesspro.service.models.serviceauth.Application
 import br.com.fitnesspro.service.models.serviceauth.Device

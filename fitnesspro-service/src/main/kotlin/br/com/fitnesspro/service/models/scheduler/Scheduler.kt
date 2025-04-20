@@ -1,7 +1,7 @@
 package br.com.fitnesspro.service.models.scheduler
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.service.models.base.AuditableModel
 import br.com.fitnesspro.service.models.base.IntegratedModel

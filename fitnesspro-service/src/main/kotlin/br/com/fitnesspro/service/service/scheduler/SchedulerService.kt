@@ -4,7 +4,7 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.service.config.application.cache.SCHEDULER_CONFIG_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.config.application.cache.SCHEDULER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.exception.BusinessException

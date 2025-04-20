@@ -1,7 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.scheduler
 
-import br.com.fitnesspro.models.scheduler.enums.EnumCompromiseType
-import br.com.fitnesspro.models.scheduler.enums.EnumSchedulerType
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import io.swagger.v3.oas.annotations.media.Schema

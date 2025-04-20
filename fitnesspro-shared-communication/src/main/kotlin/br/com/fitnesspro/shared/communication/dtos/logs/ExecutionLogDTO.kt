@@ -1,6 +1,6 @@
 package br.com.fitnesspro.shared.communication.dtos.logs
 
-import br.com.fitnesspro.models.executions.enums.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import io.swagger.v3.oas.annotations.media.Schema
