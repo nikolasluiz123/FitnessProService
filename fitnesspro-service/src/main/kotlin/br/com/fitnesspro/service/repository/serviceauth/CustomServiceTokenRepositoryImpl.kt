@@ -170,4 +170,50 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
             null
         }
     }
+
+    override fun getListServiceTokenNotExpired(
+        userId: String?,
+        deviceId: String?,
+        applicationId: String?
+    ): List<ServiceToken> {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select t ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${ServiceToken::class.java.name} t ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where (t.expirationDate > current_timestamp or t.expirationDate is null) ")
+
+            userId?.let {
+                add(" and t.user.id = :pUserId ")
+                queryParams.add(Parameter(name = "pUserId", value = it))
+            }
+
+            deviceId?.let {
+                add(" and t.device.id = :pDeviceId ")
+                queryParams.add(Parameter(name = "pDeviceId", value = it))
+            }
+
+            applicationId?.let {
+                add(" and t.application.id = :pApplicationId ")
+                queryParams.add(Parameter(name = "pApplicationId", value = it))
+            }
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), ServiceToken::class.java)
+        query.setParameters(queryParams)
+
+        return query.resultList
+    }
 }

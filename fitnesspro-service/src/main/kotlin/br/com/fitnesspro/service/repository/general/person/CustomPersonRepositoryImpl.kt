@@ -39,7 +39,9 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where p.user.type != :pAdministrator ")
+
+            params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
             filter.lastUpdateDate?.let {
                 add(" and p.updateDate >= :pLastUpdateDate ")
@@ -75,7 +77,9 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where u.type != :pAdministrator ")
+
+            params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
             filter.lastUpdateDate?.let {
                 add(" and u.updateDate >= :pLastUpdateDate ")

@@ -14,8 +14,18 @@ data class DeviceDTO(
 
     @Schema(description = "Modelo do dispositivo", required = true)
     @field:NotBlank(message = "O modelo é obrigatório")
-    @field:Size(max = 255, message = "O modelo deve ter menos de 255 caracteres")
+    @field:Size(max = 256, message = "O modelo deve ter menos de 256 caracteres")
     val model: String? = null,
+
+    @Schema(description = "Marca do dispositivo", required = true)
+    @field:NotBlank(message = "A marca é obrigatória")
+    @field:Size(max = 256, message = "A marca deve ter menos de 256 caracteres")
+    val brand: String? = null,
+
+    @Schema(description = "Versão do Android do dispositivo", required = true)
+    @field:NotBlank(message = "A versão do Android é obrigatória")
+    @field:Size(max = 32, message = "A versão do Android deve ter menos de 32 caracteres")
+    val androidVersion: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var creationDate: LocalDateTime? = null,
@@ -25,5 +35,8 @@ data class DeviceDTO(
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "O campo ativo é obrigatório")
-    var active: Boolean = true
+    var active: Boolean = true,
+
+    @Schema(description = "DTO da aplicação a qual o dispositivo pertence", required = false, readOnly = true)
+    var application: ApplicationDTO? = null
 ): AuditableDTO

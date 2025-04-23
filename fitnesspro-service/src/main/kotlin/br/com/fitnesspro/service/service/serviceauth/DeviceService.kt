@@ -1,5 +1,6 @@
 package br.com.fitnesspro.service.service.serviceauth
 
+import br.com.fitnesspro.service.models.serviceauth.Application
 import br.com.fitnesspro.service.models.serviceauth.Device
 import br.com.fitnesspro.service.repository.serviceauth.ICustomDeviceRepository
 import br.com.fitnesspro.service.repository.serviceauth.IDeviceRepository
@@ -11,14 +12,26 @@ import org.springframework.stereotype.Service
 @Service
 class DeviceService(
     private val deviceRepository: IDeviceRepository,
-    private val customDeviceRepository: ICustomDeviceRepository
+    private val customDeviceRepository: ICustomDeviceRepository,
+    private val tokenService: TokenService
 ) {
 
-    fun saveDevice(deviceDTO: DeviceDTO) {
-        val device = deviceDTO.toDevice()
+    fun saveDevice(deviceDTO: DeviceDTO, applicationJWT: String) {
+        val applicationDTO = tokenService.getServiceTokenDTO(applicationJWT)?.application
+
+        val device = Device(
+            id = deviceDTO.id!!,
+            model = deviceDTO.model!!,
+            brand = deviceDTO.brand!!,
+            androidVersion = deviceDTO.androidVersion!!,
+            application = Application(
+                id = applicationDTO?.id!!,
+                name = applicationDTO.name,
+                active = applicationDTO.active
+            )
+        )
 
         deviceRepository.save(device)
-        deviceDTO.id = device.id
     }
 
     fun getListDevice(filter: DeviceFilter, pageInfos: PageInfos): List<DeviceDTO> {
@@ -27,29 +40,6 @@ class DeviceService(
 
     fun getCountListDevice(filter: DeviceFilter): Int {
         return customDeviceRepository.getCountListDevice(filter)
-    }
-
-    private fun DeviceDTO.toDevice(): Device {
-        val device = id?.let { deviceRepository.findById(it) }
-
-        return when {
-            id == null -> {
-                Device(
-                    model = model
-                )
-            }
-
-            device?.isPresent ?: false -> {
-                device!!.get().copy(model = model)
-            }
-
-            else -> {
-                Device(
-                    id = id!!,
-                    model = model
-                )
-            }
-        }
     }
 
     private fun Device.toDeviceDTO(): DeviceDTO {

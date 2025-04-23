@@ -99,7 +99,7 @@ class TokenService(
                 val device = deviceRepository.findById(dto.deviceId!!).get()
 
                 val serviceToken = ServiceTokenDTO(
-                    jwtToken = generateTokenJWT(device.id!!),
+                    jwtToken = generateTokenJWT(device.id),
                     creationDate = creationDate,
                     expirationDate = expirationDate,
                     type = dto.type!!,
@@ -142,18 +142,20 @@ class TokenService(
         tokenRepository.save(serviceToken)
     }
 
-    fun invalidateAllUserTokens(userId: String) {
-        val tokens = tokenRepository.findByUserIdAndExpirationDateIsNull(userId)
+    fun invalidateAllUserTokens(userId: String): List<ServiceTokenDTO> {
+        val tokens = customServiceTokenRepository.getListServiceTokenNotExpired(userId = userId)
+        invalidateTokensList(tokens)
 
-        tokens.forEach {
-            it.expirationDate = dateTimeNow()
-        }
-
-        tokenRepository.saveAll(tokens)
+        return tokens.map { it.toServiceTokenDTO() }
     }
 
     fun invalidateAllTokens() {
-        val tokens = tokenRepository.findAll().onEach {
+        val tokens = tokenRepository.findAll()
+        invalidateTokensList(tokens)
+    }
+
+    private fun invalidateTokensList(tokens: List<ServiceToken>) {
+        tokens.forEach {
             it.expirationDate = dateTimeNow()
         }
 
@@ -179,11 +181,15 @@ class TokenService(
     fun getValidatedServiceToken(jwtToken: String): ServiceTokenDTO {
         val dto = getServiceTokenDTO(jwtToken) ?: throw NotFoundTokenException()
 
-        if (dto.expirationDate != null && dateTimeNow().isAfter(dto.expirationDate)) {
+        if (isTokenExpired(dto)) {
             throw ExpiredTokenException()
         }
 
         return dto
+    }
+
+    fun isTokenExpired(dto: ServiceTokenDTO): Boolean {
+        return dto.expirationDate != null && dateTimeNow().isAfter(dto.expirationDate)
     }
 
     fun getServiceTokenDTO(jwtToken: String): ServiceTokenDTO? {
