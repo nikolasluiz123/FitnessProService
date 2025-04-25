@@ -4,6 +4,7 @@ import br.com.fitnesspro.shared.communication.query.sort.IEnumFields
 
 enum class EnumExecutionLogsFields(override val fieldName: String): IEnumFields {
     EXECUTION_TYPE("type"),
+    CREATION_DATE("creationDate"),
     EXECUTION_STATE("state"),
     END_POINT("endPoint"),
     METHOD_NAME("methodName"),

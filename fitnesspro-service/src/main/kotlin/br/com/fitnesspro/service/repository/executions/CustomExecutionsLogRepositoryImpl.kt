@@ -70,6 +70,12 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         return StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
+            filter.creationDate?.let {
+                add(" and log.creationDate between :creationDateStart and :creationDateEnd ")
+                queryParams.add(Parameter(name = "creationDateStart", value = it.first))
+                queryParams.add(Parameter(name = "creationDateEnd", value = it.second))
+            }
+
             filter.type?.let {
                 add(" and log.type = :type ")
                 queryParams.add(Parameter(name = "type", value = it))
