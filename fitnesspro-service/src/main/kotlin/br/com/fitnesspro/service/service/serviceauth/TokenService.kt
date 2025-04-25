@@ -226,7 +226,16 @@ class TokenService(
             DeviceDTO(
                 id = id,
                 model = model,
-                active = active
+                brand = brand,
+                androidVersion = androidVersion,
+                creationDate = creationDate,
+                updateDate = updateDate,
+                active = active,
+                application = ApplicationDTO(
+                    id = application?.id,
+                    name = application?.name,
+                    active = application?.active ?: false
+                )
             )
         }
     }
