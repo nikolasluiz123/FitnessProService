@@ -37,5 +37,8 @@ data class PersonDTO(
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "O campo ativo é obrigatório")
-    var active: Boolean = true
+    var active: Boolean = true,
+
+    @Schema(description = "Flag que indica se o serviço deve inserir um registro da configuração com os valores padrões para a pessoa que está sendo cadastrada.")
+    var createDefaultSchedulerConfig: Boolean = false
 ): AuditableDTO

@@ -10,8 +10,10 @@ import br.com.fitnesspro.service.repository.general.person.ICustomPersonReposito
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
+import br.com.fitnesspro.service.service.scheduler.SchedulerService
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
@@ -25,7 +27,8 @@ class PersonService(
     private val userRepository: IUserRepository,
     private val personRepository: IPersonRepository,
     private val customUserRepository: ICustomUserRepository,
-    private val customPersonRepository: ICustomPersonRepository
+    private val customPersonRepository: ICustomPersonRepository,
+    private val schedulerService: SchedulerService
 ) {
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
@@ -42,6 +45,10 @@ class PersonService(
 
         userRepository.save(person.user!!)
         personRepository.save(person)
+
+        if (personDTO.createDefaultSchedulerConfig) {
+            schedulerService.saveSchedulerConfig(SchedulerConfigDTO(personId = person.id))
+        }
 
         personDTO.id = person.id
         personDTO.user?.id = person.user?.id

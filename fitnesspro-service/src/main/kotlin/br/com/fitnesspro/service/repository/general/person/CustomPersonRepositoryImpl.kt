@@ -193,6 +193,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
                 name = it.getString("name"),
                 birthDate = it.getLocalDateFromDate("birthDate"),
                 phone = it.getString("phone"),
+                createDefaultSchedulerConfig = false,
                 user = UserDTO(
                     id = it.getString("userId"),
                     creationDate = it.getLocalDateTimeFromTimeStamp("userCreationDate"),
