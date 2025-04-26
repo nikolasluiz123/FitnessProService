@@ -99,7 +99,7 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
 
             filter.userEmail?.let {
                 add(" and user.email = :pUserEmail ")
-                params.add(Parameter(name = "pUserEmail", value = it))
+                params.add(Parameter(name = "pUserEmail", value = "%$it%"))
             }
 
             filter.deviceId?.let {
@@ -166,7 +166,7 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
 
         return try {
             query.resultList.firstOrNull()
-        } catch (ex: NoResultException) {
+        } catch (_: NoResultException) {
             null
         }
     }
