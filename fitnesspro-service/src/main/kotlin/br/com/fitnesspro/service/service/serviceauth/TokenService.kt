@@ -105,7 +105,12 @@ class TokenService(
                     type = dto.type!!,
                     device = DeviceDTO(
                         id = device.id,
-                        model = device.model
+                        model = device.model,
+                        brand = device.brand,
+                        androidVersion = device.androidVersion,
+                        creationDate = device.creationDate,
+                        updateDate = device.updateDate,
+                        active = device.active,
                     )
                 )
 

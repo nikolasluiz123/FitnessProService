@@ -46,6 +46,8 @@ class DeviceService(
         return DeviceDTO(
             id = id,
             model = model,
+            brand = brand,
+            androidVersion = androidVersion,
             creationDate = creationDate,
             updateDate = updateDate,
             active = active
