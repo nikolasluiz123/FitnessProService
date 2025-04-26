@@ -98,17 +98,17 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
             }
 
             filter.userEmail?.let {
-                add(" and user.email = :pUserEmail ")
+                add(" and user.email like :pUserEmail ")
                 params.add(Parameter(name = "pUserEmail", value = "%$it%"))
             }
 
             filter.deviceId?.let {
-                add(" and device.id = :pDeviceId ")
-                params.add(Parameter(name = "pDeviceId", value = it))
+                add(" and device.id like :pDeviceId ")
+                params.add(Parameter(name = "pDeviceId", value = "%$it%"))
             }
 
             filter.applicationName?.let {
-                add(" and application.name :pApplicationName ")
+                add(" and application.name like :pApplicationName ")
                 params.add(Parameter(name = "pApplicationName", value = "%$it%"))
             }
         }
