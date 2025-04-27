@@ -30,7 +30,7 @@ class SchedulerController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse<SchedulerDTO>> {
         schedulerService.saveScheduler(schedulerDTO)
@@ -38,7 +38,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         schedulerService.saveSchedulerBatch(schedulerDTOList)
@@ -56,7 +56,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse<SchedulerConfigDTO>> {
         schedulerService.saveSchedulerConfig(schedulerConfigDTO)
@@ -64,7 +64,7 @@ class SchedulerController(
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         schedulerService.saveSchedulerConfigBatch(schedulerConfigDTOList)
@@ -82,7 +82,7 @@ class SchedulerController(
     }
 
     @GetMapping(EndPointsV1.SCHEDULER_IMPORT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun importScheduler(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<SchedulerDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -104,7 +104,7 @@ class SchedulerController(
     }
 
     @GetMapping(EndPointsV1.SCHEDULER_CONFIG_IMPORT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun importSchedulerConfig(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<SchedulerConfigDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()

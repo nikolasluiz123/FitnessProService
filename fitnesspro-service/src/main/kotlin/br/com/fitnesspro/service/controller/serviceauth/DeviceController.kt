@@ -28,7 +28,7 @@ class DeviceController(
 ) {
 
     @GetMapping
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListDevice(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<DeviceDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -40,7 +40,7 @@ class DeviceController(
     }
 
     @GetMapping(EndPointsV1.DEVICE_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListDevice(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultGSon()

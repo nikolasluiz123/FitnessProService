@@ -25,7 +25,7 @@ class WorkoutController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkout(@RequestBody @Valid workoutDTO: WorkoutDTO): ResponseEntity<PersistenceServiceResponse<WorkoutDTO>> {
         workoutService.saveWorkout(workoutDTO)
@@ -33,7 +33,7 @@ class WorkoutController(
     }
 
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<WorkoutDTO>): ResponseEntity<PersistenceServiceResponse<WorkoutDTO>> {
         workoutService.saveWorkoutBatch(workoutDTOList)
@@ -41,7 +41,7 @@ class WorkoutController(
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse<WorkoutGroupDTO>> {
         workoutService.saveWorkoutGroup(workoutGroupDTO)
@@ -49,7 +49,7 @@ class WorkoutController(
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupDTO>): ResponseEntity<PersistenceServiceResponse<WorkoutGroupDTO>> {
         workoutService.saveWorkoutGroupBatch(workoutGroupList)

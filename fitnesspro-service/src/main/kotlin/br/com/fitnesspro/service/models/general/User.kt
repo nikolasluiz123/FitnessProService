@@ -1,8 +1,8 @@
 package br.com.fitnesspro.service.models.general
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.service.models.base.IntegratedModel
+import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -32,7 +32,7 @@ data class User(
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
 
-    @Column(unique = true, nullable = false, length = 64)
+    @Column(nullable = false, length = 64)
     var email: String? = null,
 
     @Column(nullable = false, length = 1024)

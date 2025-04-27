@@ -23,14 +23,14 @@ class AuthenticationController(
 ) {
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGIN)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun login(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
         return ResponseEntity.ok(userService.login(authenticationDTO))
     }
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGOUT)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun logout(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
         return ResponseEntity.ok(userService.logout(authenticationDTO))

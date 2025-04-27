@@ -28,7 +28,7 @@ class ServiceTokenController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun generateToken(@Valid @RequestBody dto: ServiceTokenGenerationDTO): ResponseEntity<SingleValueServiceResponse<ServiceTokenDTO>> {
         val token = tokenService.generateServiceToken(dto)
@@ -36,7 +36,7 @@ class ServiceTokenController(
     }
 
     @PutMapping(EndPointsV1.TOKEN_INVALIDATE)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun invalidateToken(@PathVariable("id") tokenId: String): ResponseEntity<FitnessProServiceResponse> {
         tokenService.invalidateToken(tokenId)
@@ -44,7 +44,7 @@ class ServiceTokenController(
     }
 
     @PostMapping(EndPointsV1.TOKEN_INVALIDATE_ALL)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun invalidateAllTokens(): ResponseEntity<FitnessProServiceResponse> {
         tokenService.invalidateAllTokens()
@@ -52,7 +52,7 @@ class ServiceTokenController(
     }
 
     @GetMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListServiceTokens(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<ServiceTokenDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -64,7 +64,7 @@ class ServiceTokenController(
     }
 
     @GetMapping(EndPointsV1.TOKENS_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListServiceTokens(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -75,7 +75,7 @@ class ServiceTokenController(
     }
 
     @GetMapping(EndPointsV1.TOKEN_SECRET)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getSecretKey(): ResponseEntity<SingleValueServiceResponse<String>> {
         val secret = tokenService.generateSecretKey()
@@ -83,7 +83,7 @@ class ServiceTokenController(
     }
 
     @GetMapping(EndPointsV1.TOKEN_BY_ID)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getToken(@PathVariable("id") tokenId: String): ResponseEntity<SingleValueServiceResponse<ServiceTokenDTO>> {
         val token = tokenService.findServiceTokenDTOById(tokenId)

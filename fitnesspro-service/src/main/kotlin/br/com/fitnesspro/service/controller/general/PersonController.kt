@@ -33,7 +33,7 @@ class PersonController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePerson(@RequestBody @Valid personDTO: PersonDTO): ResponseEntity<PersistenceServiceResponse<PersonDTO>> {
         personService.savePerson(personDTO)
@@ -41,7 +41,7 @@ class PersonController(
     }
 
     @PostMapping(EndPointsV1.PERSON_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonBatch(@RequestBody @Valid personDTOList: List<PersonDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         personService.savePersonList(personDTOList)
@@ -59,7 +59,7 @@ class PersonController(
     }
 
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonAcademyTime(@RequestBody @Valid personAcademyTimeDTO: PersonAcademyTimeDTO): ResponseEntity<PersistenceServiceResponse<PersonAcademyTimeDTO>> {
         academyService.savePersonAcademyTime(personAcademyTimeDTO)
@@ -67,7 +67,7 @@ class PersonController(
     }
 
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun savePersonAcademyTimeBatch(@RequestBody @Valid personAcademyTimeDTOList: List<PersonAcademyTimeDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         academyService.savePersonAcademyTimeBatch(personAcademyTimeDTOList)
@@ -85,7 +85,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_IMPORT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun importPersons(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<PersonDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -107,7 +107,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_USER_IMPORT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun importUsers(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<UserDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -129,7 +129,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_ACADEMY_TIME_IMPORT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun importPersonAcademyTime(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<PersonAcademyTimeDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -151,7 +151,7 @@ class PersonController(
     }
 
     @GetMapping("${EndPointsV1.PERSON_EMAIL}/{email}")
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getPersonByEmail(@PathVariable email: String): ResponseEntity<SingleValueServiceResponse<PersonDTO?>> {
         val person = personService.getPersonByEmail(email)
@@ -159,7 +159,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_LIST)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListPerson(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<PersonDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -171,7 +171,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListPerson(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultGSon()

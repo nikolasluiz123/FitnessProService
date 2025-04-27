@@ -30,7 +30,7 @@ class AcademyController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademy(@RequestBody @Valid academyDTO: AcademyDTO): ResponseEntity<PersistenceServiceResponse<AcademyDTO>> {
         academyService.saveAcademy(academyDTO)
@@ -38,7 +38,7 @@ class AcademyController(
     }
 
     @PostMapping(EndPointsV1.ACADEMY_EXPORT)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveAcademyBatch(@RequestBody @Valid academyDTOList: List<AcademyDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
         academyService.saveAcademyBatch(academyDTOList)
@@ -56,7 +56,7 @@ class AcademyController(
     }
 
     @GetMapping(EndPointsV1.ACADEMY_IMPORT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun importAcademies(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<AcademyDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -78,7 +78,7 @@ class AcademyController(
     }
 
     @GetMapping(EndPointsV1.ACADEMY_LIST)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListAcademy(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<AcademyDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
@@ -90,7 +90,7 @@ class AcademyController(
     }
 
     @GetMapping(EndPointsV1.ACADEMY_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListExecutionLog(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultGSon()

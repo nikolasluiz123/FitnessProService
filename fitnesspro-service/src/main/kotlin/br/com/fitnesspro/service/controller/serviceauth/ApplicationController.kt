@@ -22,7 +22,7 @@ class ApplicationController(
 ) {
 
     @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveApplication(@RequestBody @Valid applicationDTO: ApplicationDTO): ResponseEntity<PersistenceServiceResponse<ApplicationDTO>> {
         applicationService.saveApplication(applicationDTO)
@@ -36,7 +36,7 @@ class ApplicationController(
     }
 
     @GetMapping
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListApplications(): ResponseEntity<ReadServiceResponse<ApplicationDTO>> {
         val result = applicationService.getListApplications()

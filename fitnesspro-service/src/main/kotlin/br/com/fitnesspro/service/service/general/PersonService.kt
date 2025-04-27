@@ -10,6 +10,7 @@ import br.com.fitnesspro.service.repository.general.person.ICustomPersonReposito
 import br.com.fitnesspro.service.repository.general.person.IPersonRepository
 import br.com.fitnesspro.service.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.service.repository.general.user.IUserRepository
+import br.com.fitnesspro.service.service.firebase.FirebaseAuthenticationService
 import br.com.fitnesspro.service.service.scheduler.SchedulerService
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
@@ -28,23 +29,32 @@ class PersonService(
     private val personRepository: IPersonRepository,
     private val customUserRepository: ICustomUserRepository,
     private val customPersonRepository: ICustomPersonRepository,
-    private val schedulerService: SchedulerService
+    private val schedulerService: SchedulerService,
+    private val firebaseAuthenticationService: FirebaseAuthenticationService
 ) {
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePerson(personDTO: PersonDTO) {
         val person = personDTO.toPerson()
 
-        validateUser(person.user!!)
+        if (personDTO.active) {
+            validateUser(person.user!!)
 
-        val password = person.user?.password!!
+            val password = person.user?.password!!
 
-        if (!HashHelper.isHashed(password)) {
-            person.user?.password = HashHelper.applyHash(password)
+            if (!HashHelper.isHashed(password)) {
+                person.user?.password = HashHelper.applyHash(password)
+            }
         }
 
         userRepository.save(person.user!!)
         personRepository.save(person)
+
+        if (personDTO.active) {
+            firebaseAuthenticationService.saveUser(personDTO)
+        } else {
+            firebaseAuthenticationService.deleteUser(personDTO)
+        }
 
         if (personDTO.createDefaultSchedulerConfig) {
             schedulerService.saveSchedulerConfig(SchedulerConfigDTO(personId = person.id))
@@ -59,13 +69,17 @@ class PersonService(
         if (customUserRepository.isEmailInUse(user.email!!, user.id)) {
             throw BusinessException("Este e-mail já está em uso")
         }
+
+        if (user.password.length < 6) {
+            throw BusinessException("Sua senha deve possuir pelo menos 6 caracteres")
+        }
     }
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonList(personDTOList: List<PersonDTO>) {
-        val persons = personDTOList.map { it.toPerson() }
+        val persons = personDTOList.map { personDTO ->
+            val person = personDTO.toPerson()
 
-        persons.forEach { person ->
             validateUser(person.user!!)
 
             val password = person.user?.password!!
@@ -73,6 +87,14 @@ class PersonService(
             if (!HashHelper.isHashed(password)) {
                 person.user?.password = HashHelper.applyHash(password)
             }
+
+            if (personDTO.active) {
+                firebaseAuthenticationService.saveUser(personDTO)
+            } else {
+                firebaseAuthenticationService.deleteUser(personDTO)
+            }
+
+            person
         }
 
         userRepository.saveAll(persons.map { it.user!! })

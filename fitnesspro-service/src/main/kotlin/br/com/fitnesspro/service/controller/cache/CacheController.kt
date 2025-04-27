@@ -24,7 +24,7 @@ class CacheController(
 ) {
 
     @GetMapping(EndPointsV1.CACHE_LIST)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListCache(): ResponseEntity<ReadServiceResponse<CacheDTO>> {
         val values = cacheService.getListCaches()
@@ -32,7 +32,7 @@ class CacheController(
     }
 
     @GetMapping("${EndPointsV1.CACHE_ENTRIES}/{cacheName}")
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListCacheEntries(@PathVariable cacheName: String): ResponseEntity<ReadServiceResponse<CacheEntryDTO>> {
         val values = cacheService.getListCacheEntries(cacheName)
@@ -40,7 +40,7 @@ class CacheController(
     }
 
     @PostMapping(EndPointsV1.CACHE_CLEAR)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun clearCache(@RequestBody config: CacheClearConfigDTO): ResponseEntity<FitnessProServiceResponse> {
         cacheService.clearCache(config)
