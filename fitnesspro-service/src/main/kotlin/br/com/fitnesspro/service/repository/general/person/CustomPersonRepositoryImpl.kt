@@ -224,12 +224,12 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
             add(" and u.active = true ")
 
             filter.name?.let {
-                add(" and p.name like :pName ")
+                add(" and lower(p.name) like lower(:pName) ")
                 params.add(Parameter(name = "pName", value = "%$it%"))
             }
 
             filter.email?.let {
-                add(" and u.email like :pEmail ")
+                add(" and lower(u.email) like lower(:pEmail) ")
                 params.add(Parameter(name = "pEmail", value = "%$it%"))
             }
 

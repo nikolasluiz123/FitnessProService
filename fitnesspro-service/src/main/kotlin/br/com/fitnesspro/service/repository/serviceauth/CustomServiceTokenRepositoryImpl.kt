@@ -98,7 +98,7 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
             }
 
             filter.userEmail?.let {
-                add(" and user.email like :pUserEmail ")
+                add(" and lower(user.email) like lower(:pUserEmail) ")
                 params.add(Parameter(name = "pUserEmail", value = "%$it%"))
             }
 
@@ -108,7 +108,7 @@ class CustomServiceTokenRepositoryImpl: ICustomServiceTokenRepository {
             }
 
             filter.applicationName?.let {
-                add(" and application.name like :pApplicationName ")
+                add(" and lower(application.name) like lower(:pApplicationName) ")
                 params.add(Parameter(name = "pApplicationName", value = "%$it%"))
             }
         }

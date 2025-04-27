@@ -97,7 +97,7 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
             }
 
             filter.userEmail?.let {
-                add(" and user.email like :userEmail ")
+                add(" and lower(user.email) like lower(:userEmail) ")
                 queryParams.add(Parameter(name = "userEmail", value = "%$it%"))
             }
 
@@ -107,7 +107,7 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
             }
 
             filter.applicationName?.let {
-                add(" and application.name like :applicationName ")
+                add(" and lower(application.name) like lower(:applicationName) ")
                 queryParams.add(Parameter(name = "applicationName", value = "%$it%"))
             }
         }

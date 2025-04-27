@@ -146,12 +146,12 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(" where a.active = true ")
 
             filter.name?.let {
-                add(" and a.name like :name ")
+                add(" and lower(a.name) like lower(:name) ")
                 queryParams.add(Parameter(name = "name", value = "%$it%"))
             }
 
             filter.address?.let {
-                add(" and a.address like :address ")
+                add(" and lower(a.address) like lower(:address ")
                 queryParams.add(Parameter(name = "address", value = "%$it%"))
             }
 

@@ -75,8 +75,18 @@ class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
             }
 
             filter.model?.let {
-                add(" and d.model = :pModel ")
-                queryParams.add(Parameter(name = "pModel", value = it))
+                add(" and lower(d.model) like lower(:pModel) ")
+                queryParams.add(Parameter(name = "pModel", value = "%$it%"))
+            }
+
+            filter.brand?.let {
+                add(" and lower(d.brand) like lower(:pBrand) ")
+                queryParams.add(Parameter(name = "pBrand", value = "%$it%"))
+            }
+
+            filter.androidVersion?.let {
+                add(" and d.androidVersion = :pAndroidVersion ")
+                queryParams.add(Parameter(name = "pAndroidVersion", value = it))
             }
 
             filter.creationDate?.let {

@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 data class DeviceFilter(
     var id: String? = null,
     var model: String? = null,
+    var brand: String? = null,
+    var androidVersion: String? = null,
     var creationDate: Pair<LocalDateTime, LocalDateTime>? = null,
     var updateDate: Pair<LocalDateTime, LocalDateTime>? = null,
     var sort: List<Sort<EnumDeviceFields>> = emptyList()
