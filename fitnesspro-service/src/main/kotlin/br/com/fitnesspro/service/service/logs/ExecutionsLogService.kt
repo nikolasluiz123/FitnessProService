@@ -25,7 +25,6 @@ import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.stereotype.Service
 import org.springframework.web.method.HandlerMethod
 import java.time.LocalDateTime
@@ -133,16 +132,19 @@ class ExecutionsLogService(
         }
     }
 
-    fun updateLogAfterCompletion(request: HttpServletRequest, response: HttpServletResponse) {
+    fun updateLogAfterCompletion(request: HttpServletRequest) {
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         val requestBody = request.getAttribute(EnumRequestAttributes.REQUEST_BODY_DATA.name) as String?
+        val responseBody = request.getAttribute(EnumRequestAttributes.RESPONSE_DATA.name) as String?
         val exception = request.getAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name) as Exception?
 
         val log = logRepository.findById(logId).orElseThrow()
+
         val logPackage = logPackageRepository.findById(logPackageId).orElseThrow()
         logPackage.serviceExecutionEnd = LocalDateTime.now()
         logPackage.requestBody = requestBody
+        logPackage.responseBody = responseBody
 
         if (exception != null) {
             log.state = EnumExecutionState.ERROR
@@ -196,6 +198,7 @@ class ExecutionsLogService(
             serviceExecutionStart = serviceExecutionStart,
             serviceExecutionEnd = serviceExecutionEnd,
             requestBody = requestBody,
+            responseBody = responseBody,
             error = error,
             insertedItemsCount = insertedItemsCount,
             updatedItemsCount = updatedItemsCount,

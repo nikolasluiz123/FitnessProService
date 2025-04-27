@@ -29,6 +29,6 @@ class LoggingInterceptor(
         handler: Any,
         ex: Exception?
     ) {
-        logService.updateLogAfterCompletion(request, response)
+        logService.updateLogAfterCompletion(request)
     }
 }

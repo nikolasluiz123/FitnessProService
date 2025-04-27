@@ -23,6 +23,9 @@ data class ExecutionLogPackageDTO(
     @Schema(description = "Request body enviado na requisição", required = false)
     val requestBody: String? = null,
 
+    @Schema(description = "Response body retornado na requisição", required = false)
+    val responseBody: String? = null,
+
     @Schema(description = "Stack de erro", required = false)
     val error: String? = null,
 

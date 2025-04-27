@@ -36,29 +36,30 @@ class JWTAuthenticationFilter(
         try {
             val authHeader: String? = request.getHeader("Authorization")
 
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            if ((authHeader == null || !authHeader.startsWith("Bearer ")) && !isPermittedURLWithoutToken(request)) {
                 throw NotFoundTokenException()
             }
 
-            val jwtToken = authHeader.substring(7)
+            if (authHeader != null) {
+                val jwtToken = authHeader.substring(7)
 
+                val serviceToken = service.getValidatedServiceToken(jwtToken)
 
-            val serviceToken = service.getValidatedServiceToken(jwtToken)
+                when (serviceToken.type!!) {
+                    USER_AUTHENTICATION_TOKEN -> {
+                        val userDetails = userDetailsService.loadUserByUsername(serviceToken.user?.email!!)
+                        authenticate(userDetails, request)
+                    }
 
-            when (serviceToken.type!!) {
-                USER_AUTHENTICATION_TOKEN -> {
-                    val userDetails = userDetailsService.loadUserByUsername(serviceToken.user?.email!!)
-                    authenticate(userDetails, request)
-                }
+                    DEVICE_TOKEN -> {
+                        val deviceDetails = DeviceUserDetails(serviceToken.device?.id!!)
+                        authenticate(deviceDetails, request)
+                    }
 
-                DEVICE_TOKEN -> {
-                    val deviceDetails = DeviceUserDetails(serviceToken.device?.id!!)
-                    authenticate(deviceDetails, request)
-                }
-
-                APPLICATION_TOKEN -> {
-                    val applicationDetails = ApplicationUserDetails(serviceToken.application?.id!!)
-                    authenticate(applicationDetails, request)
+                    APPLICATION_TOKEN -> {
+                        val applicationDetails = ApplicationUserDetails(serviceToken.application?.id!!)
+                        authenticate(applicationDetails, request)
+                    }
                 }
             }
 
@@ -70,6 +71,10 @@ class JWTAuthenticationFilter(
             val errorResponse = getAuthResponse(ex, EnumErrorType.INVALID_TOKEN)
             writeHTTPResponse(response, errorResponse)
         }
+    }
+
+    private fun isPermittedURLWithoutToken(request: HttpServletRequest): Boolean {
+        return request.requestURL.contains("swagger-ui") || request.requestURL.contains("v3/api-docs")
     }
 
     private fun authenticate(userDetails: UserDetails, request: HttpServletRequest) {

@@ -34,6 +34,9 @@ class ExecutionLogPackage(
     @Column(name = "request_body", columnDefinition = "TEXT")
     var requestBody: String? = null,
 
+    @Column(name = "response_body", columnDefinition = "TEXT")
+    var responseBody: String? = null,
+
     @Column(name = "error", columnDefinition = "TEXT")
     var error: String? = null,
 
