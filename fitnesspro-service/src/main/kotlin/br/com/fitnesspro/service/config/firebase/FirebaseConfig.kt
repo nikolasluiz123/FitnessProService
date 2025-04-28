@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import java.util.*
 import javax.annotation.PostConstruct
 
 @Configuration
@@ -32,8 +33,11 @@ class FirebaseConfig {
         return if (file.exists()) {
             FileInputStream(file)
         } else {
-            val json = System.getenv("CLOUD_CREDENTIALS")
-            ByteArrayInputStream(json.toByteArray(Charsets.UTF_8))
+            val jsonBase64 = System.getenv("CLOUD_CREDENTIALS")
+            val decoder = Base64.getDecoder()
+            val decodedBytes = decoder.decode(jsonBase64)
+
+            ByteArrayInputStream(decodedBytes)
         }
     }
 }
