@@ -12,7 +12,6 @@ object EndPointsV1 {
     const val PERSON_IMPORT = "/import"
     const val PERSON_ACADEMY_TIME_IMPORT = "/academy/time/import"
     const val PERSON_USER_IMPORT = "/user/import"
-    const val PERSON_MOCK = "/mock"
     const val PERSON_LIST = "/list"
     const val PERSON_COUNT = "/count"
 
