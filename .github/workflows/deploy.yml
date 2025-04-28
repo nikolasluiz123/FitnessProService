@@ -101,15 +101,15 @@ jobs:
           ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} << EOF
             docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
             docker pull nikolasluiz123/fitnesspro-service
-            docker stop service-docker-spring-app-1
+            docker stop spring-app
             docker image prune -a -f
-            docker rm service-docker-spring-app-1
+            docker rm spring-app
             docker run -d -p 8081:8081 \
           --env FITNESS_PRO_DB_USER="${{ secrets.FITNESS_PRO_DB_USER }}" \
           --env FITNESS_PRO_DB_PASSWORD="${{ secrets.FITNESS_PRO_DB_PASSWORD }}" \
           --env SPRING_PROFILES_ACTIVE=remote \
           --env JWT_SECRET="${{ secrets.JWT_SECRET }}" \
           --env GOOGLE_APPLICATION_CREDENTIALS="${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" \
-          --name service-docker-spring-app-1 nikolasluiz123/fitnesspro-service
+          --name spring-app nikolasluiz123/fitnesspro-service
           EOF
           rm private_key.pem
