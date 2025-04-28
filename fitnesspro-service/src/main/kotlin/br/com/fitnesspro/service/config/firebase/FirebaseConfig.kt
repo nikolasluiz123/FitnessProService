@@ -32,7 +32,7 @@ class FirebaseConfig {
         return if (file.exists()) {
             FileInputStream(file)
         } else {
-            val json = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+            val json = System.getenv("CLOUD_CREDENTIALS")
             ByteArrayInputStream(json.toByteArray(Charsets.UTF_8))
         }
     }
