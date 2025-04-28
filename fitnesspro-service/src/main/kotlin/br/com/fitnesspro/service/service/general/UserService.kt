@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.service.general
 
-import br.com.fitnesspro.core.helper.HashHelper
+import br.com.fitnesspro.shared.communication.helper.HashHelper
 import br.com.fitnesspro.service.exception.BusinessException
 import br.com.fitnesspro.service.exception.UserNotFoundException
 import br.com.fitnesspro.service.models.general.User

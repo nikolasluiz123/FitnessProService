@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.config.application
 
-import br.com.fitnesspro.core.helper.HashHelper
+import br.com.fitnesspro.shared.communication.helper.HashHelper
 import org.springframework.security.crypto.password.PasswordEncoder
 
 class FitnessProPasswordEncoder: PasswordEncoder {

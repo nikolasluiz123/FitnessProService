@@ -1,4 +1,4 @@
-package br.com.fitnesspro.core.helper
+package br.com.fitnesspro.shared.communication.helper
 
 import java.security.MessageDigest
 import java.util.*

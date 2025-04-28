@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.service.general
 
-import br.com.fitnesspro.core.helper.HashHelper
+import br.com.fitnesspro.shared.communication.helper.HashHelper
 import br.com.fitnesspro.service.config.application.cache.PERSON_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.config.application.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.exception.BusinessException
