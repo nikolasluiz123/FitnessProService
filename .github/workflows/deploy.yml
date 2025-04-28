@@ -109,6 +109,7 @@ jobs:
           --env FITNESS_PRO_DB_PASSWORD="${{ secrets.FITNESS_PRO_DB_PASSWORD }}" \
           --env SPRING_PROFILES_ACTIVE=remote \
           --env JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          --env GOOGLE_APPLICATION_CREDENTIALS="${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" \
           --name spring-app nikolasluiz123/fitnesspro-service
           EOF
           rm private_key.pem
