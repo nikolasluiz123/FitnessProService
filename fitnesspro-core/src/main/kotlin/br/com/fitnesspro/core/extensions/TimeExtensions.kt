@@ -54,6 +54,14 @@ fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }
 
+fun Duration.formatAsHMS(): String {
+    val hours = this.toHours()
+    val minutes = this.toMinutesPart()
+    val seconds = this.toSecondsPart()
+
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+}
+
 fun timeNow(): LocalTime = LocalTime.now()
 
 fun dateNow(): LocalDate = LocalDate.now()

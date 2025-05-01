@@ -29,6 +29,9 @@ data class ExecutionLogPackageDTO(
     @Schema(description = "Stack de erro", required = false)
     val error: String? = null,
 
+    @Schema(description = "Informações adicionais sobre a execução, onde podem conter logs específicos do processamento realizado.", required = false)
+    val executionAdditionalInfos: String? = null,
+
     @Schema(description = "Identificador do log de execução", required = true)
     val executionLogId: String? = null,
 

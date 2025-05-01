@@ -69,4 +69,7 @@ object EndPointsV1 {
 
     const val APPLICATION = "application"
     const val APPLICATION_V1 = "$API_V1/$APPLICATION"
+
+    const val SCHEDULED_TASK = "scheduled/task"
+    const val SCHEDULED_TASK_V1 = "$API_V1/$SCHEDULED_TASK"
 }
