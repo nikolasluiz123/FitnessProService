@@ -4,4 +4,15 @@ import br.com.fitnesspro.models.serviceauth.Device
 import br.com.fitnesspro.repository.common.IAuditableFitnessProRepository
 
 
-interface IDeviceRepository: IAuditableFitnessProRepository<Device>
+interface IDeviceRepository: IAuditableFitnessProRepository<Device> {
+
+    fun findByFirebaseMessagingTokenIn(tokens: List<String>): List<Device>
+
+    fun findByIdIn(ids: List<String>): List<Device>
+
+    fun findByPersonIdIn(personIds: List<String>): List<Device>
+
+    fun findByActiveIsTrueAndFirebaseMessagingTokenIsNotNull(): List<Device>
+
+    fun findByPersonId(personId: String): Device
+}

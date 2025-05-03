@@ -8,6 +8,7 @@ import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
 import br.com.fitnesspro.repository.serviceauth.ICustomServiceTokenRepository
 import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
 import br.com.fitnesspro.repository.serviceauth.IServiceTokenRepository
+import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
@@ -111,6 +112,30 @@ class TokenService(
                         creationDate = device.creationDate,
                         updateDate = device.updateDate,
                         active = device.active,
+                        zoneId = device.zoneId,
+                        firebaseMessagingToken = device.firebaseMessagingToken,
+                        application = ApplicationDTO(
+                            id = device.application?.id,
+                            name = device.application?.name,
+                            active = device.application?.active ?: false
+                        ),
+                        person = PersonDTO(
+                            id = device.person?.id,
+                            name = device.person?.name,
+                            birthDate = device.person?.birthDate,
+                            phone = device.person?.phone,
+                            creationDate = device.person?.creationDate,
+                            updateDate = device.person?.updateDate,
+                            user = UserDTO(
+                                id = device.person?.user?.id,
+                                email = device.person?.user?.email,
+                                password = device.person?.user?.password,
+                                creationDate = device.person?.user?.creationDate,
+                                updateDate = device.person?.user?.updateDate,
+                                active = device.person?.user?.active!!,
+                                type = device.person?.user?.type!!
+                            ),
+                        )
                     )
                 )
 

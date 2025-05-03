@@ -8,6 +8,7 @@ enum class EnumDateTimePatterns(val pattern: String) {
     TIME_ONLY_NUMBERS("HHmm"),
     DATE_TIME("dd/MM/yyyy HH:mm"),
     DATE_TIME_SHORT("dd/MM/yy HH:mm"),
+    DAY_MONTH("dd/MM"),
     DATE_TIME_SQLITE("yyyy-MM-dd HH:mm"),
     DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss"),
     MONTH_YEAR("MMMM 'de' yyyy"),

@@ -72,4 +72,8 @@ object EndPointsV1 {
 
     const val SCHEDULED_TASK = "scheduled/task"
     const val SCHEDULED_TASK_V1 = "$API_V1/$SCHEDULED_TASK"
+
+    const val NOTIFICATION = "notification"
+    const val NOTIFICATION_V1 = "$API_V1/$NOTIFICATION"
+    const val NOTIFICATION_NOTIFY_ALL = "/all"
 }

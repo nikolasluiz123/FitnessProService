@@ -18,6 +18,7 @@ import java.util.*
     indexes = [
         Index(name = "idx_scheduler_academy_member_person_id", columnList = "academy_member_person_id"),
         Index(name = "idx_scheduler_professional_person_id", columnList = "professional_person_id"),
+        Index(name = "idx_scheduler_cancellation_person_id", columnList = "cancellation_person_id"),
     ]
 )
 data class Scheduler(
@@ -54,6 +55,10 @@ data class Scheduler(
 
     @Column(name = "canceled_date")
     var canceledDate: LocalDateTime? = null,
+
+    @ManyToOne
+    @JoinColumn(name = "cancellation_person_id")
+    var cancellationPerson: Person? = null,
 
     @Column(nullable = false)
     var situation: EnumSchedulerSituation? = null,

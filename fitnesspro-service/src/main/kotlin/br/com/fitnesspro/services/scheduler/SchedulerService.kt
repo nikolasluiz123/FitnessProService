@@ -2,8 +2,7 @@ package br.com.fitnesspro.services.scheduler
 
 import br.com.fitnesspro.config.application.cache.SCHEDULER_CONFIG_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.SCHEDULER_IMPORT_CACHE_NAME
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.*
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
@@ -21,15 +20,21 @@ import br.com.fitnesspro.repository.scheduler.ISchedulerConfigRepository
 import br.com.fitnesspro.repository.scheduler.ISchedulerRepository
 import br.com.fitnesspro.repository.workout.IWorkoutGroupRepository
 import br.com.fitnesspro.repository.workout.IWorkoutRepository
+import br.com.fitnesspro.services.firebase.FirebaseNotificationService
+import br.com.fitnesspro.services.serviceauth.DeviceService
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation.*
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.ZoneId
 
 @Service
 class SchedulerService(
@@ -40,7 +45,9 @@ class SchedulerService(
     private val customAcademyRepository: ICustomAcademyRepository,
     private val customSchedulerConfigRepository: ICustomSchedulerConfigRepository,
     private val workoutRepository: IWorkoutRepository,
-    private val workoutGroupRepository: IWorkoutGroupRepository
+    private val workoutGroupRepository: IWorkoutGroupRepository,
+    private val firebaseNotificationService: FirebaseNotificationService,
+    private val deviceService: DeviceService
 ) {
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
@@ -49,6 +56,7 @@ class SchedulerService(
         when (schedulerDTO.type!!) {
             EnumSchedulerType.SUGGESTION, EnumSchedulerType.UNIQUE -> {
                 val scheduler = schedulerDTO.toScheduler()
+                sendNotification(schedulerDTO)
                 schedulerRepository.save(scheduler)
             }
 
@@ -82,11 +90,141 @@ class SchedulerService(
                     )
                 }
 
+                sendNotification(schedulerDTO, scheduleDates)
+
                 schedulerRepository.saveAll(schedules)
                 workoutRepository.save(workout)
                 workoutGroupRepository.saveAll(workoutGroups)
             }
         }
+    }
+
+    private fun sendNotification(schedulerDTO: SchedulerDTO, scheduledDates: List<LocalDate> = emptyList()) {
+        val schedulerOptional = schedulerDTO.id?.let { schedulerRepository.findById(it) }
+
+        if (schedulerOptional?.isPresent == true) {
+            val scheduler = schedulerOptional.get()
+
+            when {
+                scheduler.situation == SCHEDULED && schedulerDTO.situation == CONFIRMED -> {
+                    notifyMemberSchedulerConfirmed(schedulerDTO)
+                }
+
+                scheduler.situation != CANCELLED && schedulerDTO.situation == CANCELLED -> {
+                    notifyMemberSchedulerCancelled(schedulerDTO)
+                }
+
+                scheduler.timeStart != schedulerDTO.timeStart || scheduler.timeEnd != schedulerDTO.timeEnd -> {
+                    notifyMemberSchedulerTimeChanged(schedulerDTO)
+                }
+            }
+        } else {
+            when (schedulerDTO.type!!) {
+                EnumSchedulerType.SUGGESTION -> {
+                    notifyProfessionalNewSuggestionScheduler(schedulerDTO)
+                }
+
+                EnumSchedulerType.UNIQUE -> {
+                    notifyMemberNewUniqueScheduler(schedulerDTO)
+                }
+
+                EnumSchedulerType.RECURRENT -> {
+                    notifyMemberNewRecurrentScheduler(schedulerDTO, scheduledDates)
+                }
+            }
+        }
+    }
+
+    private fun notifyMemberSchedulerConfirmed(schedulerDTO: SchedulerDTO) {
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!).zoneId!!
+        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
+        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name
+
+        firebaseNotificationService.sendNotificationToPerson(
+            title = "Agendamento confirmado",
+            message = "O Agendamento de $date das $start às $end foi confirmado por ${professionalName}.",
+            personIds = listOf(schedulerDTO.academyMemberPersonId!!),
+            channel = EnumNotificationChannel.SCHEDULER_CHANNEL
+        )
+    }
+
+    private fun notifyMemberSchedulerCancelled(schedulerDTO: SchedulerDTO) {
+        val cancellationPerson = personRepository.findById(schedulerDTO.cancellationPersonId!!).get()
+        val personIdToNotify = if (cancellationPerson.id == schedulerDTO.professionalPersonId) {
+            schedulerDTO.academyMemberPersonId
+        } else {
+            schedulerDTO.professionalPersonId
+        }
+
+        val zoneId = deviceService.getDeviceFromPerson(personIdToNotify!!).zoneId!!
+        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
+        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+
+        firebaseNotificationService.sendNotificationToPerson(
+            title = "Agendamento cancelado",
+            message = "O Agendamento de $date das $start às $end foi cancelado por ${cancellationPerson.name}.",
+            personIds = listOf(personIdToNotify),
+            channel = EnumNotificationChannel.SCHEDULER_CHANNEL
+        )
+    }
+
+    private fun notifyMemberSchedulerTimeChanged(schedulerDTO: SchedulerDTO) {
+        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
+
+        firebaseNotificationService.sendNotificationToPerson(
+            title = "Alteração no horário de um agendamento",
+            message = "O Agendamento de $date teve o horário alterado, verifique o novo horário.",
+            personIds = listOf(schedulerDTO.academyMemberPersonId!!),
+            channel = EnumNotificationChannel.SCHEDULER_CHANNEL
+        )
+    }
+
+    private fun notifyProfessionalNewSuggestionScheduler(schedulerDTO: SchedulerDTO) {
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.professionalPersonId!!).zoneId!!
+        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
+        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val memberName = personRepository.findById(schedulerDTO.academyMemberPersonId!!).get().name
+
+        firebaseNotificationService.sendNotificationToPerson(
+            title = "Nova sugestão de agendamento",
+            message = "$memberName sugeriu um agendamento para o dia $date das $start às $end.",
+            personIds = listOf(schedulerDTO.professionalPersonId!!),
+            channel = EnumNotificationChannel.SCHEDULER_CHANNEL
+        )
+    }
+
+    private fun notifyMemberNewUniqueScheduler(schedulerDTO: SchedulerDTO) {
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!).zoneId!!
+        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
+        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name
+
+        firebaseNotificationService.sendNotificationToPerson(
+            title = "Novo compromisso em sua agenda",
+            message = "$professionalName realizou um agendamento para o dia $date das $start às $end.",
+            personIds = listOf(schedulerDTO.academyMemberPersonId!!),
+            channel = EnumNotificationChannel.SCHEDULER_CHANNEL
+        )
+    }
+
+    private fun notifyMemberNewRecurrentScheduler(schedulerDTO: SchedulerDTO, scheduledDates: List<LocalDate>) {
+        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name
+
+        val dateCount = scheduledDates.size
+        val start = scheduledDates.first().format(DAY_MONTH)
+        val end = scheduledDates.last().format(DAY_MONTH)
+
+        firebaseNotificationService.sendNotificationToPerson(
+            title = "Novo compromisso recorrente",
+            message = "$professionalName realizou um agendamento recorrente para $dateCount datas entre $start e $end.",
+            personIds = listOf(schedulerDTO.academyMemberPersonId!!),
+            channel = EnumNotificationChannel.SCHEDULER_CHANNEL
+        )
     }
 
     @Throws(BusinessException::class)
@@ -230,6 +368,7 @@ class SchedulerService(
 
         val schedules = schedulerDTOList.map { schedulerDTO ->
             validateScheduler(schedulerDTO)
+            sendNotification(schedulerDTO)
             schedulerDTO.toScheduler()
         }
 

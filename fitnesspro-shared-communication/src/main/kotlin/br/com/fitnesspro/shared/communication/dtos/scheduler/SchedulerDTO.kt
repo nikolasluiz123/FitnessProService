@@ -1,9 +1,9 @@
 package br.com.fitnesspro.shared.communication.dtos.scheduler
 
-import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType
-import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
+import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.FutureOrPresent
 import jakarta.validation.constraints.NotNull
@@ -50,6 +50,9 @@ data class SchedulerDTO(
 
     @Schema(description = "Data de cancelamento", example = "2023-01-01T10:00:00", required = false)
     var canceledDate: LocalDateTime? = null,
+
+    @Schema(description = "Identificador da pessoa que cancelou o agendamento", example = "e874d31c-0e29-4e9b-b48e-7d70d9", required = false)
+    var cancellationPersonId: String? = null,
 
     @Schema(description = "Situação do agendamento", required = true)
     @field:NotNull(message = "A situação do agendamento é obrigatória")

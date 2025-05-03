@@ -42,12 +42,26 @@ fun LocalDate.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }
 
-fun LocalTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
-    return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+fun LocalTime.format(pattern: EnumDateTimePatterns, zoneId: ZoneId? = null): String {
+    return if (zoneId != null) {
+        this.atDate(LocalDate.now(ZoneOffset.UTC))
+            .atZone(ZoneOffset.UTC)
+            .withZoneSameInstant(zoneId)
+            .toLocalTime()
+            .format(DateTimeFormatter.ofPattern(pattern.pattern))
+    } else {
+        this.format(DateTimeFormatter.ofPattern(pattern.pattern))
+    }
 }
 
-fun LocalDateTime.format(enumDateTimePatterns: EnumDateTimePatterns): String {
-    return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
+fun LocalDateTime.format(pattern: EnumDateTimePatterns, zoneId: ZoneId? = null): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern.pattern)
+
+    return if (zoneId != null) {
+        this.atZone(ZoneOffset.UTC).withZoneSameInstant(zoneId).format(formatter)
+    } else {
+        this.format(formatter)
+    }
 }
 
 fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
