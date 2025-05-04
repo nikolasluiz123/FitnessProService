@@ -23,6 +23,18 @@ class DeviceService(
     fun saveDevice(deviceDTO: DeviceDTO, applicationJWT: String) {
         val applicationDTO = tokenService.getServiceTokenDTO(applicationJWT)?.application
 
+        val otherPersonDevices = customDeviceRepository.getListDeviceFrom(deviceDTO.person?.id!!).filter {
+            it.id != deviceDTO.id && it.active
+        }
+
+        if (otherPersonDevices.isNotEmpty()) {
+            otherPersonDevices.forEach {
+                it.active = false
+            }
+
+            deviceRepository.saveAll(otherPersonDevices)
+        }
+
         val device = Device(
             id = deviceDTO.id!!,
             model = deviceDTO.model!!,
@@ -57,8 +69,12 @@ class DeviceService(
         return deviceRepository.findByIdIn(ids).mapNotNull { it.toDeviceDTO().firebaseMessagingToken }
     }
 
+    fun getDeviceDTOWithIds(ids: List<String>): List<DeviceDTO> {
+        return deviceRepository.findByIdIn(ids).map { it.toDeviceDTO() }
+    }
+
     fun getFirebaseMessagingTokenFromDevicesWithPersonIds(personIds: List<String>): List<String> {
-        return deviceRepository.findByPersonIdIn(personIds).mapNotNull { it.toDeviceDTO().firebaseMessagingToken }
+        return deviceRepository.findByPersonIdInAndActiveIsTrue(personIds).mapNotNull { it.toDeviceDTO().firebaseMessagingToken }
     }
 
     fun getFirebaseMessagingTokenFromAllDevices(): List<String> {
@@ -66,7 +82,7 @@ class DeviceService(
     }
 
     fun getDeviceFromPerson(personId: String): DeviceDTO {
-        return deviceRepository.findByPersonId(personId).toDeviceDTO()
+        return deviceRepository.findByPersonIdAndActiveIsTrue(personId).toDeviceDTO()
     }
 
     private fun Device.toDeviceDTO(): DeviceDTO {

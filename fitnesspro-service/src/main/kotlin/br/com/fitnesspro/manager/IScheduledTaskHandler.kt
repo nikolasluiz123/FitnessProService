@@ -4,9 +4,9 @@ interface IScheduledTaskHandler<CONFIG> {
 
     fun getHandlerIdentifier(): String
 
-    fun execute(config: CONFIG)
+    fun execute(config: CONFIG?)
 
-    fun configClass(): Class<CONFIG>
+    fun configClass(): Class<CONFIG>?
 
     fun getUseHibernateTransaction() = true
 }

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service
 @Service
 class FirebaseAuthenticationService {
 
-    fun saveUser(personDTO: PersonDTO) {
-        if (personDTO.id == null) {
+    fun saveUser(personDTO: PersonDTO, personExists: Boolean) {
+        if (personDTO.id == null || !personExists) {
             createUser(personDTO)
         } else {
             updateUser(personDTO)

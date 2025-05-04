@@ -1,15 +1,16 @@
 package br.com.fitnesspro.services.firebase
 
 import br.com.fitnesspro.exception.FirebaseNotificationException
+import br.com.fitnesspro.notification.NotificationResult
 import br.com.fitnesspro.services.serviceauth.DeviceService
 import br.com.fitnesspro.shared.communication.dtos.notification.GlobalNotificationDTO
 import br.com.fitnesspro.shared.communication.dtos.notification.NotificationDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.notification.FitnessProNotificationData
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.MulticastMessage
-import com.google.firebase.messaging.SendResponse
 import org.springframework.stereotype.Service
 
 @Service
@@ -21,60 +22,84 @@ class FirebaseNotificationService(
         val notification = FitnessProNotificationData(
             title = notificationDTO.title!!,
             message = notificationDTO.message!!,
-            channel = EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL
+            channel = EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL,
+            customJSONData = null
         )
 
         val devicesTokens = deviceService.getFirebaseMessagingTokenFromDevicesWithIds(notificationDTO.devicesIds)
+        val results = verifyStrategyAndSendNotification(devicesTokens, notification)
 
-        verifyStrategyAndSendNotification(devicesTokens, notification)
+        throwsExceptionIfFail(results)
     }
 
-    fun sendNotificationToPerson(title: String, message: String, personIds: List<String>, channel: EnumNotificationChannel) {
-        val notification = FitnessProNotificationData(title, message, channel)
+    private fun throwsExceptionIfFail(results: List<NotificationResult>) {
+        val failedDevices = results
+            .filterNot { it.success() }
+            .flatMap { it.idsDevicesError }
+            .distinct()
+
+        if (failedDevices.isNotEmpty()) {
+            val devicesFail = failedDevices.joinToString()
+            throw FirebaseNotificationException("Não foi possível enviar a notificação para os seguintes dispositivos: $devicesFail")
+        }
+    }
+
+    fun sendNotificationToPerson(
+        title: String,
+        message: String,
+        personIds: List<String>,
+        channel: EnumNotificationChannel,
+        customJSONData: String? = null
+    ): List<NotificationResult> {
+        val notification = FitnessProNotificationData(title, message, channel, customJSONData)
         val devicesTokens = deviceService.getFirebaseMessagingTokenFromDevicesWithPersonIds(personIds)
 
-        verifyStrategyAndSendNotification(devicesTokens, notification)
+        return verifyStrategyAndSendNotification(devicesTokens, notification)
     }
 
     fun sendNotificationToAllDevices(notificationDTO: GlobalNotificationDTO) {
         val notification = FitnessProNotificationData(
             title = notificationDTO.title!!,
             message = notificationDTO.message!!,
-            channel = EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL
+            channel = EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL,
+            customJSONData = null
         )
 
         val devicesTokens = deviceService.getFirebaseMessagingTokenFromAllDevices()
+        val results = verifyStrategyAndSendNotification(devicesTokens, notification)
 
-        verifyStrategyAndSendNotification(devicesTokens, notification)
+        throwsExceptionIfFail(results)
     }
 
     private fun verifyStrategyAndSendNotification(
         devicesTokens: List<String>,
         notification: FitnessProNotificationData
-    ) {
+    ): List<NotificationResult> {
         if (devicesTokens.isEmpty()) {
             throw FirebaseNotificationException("Nenhum dispositivo encontrado para realizar a notificação.")
         }
 
-        if (devicesTokens.size > 1) {
-            sendMulticastNotification(notification, devicesTokens.toMutableList())
+        return if (devicesTokens.size > 1) {
+            sendMulticastNotification(notification, devicesTokens)
         } else {
-            sendNotification(notification, devicesTokens.first())
+            listOf(sendNotification(notification, devicesTokens.first()))
         }
     }
 
-    private fun sendMulticastNotification(notification: FitnessProNotificationData, deviceTokens: MutableList<String>) {
-        val batch = deviceTokens.take(500).toMutableList()
-        val remaining = deviceTokens.drop(500).toMutableList()
+    private fun sendMulticastNotification(notification: FitnessProNotificationData, deviceTokens: List<String>): MutableList<NotificationResult> {
+        val results = mutableListOf<NotificationResult>()
 
-        sendMulticastNotificationBatch(notification, batch)
-
-        if (remaining.isNotEmpty()) {
-            sendMulticastNotification(notification, remaining)
+        deviceTokens.chunked(500).forEach { batch ->
+            results.add(sendMulticastNotificationBatch(notification, batch))
         }
+
+        return results
     }
 
-    private fun sendMulticastNotificationBatch(notification: FitnessProNotificationData, deviceTokens: MutableList<String>) {
+    private fun sendMulticastNotificationBatch(
+        notification: FitnessProNotificationData,
+        deviceTokens: List<String>
+    ): NotificationResult {
         val message = MulticastMessage
             .builder()
             .addAllTokens(deviceTokens)
@@ -84,27 +109,27 @@ class FirebaseNotificationService(
             .build()
 
         val batchResponse = FirebaseMessaging.getInstance().sendEachForMulticast(message)
+        val successDeviceTokenList = mutableListOf<String>()
+        val failDeviceTokenList = mutableListOf<String>()
 
-        if (batchResponse.failureCount > 0) {
-            val fails = batchResponse.responses.mapIndexed { index, sendResponse ->
-                val exception = sendResponse.exception
-                val deviceToken = getDeviceTokenFromSendResponse(sendResponse, deviceTokens, index)
-
-                Pair(deviceToken, exception)
-            }.filter { it.first != null }
-
-            val failedTokens = fails.map { it.first!! }
-            val deviceIdsFail = deviceService.getDevicesWithFirebaseMessagingTokens(failedTokens).map { it.id }
-
-            throw FirebaseNotificationException("Não foi possível enviar a notificação para os seguintes dispositivos: ${deviceIdsFail.joinToString()}")
+        batchResponse.responses.forEachIndexed { index, sendResponse ->
+            if (sendResponse.isSuccessful) {
+                successDeviceTokenList.add(deviceTokens[index])
+            } else {
+                failDeviceTokenList.add(deviceTokens[index])
+            }
         }
+
+        val deviceIdsSuccess = deviceService.getDevicesWithFirebaseMessagingTokens(successDeviceTokenList).map { it.id!! }
+        val deviceIdsFail = deviceService.getDevicesWithFirebaseMessagingTokens(failDeviceTokenList).map { it.id!! }
+
+        return NotificationResult(
+            idsDevicesError = deviceIdsFail,
+            idsDevicesSuccess = deviceIdsSuccess
+        )
     }
 
-    private fun getDeviceTokenFromSendResponse(sendResponse: SendResponse, deviceTokens: MutableList<String>, index: Int): String? {
-        return if (!sendResponse.isSuccessful) deviceTokens[index] else null
-    }
-
-    private fun sendNotification(notification: FitnessProNotificationData, deviceToken: String) {
+    private fun sendNotification(notification: FitnessProNotificationData, deviceToken: String): NotificationResult {
         val message = Message
             .builder()
             .setToken(deviceToken)
@@ -113,6 +138,12 @@ class FirebaseNotificationService(
             .putData(notification::channel.name, notification.channel.name)
             .build()
 
-        FirebaseMessaging.getInstance().send(message)
+        return try {
+            FirebaseMessaging.getInstance().send(message)
+            NotificationResult(idsDevicesSuccess = listOf(deviceToken))
+        } catch (ex: FirebaseMessagingException) {
+            ex.printStackTrace()
+            NotificationResult(idsDevicesError = listOf(deviceToken), exception = ex)
+        }
     }
 }

@@ -9,4 +9,6 @@ interface ICustomDeviceRepository {
     fun getListDevice(filter: DeviceFilter, pageInfos: PageInfos): List<Device>
 
     fun getCountListDevice(filter: DeviceFilter): Int
+
+    fun getListDeviceFrom(personId: String): List<Device>
 }

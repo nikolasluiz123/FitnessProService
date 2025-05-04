@@ -2,6 +2,7 @@ package br.com.fitnesspro.repository.firebase
 
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.manager.tasks.config.DeleteOldChatMessagesConfig
+import br.com.fitnesspro.models.firestore.MessageNotificationDocument
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.QueryDocumentSnapshot
 import com.google.firebase.cloud.FirestoreClient
@@ -23,6 +24,37 @@ class FirebaseChatRepository: IFirebaseChatRepository {
         }
 
         return messagesToDelete.size
+    }
+
+    override fun getListQueryReferenceMessageNotification(): List<QueryDocumentSnapshot> {
+        val result = mutableListOf<QueryDocumentSnapshot>()
+        val personsCollection = firestore.collection("persons")
+        val personsQueryDocuments = personsCollection.get().get().documents
+
+        personsQueryDocuments.forEach { personQueryDocument ->
+            val path = getPersonNotificationPath(personQueryDocument)
+            result.addAll(firestore.collection(path).get().get().documents)
+        }
+
+        return result
+    }
+
+    override fun getListMessageNotificationDocument(querySnapshots: List<QueryDocumentSnapshot>): List<MessageNotificationDocument> {
+        return querySnapshots.map {
+            it.toObject(MessageNotificationDocument::class.java)
+        }
+    }
+
+    private fun getPersonNotificationPath(personQueryDocument: QueryDocumentSnapshot): String {
+        return "persons/${personQueryDocument.id}/${MessageNotificationDocument.COLLECTION_NAME}"
+    }
+
+    override fun deleteNotifications(notifications: List<QueryDocumentSnapshot>) {
+        firestore.runTransaction { transaction ->
+            notifications.forEach { notification ->
+                transaction.delete(notification.reference)
+            }
+        }
     }
 
     private fun getMessages(config: DeleteOldChatMessagesConfig): MutableList<QueryDocumentSnapshot> {

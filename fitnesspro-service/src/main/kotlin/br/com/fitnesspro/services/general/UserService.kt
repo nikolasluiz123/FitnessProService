@@ -55,7 +55,7 @@ class UserService(
         val user = userRepository.findByEmailAndPassword(authenticationDTO.email!!, authenticationDTO.password!!)
 
         if (user == null) {
-            throw BusinessException("Usuário não encontrado")
+            throw UserNotFoundException("Usuário não encontrado")
         }
 
         if (authenticationDTO.adminAuth && user.type != EnumUserType.ADMINISTRATOR) {

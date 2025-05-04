@@ -10,9 +10,9 @@ interface IDeviceRepository: IAuditableFitnessProRepository<Device> {
 
     fun findByIdIn(ids: List<String>): List<Device>
 
-    fun findByPersonIdIn(personIds: List<String>): List<Device>
+    fun findByPersonIdInAndActiveIsTrue(personIds: List<String>): List<Device>
 
     fun findByActiveIsTrueAndFirebaseMessagingTokenIsNotNull(): List<Device>
 
-    fun findByPersonId(personId: String): Device
+    fun findByPersonIdAndActiveIsTrue(personId: String): Device
 }

@@ -425,9 +425,11 @@ class SchedulerService(
                     timeStart = timeStart,
                     timeEnd = timeEnd,
                     canceledDate = canceledDate,
+                    cancellationPerson = cancellationPersonId?.let { personRepository.findById(it).get() },
                     situation = situation,
                     compromiseType = compromiseType,
                     observation = observation,
+                    active = active,
                 )
             }
 
@@ -439,9 +441,11 @@ class SchedulerService(
                     timeStart = timeStart,
                     timeEnd = timeEnd,
                     canceledDate = canceledDate,
+                    cancellationPerson = cancellationPersonId?.let { personRepository.findById(it).get() },
                     situation = situation,
                     compromiseType = compromiseType,
                     observation = observation,
+                    active = active,
                 )
             }
 
@@ -454,9 +458,11 @@ class SchedulerService(
                     timeStart = timeStart,
                     timeEnd = timeEnd,
                     canceledDate = canceledDate,
+                    cancellationPerson = cancellationPersonId?.let { personRepository.findById(it).get() },
                     situation = situation,
                     compromiseType = compromiseType,
                     observation = observation,
+                    active = active,
                 )
             }
         }

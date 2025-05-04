@@ -13,7 +13,7 @@ abstract class AbstractScheduledTaskHandler<CONFIG>(
     private val scheduledTaskService: ScheduledTaskService
 ): IScheduledTaskHandler<CONFIG> {
 
-    final override fun execute(config: CONFIG) {
+    final override fun execute(config: CONFIG?) {
         var pairIds = Pair<String?, String?>(null, null)
 
         try {

@@ -41,7 +41,11 @@ class ScheduledTaskManager(
     fun scheduleTask(task: ScheduledTaskDTO) {
         val handler = handlers[task.handlerBeanName]
         val typedHandler = handler as IScheduledTaskHandler<Any>
-        val config = GsonBuilder().defaultGSon().fromJson(task.configJson, handler.configClass())
+        val config = if (task.configJson != null && handler.configClass() != null) {
+            GsonBuilder().defaultGSon().fromJson(task.configJson, handler.configClass())
+        } else {
+            null
+        }
 
         val duration = Duration.ofMillis(task.intervalMillis!!)
         

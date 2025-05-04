@@ -10,7 +10,6 @@ import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
 import java.util.*
-import kotlin.jvm.java
 
 @Repository
 class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
@@ -68,7 +67,7 @@ class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
 
     private fun getWhereListDevice(filter: DeviceFilter, queryParams: MutableList<Parameter>): StringJoiner {
         return StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where d.active ")
 
             filter.id?.let {
                 add(" and d.id = :pId ")
@@ -125,5 +124,35 @@ class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
         query.setParameters(queryParams)
 
         return query.singleResult.toInt()
+    }
+
+    override fun getListDeviceFrom(personId: String): List<Device> {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select d ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${Device::class.java.name} d ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where d.person.id = :pPersonId ")
+            add(" and d.active = true ")
+
+            queryParams.add(Parameter(name = "pPersonId", value = personId))
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), Device::class.java)
+        query.setParameters(queryParams)
+
+        return query.resultList
     }
 }
