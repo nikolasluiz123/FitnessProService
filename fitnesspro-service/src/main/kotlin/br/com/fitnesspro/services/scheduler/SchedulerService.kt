@@ -533,6 +533,7 @@ class SchedulerService(
             timeStart = timeStart,
             timeEnd = timeEnd,
             canceledDate = canceledDate,
+            cancellationPersonId = cancellationPerson?.id,
             situation = situation,
             compromiseType = compromiseType,
             observation = observation,
