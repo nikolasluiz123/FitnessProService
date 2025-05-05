@@ -8,9 +8,7 @@ interface IFirebaseChatRepository {
 
     fun deleteOldMessages(config: DeleteOldChatMessagesConfig): Int
 
-    fun getListQueryReferenceMessageNotification(): List<QueryDocumentSnapshot>
+    fun getListQueryReferenceMessageNotification(): Map<String, List<QueryDocumentSnapshot>>
 
-    fun getListMessageNotificationDocument(querySnapshots: List<QueryDocumentSnapshot>): List<MessageNotificationDocument>
-
-    fun deleteNotifications(notifications: List<QueryDocumentSnapshot>)
+    fun getListMessageNotificationDocument(querySnapshots: Map<String, List<QueryDocumentSnapshot>>): Map<String, List<MessageNotificationDocument>>
 }

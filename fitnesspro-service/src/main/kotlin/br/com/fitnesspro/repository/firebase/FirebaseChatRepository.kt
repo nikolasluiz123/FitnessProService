@@ -26,35 +26,33 @@ class FirebaseChatRepository: IFirebaseChatRepository {
         return messagesToDelete.size
     }
 
-    override fun getListQueryReferenceMessageNotification(): List<QueryDocumentSnapshot> {
-        val result = mutableListOf<QueryDocumentSnapshot>()
+    override fun getListQueryReferenceMessageNotification(): Map<String, List<QueryDocumentSnapshot>> {
+        val result = mutableMapOf<String, List<QueryDocumentSnapshot>>()
         val personsCollection = firestore.collection("persons")
         val personsQueryDocuments = personsCollection.get().get().documents
 
         personsQueryDocuments.forEach { personQueryDocument ->
-            val path = getPersonNotificationPath(personQueryDocument)
-            result.addAll(firestore.collection(path).get().get().documents)
+            val notificationsPath = getPersonNotificationPath(personQueryDocument)
+            val notifications = firestore.collection(notificationsPath).get().get().documents
+
+            if (notifications.isNotEmpty()) {
+                result.put(personQueryDocument.id, notifications)
+            }
         }
 
         return result
     }
 
-    override fun getListMessageNotificationDocument(querySnapshots: List<QueryDocumentSnapshot>): List<MessageNotificationDocument> {
-        return querySnapshots.map {
-            it.toObject(MessageNotificationDocument::class.java)
+    override fun getListMessageNotificationDocument(querySnapshots: Map<String, List<QueryDocumentSnapshot>>): Map<String, List<MessageNotificationDocument>> {
+        return querySnapshots.mapValues { (_, snapshotList) ->
+            snapshotList.map { snapshot ->
+                snapshot.toObject(MessageNotificationDocument::class.java)
+            }
         }
     }
 
     private fun getPersonNotificationPath(personQueryDocument: QueryDocumentSnapshot): String {
         return "persons/${personQueryDocument.id}/${MessageNotificationDocument.COLLECTION_NAME}"
-    }
-
-    override fun deleteNotifications(notifications: List<QueryDocumentSnapshot>) {
-        firestore.runTransaction { transaction ->
-            notifications.forEach { notification ->
-                transaction.delete(notification.reference)
-            }
-        }
     }
 
     private fun getMessages(config: DeleteOldChatMessagesConfig): MutableList<QueryDocumentSnapshot> {

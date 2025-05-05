@@ -21,24 +21,24 @@ class ChatNotificationExecutorService(
 ): IScheduledTaskExecutorService<Nothing> {
 
     override fun execute(config: Nothing?, pairIds: Pair<String, String>) {
-        val querySnapshots = firebaseChatRepository.getListQueryReferenceMessageNotification()
+        val mapPersonNotificationsQuerySnapshots = firebaseChatRepository.getListQueryReferenceMessageNotification()
         val additionalInformation = StringJoiner("\n")
 
-        if (querySnapshots.isNotEmpty()) {
-            val documents = firebaseChatRepository.getListMessageNotificationDocument(querySnapshots)
+        if (mapPersonNotificationsQuerySnapshots.isNotEmpty()) {
+            val mapPersonNotificationDocuments = firebaseChatRepository.getListMessageNotificationDocument(mapPersonNotificationsQuerySnapshots)
             val notificationsIdsSuccess = mutableListOf<String>()
 
-            val results = documents.flatMap { document ->
+            val results = mapPersonNotificationDocuments.flatMap { (personId, notifications) ->
                 val result = firebaseNotificationService.sendNotificationToPerson(
-                    title = "Mensagem do Chat",
-                    message = document.text!!,
-                    personIds = listOf(document.personReceiverId!!),
+                    title = "",
+                    message = "",
+                    personIds = listOf(personId),
                     channel = EnumNotificationChannel.NEW_MESSAGE_CHAT_CHANNEL,
-                    customJSONData = GsonBuilder().defaultGSon().toJson(document)
+                    customJSONData = GsonBuilder().defaultGSon().toJson(notifications)
                 )
 
                 if (result.first().success()) {
-                    notificationsIdsSuccess.add(document.id)
+                    notificationsIdsSuccess.addAll(notifications.map { it.id })
                 }
 
                 result
@@ -56,23 +56,15 @@ class ChatNotificationExecutorService(
                 successDevices = successDevices,
                 failDevicesIds = errorDevicesIds,
                 failDevices = errorDevices,
-                exceptions = exceptions
+                exceptions = exceptions,
             )
-
-            val notificationsToDelete = querySnapshots.filter { notificationsIdsSuccess.contains(it.id) }
-            firebaseChatRepository.deleteNotifications(notificationsToDelete)
-
-            additionalInformation.apply {
-                add(" ")
-                add(" Notificações Deletadas: ${notificationsIdsSuccess.size} ")
-            }
         } else {
             additionalInformation.addProcessLog(
                 successDevicesIds = emptyList(),
                 successDevices = emptyList(),
                 failDevicesIds = emptyList(),
                 failDevices = emptyList(),
-                exceptions = emptyList()
+                exceptions = emptyList(),
             )
         }
 
@@ -84,7 +76,7 @@ class ChatNotificationExecutorService(
         successDevices: List<DeviceDTO>,
         failDevicesIds: List<String>,
         failDevices: List<DeviceDTO>,
-        exceptions: List<Exception>
+        exceptions: List<Exception>,
     ) {
         val successMessageIds = successDevicesIds.joinToStringOrLabel("Nenhum dispositivo foi notificado")
         val successPersonNames = successDevices.map { it.person?.name!! }.joinToStringOrLabel("Ninguém foi notificado")

@@ -7,5 +7,5 @@ data class NotificationResult(
     val idsDevicesSuccess: List<String> = emptyList(),
     val exception: FirebaseMessagingException? = null
 ) {
-    fun success() = idsDevicesError.isNotEmpty()
+    fun success() = idsDevicesError.isEmpty()
 }

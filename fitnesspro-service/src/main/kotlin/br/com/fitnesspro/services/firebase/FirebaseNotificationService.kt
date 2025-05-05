@@ -106,6 +106,7 @@ class FirebaseNotificationService(
             .putData(notification::title.name, notification.title)
             .putData(notification::message.name, notification.message)
             .putData(notification::channel.name, notification.channel.name)
+            .putData(notification::customJSONData.name, notification.customJSONData)
             .build()
 
         val batchResponse = FirebaseMessaging.getInstance().sendEachForMulticast(message)
@@ -136,14 +137,17 @@ class FirebaseNotificationService(
             .putData(notification::title.name, notification.title)
             .putData(notification::message.name, notification.message)
             .putData(notification::channel.name, notification.channel.name)
+            .putData(notification::customJSONData.name, notification.customJSONData)
             .build()
+
+        val deviceId = deviceService.getDevicesWithFirebaseMessagingTokens(listOf(deviceToken)).first().id!!
 
         return try {
             FirebaseMessaging.getInstance().send(message)
-            NotificationResult(idsDevicesSuccess = listOf(deviceToken))
+            NotificationResult(idsDevicesSuccess = listOf(deviceId))
         } catch (ex: FirebaseMessagingException) {
             ex.printStackTrace()
-            NotificationResult(idsDevicesError = listOf(deviceToken), exception = ex)
+            NotificationResult(idsDevicesError = listOf(deviceId), exception = ex)
         }
     }
 }
