@@ -100,14 +100,18 @@ class FirebaseNotificationService(
         notification: FitnessProNotificationData,
         deviceTokens: List<String>
     ): NotificationResult {
-        val message = MulticastMessage
+        val messageBuilder = MulticastMessage
             .builder()
             .addAllTokens(deviceTokens)
             .putData(notification::title.name, notification.title)
             .putData(notification::message.name, notification.message)
             .putData(notification::channel.name, notification.channel.name)
-            .putData(notification::customJSONData.name, notification.customJSONData)
-            .build()
+
+        notification.customJSONData?.let {
+            messageBuilder.putData(notification::customJSONData.name, it)
+        }
+
+        val message = messageBuilder.build()
 
         val batchResponse = FirebaseMessaging.getInstance().sendEachForMulticast(message)
         val successDeviceTokenList = mutableListOf<String>()
@@ -131,14 +135,18 @@ class FirebaseNotificationService(
     }
 
     private fun sendNotification(notification: FitnessProNotificationData, deviceToken: String): NotificationResult {
-        val message = Message
+        val messageBuilder = Message
             .builder()
             .setToken(deviceToken)
             .putData(notification::title.name, notification.title)
             .putData(notification::message.name, notification.message)
             .putData(notification::channel.name, notification.channel.name)
-            .putData(notification::customJSONData.name, notification.customJSONData)
-            .build()
+
+        notification.customJSONData?.let {
+            messageBuilder.putData(notification::customJSONData.name, it)
+        }
+
+        val message = messageBuilder.build()
 
         val deviceId = deviceService.getDevicesWithFirebaseMessagingTokens(listOf(deviceToken)).first().id!!
 
