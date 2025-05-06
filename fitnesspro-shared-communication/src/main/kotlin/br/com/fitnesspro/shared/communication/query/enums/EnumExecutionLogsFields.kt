@@ -8,7 +8,7 @@ enum class EnumExecutionLogsFields(override val fieldName: String): IEnumFields 
     EXECUTION_STATE("state"),
     END_POINT("endPoint"),
     METHOD_NAME("methodName"),
-    USER_EMAIL("userEmail"),
-    DEVICE_ID("id"),
-    APPLICATION_NAME("name")
+    USER_EMAIL("user.email"),
+    DEVICE_ID("device.id"),
+    APPLICATION_NAME("application.name")
 }

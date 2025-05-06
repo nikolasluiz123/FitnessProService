@@ -37,7 +37,19 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
         val where = getWhereListExecutionLog(filter, queryParams)
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by log.creationDate desc ")
+            if (filter.sort.isEmpty()) {
+                add(" order by log.creationDate desc ")
+            } else {
+                add(" order by ")
+
+                filter.sort.forEachIndexed { index, sort ->
+                    val sortField = sort.field.fieldName
+                    val order = if (sort.asc) "asc" else "desc"
+                    val comma = if (index == filter.sort.lastIndex) "" else ", "
+
+                    add(" log.$sortField $order$comma ")
+                }
+            }
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -201,7 +213,7 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
 
         val orderBy = StringJoiner(QR_NL).apply {
             if (filter.sort == null) {
-                add(" order by lp.service_execution_start desc ")
+                add(" order by lp.serviceExecutionStart desc ")
             } else {
                 val sortField = filter.sort?.field?.fieldName
                 val order = if (filter.sort?.asc!!) "asc" else "desc"

@@ -2,6 +2,8 @@ package br.com.fitnesspro.shared.communication.query.filter
 
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
+import br.com.fitnesspro.shared.communication.query.enums.EnumExecutionLogsFields
+import br.com.fitnesspro.shared.communication.query.sort.Sort
 import java.time.LocalDateTime
 
 data class ExecutionLogsFilter(
@@ -12,5 +14,6 @@ data class ExecutionLogsFilter(
     var methodName: String? = null,
     var userEmail: String? = null,
     var deviceId: String? = null,
-    var applicationName: String? = null
+    var applicationName: String? = null,
+    var sort: List<Sort<EnumExecutionLogsFields>> = emptyList()
 )
