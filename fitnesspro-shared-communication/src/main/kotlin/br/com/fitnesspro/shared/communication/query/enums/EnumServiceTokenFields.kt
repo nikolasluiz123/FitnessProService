@@ -6,7 +6,7 @@ enum class EnumServiceTokenFields(override val fieldName: String): IEnumFields {
     TYPE("type"),
     CREATION_DATE("creationDate"),
     EXPIRATION_DATE("expirationDate"),
-    USER_EMAIL("email"),
-    DEVICE_ID("id"),
-    APPLICATION_NAME("name")
+    USER_EMAIL("user.email"),
+    DEVICE_ID("device.id"),
+    APPLICATION_NAME("application.name")
 }
