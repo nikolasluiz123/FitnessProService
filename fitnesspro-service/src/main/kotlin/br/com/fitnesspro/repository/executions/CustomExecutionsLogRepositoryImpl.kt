@@ -94,7 +94,7 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
             }
 
             filter.methodName?.let {
-                add(" and log.methodName like :methodName ")
+                add(" and lower(log.methodName) like lower(:methodName) ")
                 queryParams.add(Parameter(name = "methodName", value = "%$it%"))
             }
 
