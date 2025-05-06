@@ -3,13 +3,13 @@ package br.com.fitnesspro.services.general
 import br.com.fitnesspro.config.application.cache.PERSON_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.exception.BusinessException
-import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
 import br.com.fitnesspro.repository.general.person.ICustomPersonRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
 import br.com.fitnesspro.repository.general.user.ICustomUserRepository
 import br.com.fitnesspro.repository.general.user.IUserRepository
 import br.com.fitnesspro.services.firebase.FirebaseAuthenticationService
+import br.com.fitnesspro.services.mappers.PersonServiceMapper
 import br.com.fitnesspro.services.scheduler.SchedulerService
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
@@ -30,12 +30,13 @@ class PersonService(
     private val customUserRepository: ICustomUserRepository,
     private val customPersonRepository: ICustomPersonRepository,
     private val schedulerService: SchedulerService,
-    private val firebaseAuthenticationService: FirebaseAuthenticationService
+    private val firebaseAuthenticationService: FirebaseAuthenticationService,
+    private val personServiceMapper: PersonServiceMapper
 ) {
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePerson(personDTO: PersonDTO) {
-        val person = personDTO.toPerson()
+        val person = personServiceMapper.getPerson(personDTO)
 
         if (personDTO.active) {
             validateUser(person.user!!)
@@ -80,7 +81,7 @@ class PersonService(
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonList(personDTOList: List<PersonDTO>) {
         val persons = personDTOList.map { personDTO ->
-            val person = personDTO.toPerson()
+            val person = personServiceMapper.getPerson(personDTO)
 
             validateUser(person.user!!)
 
@@ -106,12 +107,12 @@ class PersonService(
 
     @Cacheable(cacheNames = [PERSON_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonDTO> {
-        return customPersonRepository.getPersonsImport(filter, pageInfos).map { it.toPersonDTO() }
+        return customPersonRepository.getPersonsImport(filter, pageInfos).map(personServiceMapper::getPersonDTO)
     }
 
     @Cacheable(cacheNames = [PERSON_USER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<UserDTO> {
-        return customPersonRepository.getUsersImport(filter, pageInfos).map { it.toUserDTO() }
+        return customPersonRepository.getUsersImport(filter, pageInfos).map(personServiceMapper::getUserDTO)
     }
 
     fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<PersonDTO> {
@@ -122,102 +123,7 @@ class PersonService(
         return customPersonRepository.getCountListPersons(filter)
     }
 
-    private fun Person.toPersonDTO(): PersonDTO {
-        return PersonDTO(
-            id = id,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            name = name,
-            birthDate = birthDate,
-            phone = phone,
-            user = user?.toUserDTO(),
-        )
-    }
-
-    private fun PersonDTO.toPerson(): Person {
-        val person = id?.let { personRepository.findById(it) }
-
-        return when {
-            id == null -> {
-                Person(
-                    name = name,
-                    birthDate = birthDate,
-                    phone = phone,
-                    user = user?.toUser(),
-                    active = active
-                )
-            }
-
-            person?.isPresent ?: false -> {
-                person!!.get().copy(
-                    name = name,
-                    birthDate = birthDate,
-                    phone = phone,
-                    user = user?.toUser(),
-                    active = active
-                )
-            }
-
-            else -> {
-                Person(
-                    id = id!!,
-                    name = name,
-                    birthDate = birthDate,
-                    phone = phone,
-                    user = user?.toUser(),
-                    active = active
-                )
-            }
-        }
-    }
-
-    private fun User.toUserDTO(): UserDTO {
-        return UserDTO(
-            id = id,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            active = active,
-            email = email,
-            password = password,
-            type = type,
-        )
-    }
-
-    private fun UserDTO.toUser(): User {
-        val user = id?.let { userRepository.findById(it) }
-
-        return when {
-            id == null -> {
-                User(
-                    email = email,
-                    password = password,
-                    type = type,
-                    active = active,
-                )
-            }
-
-            user?.isPresent ?: false -> {
-                user!!.get().copy(
-                    email = email,
-                    password = password,
-                    type = type,
-                    active = active,
-                )
-            }
-
-            else -> {
-                User(
-                    id = id!!,
-                    email = email,
-                    password = password,
-                    type = type,
-                    active = active,
-                )
-            }
-        }
-    }
-
     fun getPersonByEmail(email: String): PersonDTO? {
-        return customPersonRepository.findByEmail(email)?.toPersonDTO()
+        return customPersonRepository.findByEmail(email)?.let(personServiceMapper::getPersonDTO)
     }
 }

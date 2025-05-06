@@ -6,13 +6,12 @@ import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.exception.BusinessException
-import br.com.fitnesspro.models.general.Academy
 import br.com.fitnesspro.models.general.PersonAcademyTime
 import br.com.fitnesspro.repository.general.academy.IAcademyRepository
 import br.com.fitnesspro.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.repository.general.person.ICustomPersonAcademyTimeRepository
 import br.com.fitnesspro.repository.general.person.IPersonAcademyTimeRepository
-import br.com.fitnesspro.repository.general.person.IPersonRepository
+import br.com.fitnesspro.services.mappers.AcademyServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
@@ -22,7 +21,6 @@ import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class AcademyService(
@@ -30,12 +28,12 @@ class AcademyService(
     private val customPersonAcademyTimeRepository: ICustomPersonAcademyTimeRepository,
     private val academyRepository: IAcademyRepository,
     private val customAcademyRepository: ICustomAcademyRepository,
-    private val personRepository: IPersonRepository
+    private val academyServiceMapper: AcademyServiceMapper
 ) {
 
     @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO) {
-        val personAcademyTime = personAcademyTimeDTO.toPersonAcademyTime()
+        val personAcademyTime = academyServiceMapper.getPersonAcademyTime(personAcademyTimeDTO)
 
         validatePersonAcademyTime(personAcademyTime)
 
@@ -65,7 +63,7 @@ class AcademyService(
 
     @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademy(academyDTO: AcademyDTO) {
-        val academy = academyDTO.toAcademy()
+        val academy = academyServiceMapper.getAcademy(academyDTO)
         academyRepository.save(academy)
 
         academyDTO.id = academy.id
@@ -73,113 +71,32 @@ class AcademyService(
 
     @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademyBatch(academyDTOList: List<AcademyDTO>) {
-        val academyList = academyDTOList.map { it.toAcademy() }
+        val academyList = academyDTOList.map(academyServiceMapper::getAcademy)
         academyRepository.saveAll(academyList)
     }
 
     @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonAcademyTimeBatch(personAcademyTimeDTOList: List<PersonAcademyTimeDTO>) {
-        val personAcademyTimeList = personAcademyTimeDTOList.map { it.toPersonAcademyTime() }
+        val personAcademyTimeList = personAcademyTimeDTOList.map(academyServiceMapper::getPersonAcademyTime)
         personAcademyTimeRepository.saveAll(personAcademyTimeList)
     }
 
     @Cacheable(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonAcademyTimeDTO> {
-        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map { it.toPersonAcademyTimeDTO() }
+        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map(academyServiceMapper::getPersonAcademyTimeDTO)
     }
 
     @Cacheable(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
-        return customAcademyRepository.getAcademiesImport(filter, pageInfos).map { it.toAcademyDTO() }
+        return customAcademyRepository.getAcademiesImport(filter, pageInfos).map(academyServiceMapper::getAcademyDTO)
     }
 
     fun getListAcademy(filter: AcademyFilter, pageInfos: CommonPageInfos): List<AcademyDTO> {
-        return customAcademyRepository.getListAcademy(filter, pageInfos).map { it.toAcademyDTO() }
+        return customAcademyRepository.getListAcademy(filter, pageInfos).map(academyServiceMapper::getAcademyDTO)
     }
 
     fun getCountListAcademy(filter: AcademyFilter): Int {
         return customAcademyRepository.getCountListAcademy(filter)
     }
 
-    private fun AcademyDTO.toAcademy(): Academy {
-        return id?.let {
-            academyRepository.findById(it).getOrNull()?.copy(
-                name = name,
-                phone = phone,
-                address = address,
-                active = active,
-            )
-        } ?: Academy(
-            name = name,
-            phone = phone,
-            address = address,
-            active = active,
-        )
-    }
-
-    private fun Academy.toAcademyDTO(): AcademyDTO {
-        return AcademyDTO(
-            id = id,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            name = name,
-            phone = phone,
-            address = address,
-            active = active,
-        )
-    }
-
-    private fun PersonAcademyTimeDTO.toPersonAcademyTime(): PersonAcademyTime {
-        val personAcademyTime = id?.let { personAcademyTimeRepository.findById(it) }
-
-        return when {
-            id == null -> {
-                PersonAcademyTime(
-                    person = personRepository.findById(personId!!).get(),
-                    academy = academyRepository.findById(academyId!!).get(),
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
-                    dayOfWeek = dayOfWeek,
-                    active = active,
-                )
-            }
-
-            personAcademyTime?.isPresent ?: false -> {
-                personAcademyTime!!.get().copy(
-                    person = personRepository.findById(personId!!).get(),
-                    academy = academyRepository.findById(academyId!!).get(),
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
-                    dayOfWeek = dayOfWeek,
-                    active = active,
-                )
-            }
-
-            else -> {
-                PersonAcademyTime(
-                    id = id!!,
-                    person = personRepository.findById(personId!!).get(),
-                    academy = academyRepository.findById(academyId!!).get(),
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
-                    dayOfWeek = dayOfWeek,
-                    active = active,
-                )
-            }
-        }
-    }
-
-    private fun PersonAcademyTime.toPersonAcademyTimeDTO(): PersonAcademyTimeDTO {
-        return PersonAcademyTimeDTO(
-            id = id,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            personId = person?.id,
-            academyId = academy?.id,
-            timeStart = timeStart,
-            timeEnd = timeEnd,
-            dayOfWeek = dayOfWeek,
-            active = active,
-        )
-    }
 }

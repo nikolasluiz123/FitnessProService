@@ -13,7 +13,6 @@ import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.models.workout.Workout
 import br.com.fitnesspro.models.workout.WorkoutGroup
-import br.com.fitnesspro.shared.communication.notification.SchedulerNotificationCustomData
 import br.com.fitnesspro.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
 import br.com.fitnesspro.repository.scheduler.ICustomSchedulerConfigRepository
@@ -23,6 +22,7 @@ import br.com.fitnesspro.repository.scheduler.ISchedulerRepository
 import br.com.fitnesspro.repository.workout.IWorkoutGroupRepository
 import br.com.fitnesspro.repository.workout.IWorkoutRepository
 import br.com.fitnesspro.services.firebase.FirebaseNotificationService
+import br.com.fitnesspro.services.mappers.SchedulerServiceMapper
 import br.com.fitnesspro.services.serviceauth.DeviceService
 import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
@@ -30,6 +30,7 @@ import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation.*
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
+import br.com.fitnesspro.shared.communication.notification.SchedulerNotificationCustomData
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import com.google.gson.GsonBuilder
@@ -50,7 +51,8 @@ class SchedulerService(
     private val workoutRepository: IWorkoutRepository,
     private val workoutGroupRepository: IWorkoutGroupRepository,
     private val firebaseNotificationService: FirebaseNotificationService,
-    private val deviceService: DeviceService
+    private val deviceService: DeviceService,
+    private val schedulerServiceMapper: SchedulerServiceMapper
 ) {
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
@@ -58,7 +60,7 @@ class SchedulerService(
 
         when (schedulerDTO.type!!) {
             EnumSchedulerType.SUGGESTION, EnumSchedulerType.UNIQUE -> {
-                val scheduler = schedulerDTO.toScheduler()
+                val scheduler = schedulerServiceMapper.getScheduler(schedulerDTO)
                 sendNotification(schedulerDTO)
                 schedulerRepository.save(scheduler)
             }
@@ -72,7 +74,7 @@ class SchedulerService(
                     .toList()
 
                 val schedules = scheduleDates.map { date ->
-                    schedulerDTO.toScheduler().copy(scheduledDate = date)
+                    schedulerServiceMapper.getScheduler(schedulerDTO).copy(scheduledDate = date)
                 }
 
                 validateConflictRecurrent(schedules)
@@ -274,7 +276,7 @@ class SchedulerService(
 
     @Throws(BusinessException::class)
     private fun validateScheduler(dto: SchedulerDTO) {
-        val scheduler = dto.toScheduler()
+        val scheduler = schedulerServiceMapper.getScheduler(dto)
 
         when (dto.type!!) {
             EnumSchedulerType.SUGGESTION -> {
@@ -414,7 +416,7 @@ class SchedulerService(
         val schedules = schedulerDTOList.map { schedulerDTO ->
             validateScheduler(schedulerDTO)
             sendNotification(schedulerDTO)
-            schedulerDTO.toScheduler()
+            schedulerServiceMapper.getScheduler(schedulerDTO)
         }
 
         schedulerRepository.saveAll(schedules)
@@ -422,7 +424,7 @@ class SchedulerService(
 
     @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerConfig(schedulerConfigDTO: SchedulerConfigDTO) {
-        val config = schedulerConfigDTO.toSchedulerConfig()
+        val config = schedulerServiceMapper.getSchedulerConfig(schedulerConfigDTO)
 
         validateDensityRange(config)
 
@@ -439,7 +441,7 @@ class SchedulerService(
     @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerConfigBatch(schedulerConfigDTOList: List<SchedulerConfigDTO>) {
         val configs = schedulerConfigDTOList.map {
-            val config = it.toSchedulerConfig()
+            val config = schedulerServiceMapper.getSchedulerConfig(it)
             validateDensityRange(config)
 
             config
@@ -450,141 +452,12 @@ class SchedulerService(
 
     @Cacheable(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO> {
-        return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map { it.toSchedulerDTO() }
+        return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map(schedulerServiceMapper::getSchedulerDTO)
     }
 
     @Cacheable(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfigDTO> {
-        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map { it.toSchedulerConfigDTO() }
+        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map(schedulerServiceMapper::getSchedulerConfigDTO)
     }
 
-    private fun SchedulerDTO.toScheduler(): Scheduler {
-        val scheduler = id?.let { schedulerRepository.findById(it) }
-
-        return when {
-            id == null -> {
-                Scheduler(
-                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-                    scheduledDate = scheduledDate,
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
-                    canceledDate = canceledDate,
-                    cancellationPerson = cancellationPersonId?.let { personRepository.findById(it).get() },
-                    situation = situation,
-                    compromiseType = compromiseType,
-                    observation = observation,
-                    active = active,
-                )
-            }
-
-            scheduler?.isPresent ?: false -> {
-                scheduler!!.get().copy(
-                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-                    scheduledDate = scheduledDate,
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
-                    canceledDate = canceledDate,
-                    cancellationPerson = cancellationPersonId?.let { personRepository.findById(it).get() },
-                    situation = situation,
-                    compromiseType = compromiseType,
-                    observation = observation,
-                    active = active,
-                )
-            }
-
-            else -> {
-                Scheduler(
-                    id = id!!,
-                    academyMemberPerson = personRepository.findById(academyMemberPersonId!!).get(),
-                    professionalPerson = personRepository.findById(professionalPersonId!!).get(),
-                    scheduledDate = scheduledDate,
-                    timeStart = timeStart,
-                    timeEnd = timeEnd,
-                    canceledDate = canceledDate,
-                    cancellationPerson = cancellationPersonId?.let { personRepository.findById(it).get() },
-                    situation = situation,
-                    compromiseType = compromiseType,
-                    observation = observation,
-                    active = active,
-                )
-            }
-        }
-    }
-
-    private fun SchedulerConfigDTO.toSchedulerConfig(): SchedulerConfig {
-        val schedulerConfig = id?.let { schedulerConfigRepository.findById(it) }
-
-        return when {
-            id == null -> {
-                SchedulerConfig(
-                    active = active,
-                    alarm = alarm,
-                    notification = notification,
-                    minScheduleDensity = minScheduleDensity,
-                    maxScheduleDensity = maxScheduleDensity,
-                    person = personRepository.findById(personId!!).get(),
-                )
-            }
-
-            schedulerConfig?.isPresent ?: false -> {
-                schedulerConfig!!.get().copy(
-                    active = active,
-                    alarm = alarm,
-                    notification = notification,
-                    minScheduleDensity = minScheduleDensity,
-                    maxScheduleDensity = maxScheduleDensity,
-                    person = personRepository.findById(personId!!).get(),
-                )
-            }
-
-            else -> {
-                SchedulerConfig(
-                    id = id!!,
-                    active = active,
-                    alarm = alarm,
-                    notification = notification,
-                    minScheduleDensity = minScheduleDensity,
-                    maxScheduleDensity = maxScheduleDensity,
-                    person = personRepository.findById(personId!!).get(),
-                )
-            }
-        }
-    }
-
-    private fun SchedulerConfig.toSchedulerConfigDTO(): SchedulerConfigDTO {
-        return SchedulerConfigDTO(
-            id = id,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            active = active,
-            alarm = alarm,
-            notification = notification,
-            minScheduleDensity = minScheduleDensity,
-            maxScheduleDensity = maxScheduleDensity,
-            personId = person?.id,
-        )
-    }
-
-    private fun Scheduler.toSchedulerDTO(): SchedulerDTO {
-        return SchedulerDTO(
-            id = id,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            academyMemberPersonId = academyMemberPerson?.id,
-            professionalPersonId = professionalPerson?.id,
-            scheduledDate = scheduledDate,
-            timeStart = timeStart,
-            timeEnd = timeEnd,
-            canceledDate = canceledDate,
-            cancellationPersonId = cancellationPerson?.id,
-            situation = situation,
-            compromiseType = compromiseType,
-            observation = observation,
-            recurrentConfig = null,
-            active = active,
-            type = null
-        )
-    }
 }

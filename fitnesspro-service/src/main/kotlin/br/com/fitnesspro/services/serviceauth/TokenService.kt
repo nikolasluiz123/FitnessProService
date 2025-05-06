@@ -8,7 +8,10 @@ import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
 import br.com.fitnesspro.repository.serviceauth.ICustomServiceTokenRepository
 import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
 import br.com.fitnesspro.repository.serviceauth.IServiceTokenRepository
-import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
+import br.com.fitnesspro.services.mappers.ApplicationServiceMapper
+import br.com.fitnesspro.services.mappers.DeviceServiceMapper
+import br.com.fitnesspro.services.mappers.PersonServiceMapper
+import br.com.fitnesspro.services.mappers.TokenServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
@@ -36,6 +39,10 @@ class TokenService(
     private val deviceRepository: IDeviceRepository,
     private val userRepository: IUserRepository,
     private val applicationRepository: IApplicationRepository,
+    private val applicationServiceMapper: ApplicationServiceMapper,
+    private val personServiceMapper: PersonServiceMapper,
+    private val deviceServiceMapper: DeviceServiceMapper,
+    private val tokenServiceMapper: TokenServiceMapper
 ) {
 
     private final val secretKey = System.getenv("JWT_SECRET")
@@ -69,20 +76,12 @@ class TokenService(
                 val expirationDate = creationDate.plusHours(1)
                 val user = userRepository.findById(dto.userId!!).get()
 
-                val serviceToken = ServiceTokenDTO(
-                    jwtToken = generateTokenJWT(user.username),
+                val serviceToken = tokenServiceMapper.getServiceTokenDTO(
+                    jwt = generateTokenJWT(user.username),
                     creationDate = creationDate,
                     expirationDate = expirationDate,
                     type = dto.type!!,
-                    user = UserDTO(
-                        id = user.id,
-                        creationDate = user.creationDate,
-                        updateDate = user.updateDate,
-                        active = user.active,
-                        email = user.email,
-                        password = user.password,
-                        type = user.type,
-                    )
+                    user = user
                 )
 
                 saveServiceToken(serviceToken)
@@ -99,44 +98,12 @@ class TokenService(
                 val expirationDate = creationDate.plusHours(12)
                 val device = deviceRepository.findById(dto.deviceId!!).get()
 
-                val serviceToken = ServiceTokenDTO(
-                    jwtToken = generateTokenJWT(device.id),
+                val serviceToken = tokenServiceMapper.getServiceTokenDTO(
+                    jwt = generateTokenJWT(device.id),
                     creationDate = creationDate,
                     expirationDate = expirationDate,
                     type = dto.type!!,
-                    device = DeviceDTO(
-                        id = device.id,
-                        model = device.model,
-                        brand = device.brand,
-                        androidVersion = device.androidVersion,
-                        creationDate = device.creationDate,
-                        updateDate = device.updateDate,
-                        active = device.active,
-                        zoneId = device.zoneId,
-                        firebaseMessagingToken = device.firebaseMessagingToken,
-                        application = ApplicationDTO(
-                            id = device.application?.id,
-                            name = device.application?.name,
-                            active = device.application?.active ?: false
-                        ),
-                        person = PersonDTO(
-                            id = device.person?.id,
-                            name = device.person?.name,
-                            birthDate = device.person?.birthDate,
-                            phone = device.person?.phone,
-                            creationDate = device.person?.creationDate,
-                            updateDate = device.person?.updateDate,
-                            user = UserDTO(
-                                id = device.person?.user?.id,
-                                email = device.person?.user?.email,
-                                password = device.person?.user?.password,
-                                creationDate = device.person?.user?.creationDate,
-                                updateDate = device.person?.user?.updateDate,
-                                active = device.person?.user?.active!!,
-                                type = device.person?.user?.type!!
-                            ),
-                        )
-                    )
+                    device = device
                 )
 
                 saveServiceToken(serviceToken)
@@ -148,14 +115,12 @@ class TokenService(
                 val creationDate = dateTimeNow()
                 val application = applicationRepository.findById(dto.applicationId!!).get()
 
-                val serviceToken = ServiceTokenDTO(
-                    jwtToken = generateTokenJWT(dto.applicationId!!),
+                val serviceToken = tokenServiceMapper.getServiceTokenDTO(
+                    jwt = generateTokenJWT(application.id),
                     creationDate = creationDate,
+                    expirationDate = null,
                     type = dto.type!!,
-                    application = ApplicationDTO(
-                        id = application.id,
-                        name = application.name
-                    )
+                    application = application
                 )
 
                 saveServiceToken(serviceToken)
@@ -192,20 +157,10 @@ class TokenService(
         tokenRepository.saveAll(tokens)
     }
 
-    private fun saveServiceToken(serviceToken: ServiceTokenDTO) {
-        val token = ServiceToken(
-            jwtToken = serviceToken.jwtToken,
-            creationDate = serviceToken.creationDate,
-            expirationDate = serviceToken.expirationDate,
-            type = serviceToken.type,
-            user = serviceToken.user?.id?.let { userRepository.findById(it).get() },
-            device = serviceToken.device?.id?.let { deviceRepository.findById(it).get() },
-            application = serviceToken.application?.id?.let { applicationRepository.findById(it).get() }
-        )
-
+    private fun saveServiceToken(serviceTokenDTO: ServiceTokenDTO) {
+        val token = tokenServiceMapper.getTokenService(serviceTokenDTO)
         tokenRepository.save(token)
-
-        serviceToken.id = token.id
+        serviceTokenDTO.id = token.id
     }
 
     fun getValidatedServiceToken(jwtToken: String): ServiceTokenDTO {

@@ -10,6 +10,7 @@ import br.com.fitnesspro.repository.executions.IExecutionsLogRepository
 import br.com.fitnesspro.repository.general.user.IUserRepository
 import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
 import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
+import br.com.fitnesspro.services.mappers.LogsServiceMapper
 import br.com.fitnesspro.services.serviceauth.TokenService
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
@@ -39,7 +40,8 @@ class ExecutionsLogService(
     private val tokenService: TokenService,
     private val userRepository: IUserRepository,
     private val deviceRepository: IDeviceRepository,
-    private val applicationRepository: IApplicationRepository
+    private val applicationRepository: IApplicationRepository,
+    private val logsServiceMapper: LogsServiceMapper
 ) {
 
     fun saveLogPreHandle(request: HttpServletRequest, handler: HandlerMethod) {
@@ -160,7 +162,7 @@ class ExecutionsLogService(
     }
 
     fun getListExecutionLog(filter: ExecutionLogsFilter, pageInfos: PageInfos): List<ExecutionLogDTO> {
-        return customLogRepository.getListExecutionLog(filter, pageInfos).map { it.toExecutionLogDTO() }
+        return customLogRepository.getListExecutionLog(filter, pageInfos).map(logsServiceMapper::getExecutionLogDTO)
     }
 
     fun getCountListExecutionLog(filter: ExecutionLogsFilter): Int {
@@ -168,45 +170,11 @@ class ExecutionsLogService(
     }
 
     fun getListExecutionLogPackage(filter: ExecutionLogsPackageFilter, pageInfos: PageInfos): List<ExecutionLogPackageDTO> {
-        return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map { it.toExecutionLogPackageDTO() }
+        return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map(logsServiceMapper::getExecutionLogPackageDTO)
     }
 
     fun getCountListExecutionLogPackage(filter: ExecutionLogsPackageFilter): Int {
         return customLogRepository.getCountListExecutionLogPackage(filter)
-    }
-
-    private fun ExecutionLog.toExecutionLogDTO(): ExecutionLogDTO {
-        return ExecutionLogDTO(
-            id = id,
-            type = type,
-            state = state,
-            endPoint = endPoint,
-            methodName = methodName,
-            userEmail = user?.email,
-            deviceId = device?.id,
-            applicationName = application?.name,
-            pageSize = pageSize,
-            lastUpdateDate = lastUpdateDate,
-            creationDate = creationDate
-        )
-    }
-
-    private fun ExecutionLogPackage.toExecutionLogPackageDTO(): ExecutionLogPackageDTO {
-        return ExecutionLogPackageDTO(
-            id = id,
-            executionLogId = executionLog.id,
-            clientExecutionStart = clientExecutionStart,
-            clientExecutionEnd = clientExecutionEnd,
-            serviceExecutionStart = serviceExecutionStart,
-            serviceExecutionEnd = serviceExecutionEnd,
-            requestBody = requestBody,
-            responseBody = responseBody,
-            executionAdditionalInfos = executionAdditionalInfos,
-            error = error,
-            insertedItemsCount = insertedItemsCount,
-            updatedItemsCount = updatedItemsCount,
-            allItemsCount = allItemsCount
-        )
     }
 
     fun updateExecutionLog(id: String, dto: UpdatableExecutionLogInfosDTO) {
