@@ -3,6 +3,7 @@ package br.com.fitnesspro.services.general
 import br.com.fitnesspro.config.application.cache.PERSON_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.exception.BusinessException
+import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
 import br.com.fitnesspro.repository.general.person.ICustomPersonRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
@@ -11,6 +12,7 @@ import br.com.fitnesspro.repository.general.user.IUserRepository
 import br.com.fitnesspro.services.firebase.FirebaseAuthenticationService
 import br.com.fitnesspro.services.mappers.PersonServiceMapper
 import br.com.fitnesspro.services.scheduler.SchedulerService
+import br.com.fitnesspro.services.serviceauth.DeviceService
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
@@ -31,13 +33,35 @@ class PersonService(
     private val customPersonRepository: ICustomPersonRepository,
     private val schedulerService: SchedulerService,
     private val firebaseAuthenticationService: FirebaseAuthenticationService,
-    private val personServiceMapper: PersonServiceMapper
+    private val personServiceMapper: PersonServiceMapper,
+    private val deviceService: DeviceService
 ) {
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
     fun savePerson(personDTO: PersonDTO) {
         val person = personServiceMapper.getPerson(personDTO)
+        preparePersonSave(personDTO, person)
 
+        userRepository.save(person.user!!)
+        personRepository.save(person)
+
+        if (personDTO.active) {
+            val personExists = personDTO.id?.let { personRepository.findById(it).isPresent } ?: false
+            firebaseAuthenticationService.saveUser(personDTO, personExists)
+        } else {
+            firebaseAuthenticationService.deleteUser(personDTO)
+            deviceService.inactivatePersonDevice(person.id)
+        }
+
+        if (personDTO.createDefaultSchedulerConfig) {
+            schedulerService.saveSchedulerConfig(SchedulerConfigDTO(personId = person.id))
+        }
+
+        personDTO.id = person.id
+        personDTO.user?.id = person.user?.id
+    }
+
+    private fun preparePersonSave(personDTO: PersonDTO, person: Person) {
         if (personDTO.active) {
             validateUser(person.user!!)
 
@@ -47,24 +71,6 @@ class PersonService(
                 person.user?.password = HashHelper.applyHash(password)
             }
         }
-
-        val personExists = personDTO.id?.let { personRepository.findById(it).isPresent } ?: false
-
-        userRepository.save(person.user!!)
-        personRepository.save(person)
-
-        if (personDTO.active) {
-            firebaseAuthenticationService.saveUser(personDTO, personExists)
-        } else {
-            firebaseAuthenticationService.deleteUser(personDTO)
-        }
-
-        if (personDTO.createDefaultSchedulerConfig) {
-            schedulerService.saveSchedulerConfig(SchedulerConfigDTO(personId = person.id))
-        }
-
-        personDTO.id = person.id
-        personDTO.user?.id = person.user?.id
     }
 
     @Throws(BusinessException::class)

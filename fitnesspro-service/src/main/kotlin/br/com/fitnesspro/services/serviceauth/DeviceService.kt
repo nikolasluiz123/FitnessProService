@@ -73,4 +73,11 @@ class DeviceService(
     fun getDeviceFromPerson(personId: String): DeviceDTO {
         return deviceServiceMapper.getDeviceDTO(deviceRepository.findByPersonIdAndActiveIsTrue(personId))
     }
+
+    fun inactivatePersonDevice(personId: String) {
+        deviceRepository.findByPersonIdAndActiveIsTrue(personId).apply {
+            active = false
+            deviceRepository.save(this)
+        }
+    }
 }
