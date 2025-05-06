@@ -145,7 +145,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
-        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name
+        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name?.split(" ")?.firstOrNull()
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -154,7 +154,7 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Agendamento confirmado",
+            title = "Agendamento Confirmado",
             message = "O Agendamento de $date das $start às $end foi confirmado por ${professionalName}.",
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
@@ -182,8 +182,8 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Agendamento cancelado",
-            message = "O Agendamento de $date das $start às $end foi cancelado por ${cancellationPerson.name}.",
+            title = "Agendamento Cancelado",
+            message = "O Agendamento de $date das $start às $end foi cancelado por ${cancellationPerson.name?.split(" ")?.firstOrNull()}.",
             personIds = listOf(personIdToNotify),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
@@ -200,7 +200,7 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Alteração no horário de um agendamento",
+            title = "Agendamento Alterado",
             message = "O Agendamento de $date teve o horário alterado, verifique o novo horário.",
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
@@ -213,7 +213,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
-        val memberName = personRepository.findById(schedulerDTO.academyMemberPersonId!!).get().name
+        val memberName = personRepository.findById(schedulerDTO.academyMemberPersonId!!).get().name?.split(" ")?.firstOrNull()
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -222,8 +222,8 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Nova sugestão de agendamento",
-            message = "$memberName sugeriu um agendamento para o dia $date das $start às $end.",
+            title = "Nova Sugestão de Agendamento",
+            message = "$memberName sugeriu um agendamento $date das $start às $end.",
             personIds = listOf(schedulerDTO.professionalPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
@@ -235,7 +235,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
-        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name
+        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name?.split(" ")?.firstOrNull()
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -244,7 +244,7 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Novo compromisso em sua agenda",
+            title = "Novo Compromisso",
             message = "$professionalName realizou um agendamento para o dia $date das $start às $end.",
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
@@ -253,7 +253,7 @@ class SchedulerService(
     }
 
     private fun notifyMemberNewRecurrentScheduler(schedulerDTO: SchedulerDTO, scheduledDates: List<LocalDate>) {
-        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name
+        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name?.split(" ")?.firstOrNull()
 
         val dateCount = scheduledDates.size
         val start = scheduledDates.first().format(DAY_MONTH)
