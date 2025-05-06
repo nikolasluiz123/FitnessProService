@@ -141,7 +141,7 @@ class SchedulerService(
     }
 
     private fun notifyMemberSchedulerConfirmed(schedulerDTO: SchedulerDTO) {
-        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!).zoneId!!
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
@@ -170,7 +170,7 @@ class SchedulerService(
             schedulerDTO.professionalPersonId
         }
 
-        val zoneId = deviceService.getDeviceFromPerson(personIdToNotify!!).zoneId!!
+        val zoneId = deviceService.getDeviceFromPerson(personIdToNotify!!)?.zoneId!!
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
@@ -209,7 +209,7 @@ class SchedulerService(
     }
 
     private fun notifyProfessionalNewSuggestionScheduler(schedulerDTO: SchedulerDTO) {
-        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.professionalPersonId!!).zoneId!!
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.professionalPersonId!!)?.zoneId!!
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
@@ -231,7 +231,7 @@ class SchedulerService(
     }
 
     private fun notifyMemberNewUniqueScheduler(schedulerDTO: SchedulerDTO) {
-        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!).zoneId!!
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))

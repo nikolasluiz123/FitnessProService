@@ -1,7 +1,9 @@
 package br.com.fitnesspro.services.firebase
 
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
+import com.google.firebase.auth.AuthErrorCode
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.UserRecord
 import org.springframework.stereotype.Service
 
@@ -18,9 +20,17 @@ class FirebaseAuthenticationService {
 
     fun deleteUser(personDTO: PersonDTO) {
         val firebaseAuth = FirebaseAuth.getInstance()
-        val user = firebaseAuth.getUserByEmail(personDTO.user?.email!!)
+        val user = try {
+            firebaseAuth.getUserByEmail(personDTO.user?.email!!)
+        } catch (ex: FirebaseAuthException) {
+            if (ex.authErrorCode == AuthErrorCode.USER_NOT_FOUND) {
+                null
+            } else {
+                throw ex
+            }
+        }
 
-        firebaseAuth.deleteUser(user.uid)
+        user?.uid?.let(firebaseAuth::deleteUser)
     }
 
     private fun createUser(personDTO: PersonDTO) {

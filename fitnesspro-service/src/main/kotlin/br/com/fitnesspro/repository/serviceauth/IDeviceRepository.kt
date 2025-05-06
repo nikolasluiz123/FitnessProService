@@ -14,5 +14,5 @@ interface IDeviceRepository: IAuditableFitnessProRepository<Device> {
 
     fun findByActiveIsTrueAndFirebaseMessagingTokenIsNotNull(): List<Device>
 
-    fun findByPersonIdAndActiveIsTrue(personId: String): Device
+    fun findByPersonIdAndActiveIsTrue(personId: String): Device?
 }

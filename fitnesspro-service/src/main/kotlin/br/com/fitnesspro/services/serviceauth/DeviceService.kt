@@ -70,12 +70,12 @@ class DeviceService(
         }
     }
 
-    fun getDeviceFromPerson(personId: String): DeviceDTO {
-        return deviceServiceMapper.getDeviceDTO(deviceRepository.findByPersonIdAndActiveIsTrue(personId))
+    fun getDeviceFromPerson(personId: String): DeviceDTO? {
+        return deviceRepository.findByPersonIdAndActiveIsTrue(personId)?.let(deviceServiceMapper::getDeviceDTO)
     }
 
     fun inactivatePersonDevice(personId: String) {
-        deviceRepository.findByPersonIdAndActiveIsTrue(personId).apply {
+        deviceRepository.findByPersonIdAndActiveIsTrue(personId)?.apply {
             active = false
             deviceRepository.save(this)
         }

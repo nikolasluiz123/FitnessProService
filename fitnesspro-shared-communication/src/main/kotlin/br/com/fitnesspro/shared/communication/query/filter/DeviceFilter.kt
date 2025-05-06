@@ -9,6 +9,7 @@ data class DeviceFilter(
     var model: String? = null,
     var brand: String? = null,
     var androidVersion: String? = null,
+    var personName: String? = null,
     var creationDate: Pair<LocalDateTime, LocalDateTime>? = null,
     var updateDate: Pair<LocalDateTime, LocalDateTime>? = null,
     var sort: List<Sort<EnumDeviceFields>> = emptyList()

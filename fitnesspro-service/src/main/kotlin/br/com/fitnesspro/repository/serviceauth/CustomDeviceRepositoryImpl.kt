@@ -62,6 +62,7 @@ class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
     private fun getFromListDevice(): StringJoiner {
         return StringJoiner(QR_NL).apply {
             add(" from ${Device::class.java.name} d ")
+            add(" inner join d.person person ")
         }
     }
 
@@ -87,6 +88,11 @@ class CustomDeviceRepositoryImpl: ICustomDeviceRepository {
             filter.androidVersion?.let {
                 add(" and d.androidVersion = :pAndroidVersion ")
                 queryParams.add(Parameter(name = "pAndroidVersion", value = it))
+            }
+
+            filter.personName?.let {
+                add(" and lower(person.name) like lower(:pPersonName) ")
+                queryParams.add(Parameter(name = "pPersonName", value = "%$it%"))
             }
 
             filter.creationDate?.let {
