@@ -11,7 +11,9 @@ import java.util.*
 @Table(
     name = "device",
     indexes = [
-        Index(name = "idx_device_application_id", columnList = "application_id")
+        Index(name = "idx_device_application_id", columnList = "application_id"),
+        Index(name = "idx_device_person_id", columnList = "person_id"),
+        Index(name = "idx_firebase_messaging_token", columnList = "firebase_messaging_token")
     ]
 )
 data class Device(
