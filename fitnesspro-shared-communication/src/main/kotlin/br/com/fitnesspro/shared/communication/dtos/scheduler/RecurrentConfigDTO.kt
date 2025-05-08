@@ -9,20 +9,21 @@ import org.hibernate.validator.constraints.UniqueElements
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@Schema(description = "Classe DTO usada internamente no SchedulerDTO para informar algumas configurações de um agendamento recorrente")
 data class RecurrentConfigDTO(
     @Schema(description = "Data de início", example = "2023-01-01", required = true)
-    @field:NotNull(message = "A data de início é obrigatória")
-    @field:FutureOrPresent(message = "Data de início inválida")
+    @field:NotNull(message = "{recurrentConfigDTO.dateStart.notNull}")
+    @field:FutureOrPresent(message = "{recurrentConfigDTO.dateStart.futureOrPresent}")
     val dateStart: LocalDate,
 
     @Schema(description = "Data de término", example = "2023-12-31", required = true)
-    @field:NotNull(message = "A data de fim é obrigatória")
-    @field:Future(message = "Data de fim inválida")
+    @field:NotNull(message = "{recurrentConfigDTO.dateEnd.notNull}")
+    @field:Future(message = "{recurrentConfigDTO.dateEnd.future}")
     val dateEnd: LocalDate,
 
     @Schema(description = "Dias da semana", required = true)
-    @field:NotNull(message = "Os dias da semana são obrigatórios")
-    @field:Size(min = 1, max = 7, message = "Devem ser informados entre 1 e 7 dias da semana")
-    @field:UniqueElements(message = "Os dias da semana não podem ser repetidos")
+    @field:NotNull(message = "{recurrentConfigDTO.dayWeeks.notNull}")
+    @field:Size(min = 1, max = 7, message = "{recurrentConfigDTO.dayWeeks.size}")
+    @field:UniqueElements(message = "{recurrentConfigDTO.dayWeeks.uniqueElements}")
     val dayWeeks: List<DayOfWeek>
 )

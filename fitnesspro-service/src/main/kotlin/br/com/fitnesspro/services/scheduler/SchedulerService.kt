@@ -36,9 +36,11 @@ import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import com.google.gson.GsonBuilder
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.*
 
 @Service
 class SchedulerService(
@@ -52,7 +54,8 @@ class SchedulerService(
     private val workoutGroupRepository: IWorkoutGroupRepository,
     private val firebaseNotificationService: FirebaseNotificationService,
     private val deviceService: DeviceService,
-    private val schedulerServiceMapper: SchedulerServiceMapper
+    private val schedulerServiceMapper: SchedulerServiceMapper,
+    private val messageSource: MessageSource
 ) {
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveScheduler(schedulerDTO: SchedulerDTO) {
@@ -145,7 +148,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
-        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name?.split(" ")?.firstOrNull()
+        val professionalName = getProfessionalFirstName(schedulerDTO)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -154,8 +157,8 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Agendamento Confirmado",
-            message = "O Agendamento de $date das $start às $end foi confirmado por ${professionalName}.",
+            title = messageSource.getMessage("scheduler.confirmed.notification.title", null, Locale.getDefault()),
+            message = messageSource.getMessage("scheduler.confirmed.notification.message", arrayOf(date, start, end, professionalName), Locale.getDefault()),
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
@@ -174,6 +177,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val personName = getPersonFirstName(cancellationPerson)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -182,12 +186,16 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Agendamento Cancelado",
-            message = "O Agendamento de $date das $start às $end foi cancelado por ${cancellationPerson.name?.split(" ")?.firstOrNull()}.",
+            title = messageSource.getMessage("scheduler.canceled.notification.title", null, Locale.getDefault()),
+            message = messageSource.getMessage("scheduler.canceled.notification.message", arrayOf(date, start, end, personName), Locale.getDefault()),
             personIds = listOf(personIdToNotify),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
         )
+    }
+
+    private fun getPersonFirstName(person: Person): String? {
+        return person.name?.split(" ")?.firstOrNull()
     }
 
     private fun notifyMemberSchedulerTimeChanged(schedulerDTO: SchedulerDTO) {
@@ -200,8 +208,8 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Agendamento Alterado",
-            message = "O Agendamento de $date teve o horário alterado, verifique o novo horário.",
+            title = messageSource.getMessage("scheduler.changed.notification.title", null, Locale.getDefault()),
+            message = messageSource.getMessage("scheduler.changed.notification.message", arrayOf(date), Locale.getDefault()),
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
@@ -213,7 +221,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
-        val memberName = personRepository.findById(schedulerDTO.academyMemberPersonId!!).get().name?.split(" ")?.firstOrNull()
+        val memberName = getMemberFirstName(schedulerDTO)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -222,12 +230,18 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Nova Sugestão de Agendamento",
-            message = "$memberName sugeriu um agendamento $date das $start às $end.",
+            title = messageSource.getMessage("scheduler.new.suggestion.notification.title", null, Locale.getDefault()),
+            message = messageSource.getMessage("scheduler.new.suggestion.notification.message", arrayOf(memberName, date, start, end), Locale.getDefault()),
             personIds = listOf(schedulerDTO.professionalPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
         )
+    }
+
+    private fun getMemberFirstName(schedulerDTO: SchedulerDTO): String? {
+        val person = personRepository.findById(schedulerDTO.academyMemberPersonId!!).get()
+
+        return getPersonFirstName(person)
     }
 
     private fun notifyMemberNewUniqueScheduler(schedulerDTO: SchedulerDTO) {
@@ -235,7 +249,7 @@ class SchedulerService(
         val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
         val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
         val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
-        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name?.split(" ")?.firstOrNull()
+        val professionalName = getProfessionalFirstName(schedulerDTO)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
@@ -244,8 +258,8 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Novo Compromisso",
-            message = "$professionalName realizou um agendamento para o dia $date das $start às $end.",
+            title = messageSource.getMessage("scheduler.new.notification.title", null, Locale.getDefault()),
+            message = messageSource.getMessage("scheduler.new.notification.message", arrayOf(professionalName, date, start, end), Locale.getDefault()),
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
@@ -253,9 +267,9 @@ class SchedulerService(
     }
 
     private fun notifyMemberNewRecurrentScheduler(schedulerDTO: SchedulerDTO, scheduledDates: List<LocalDate>) {
-        val professionalName = personRepository.findById(schedulerDTO.professionalPersonId!!).get().name?.split(" ")?.firstOrNull()
+        val professionalName = getProfessionalFirstName(schedulerDTO)
 
-        val dateCount = scheduledDates.size
+        val dateCount = scheduledDates.size.toString()
         val start = scheduledDates.first().format(DAY_MONTH)
         val end = scheduledDates.last().format(DAY_MONTH)
 
@@ -266,12 +280,17 @@ class SchedulerService(
         )
 
         firebaseNotificationService.sendNotificationToPerson(
-            title = "Novo compromisso recorrente",
-            message = "$professionalName realizou um agendamento recorrente para $dateCount datas entre $start e $end.",
+            title = messageSource.getMessage("scheduler.new.recurrent.notification.title", null, Locale.getDefault()),
+            message = messageSource.getMessage("scheduler.new.recurrent.notification.message", arrayOf(professionalName, dateCount, start, end), Locale.getDefault()),
             personIds = listOf(schedulerDTO.academyMemberPersonId!!),
             channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
             customJSONData = GsonBuilder().defaultGSon().toJson(data)
         )
+    }
+
+    private fun getProfessionalFirstName(schedulerDTO: SchedulerDTO): String? {
+        val person = personRepository.findById(schedulerDTO.professionalPersonId!!).get()
+        return getPersonFirstName(person)
     }
 
     @Throws(BusinessException::class)
@@ -313,11 +332,15 @@ class SchedulerService(
 
         if (hasConflict) {
             throw BusinessException(
-                "Não foi possível realizar o agendamento para o dia %s das %s até %s pois ocorreu um conflito. Entre em contato com %s.".format(
-                    scheduler.scheduledDate!!.format(DATE),
-                    scheduler.timeStart!!.format(TIME),
-                    scheduler.timeEnd!!.format(TIME),
-                    scheduler.professionalPerson?.name
+                messageSource.getMessage(
+                    "scheduler.error.conflict",
+                    arrayOf(
+                        scheduler.scheduledDate!!.format(DATE),
+                        scheduler.timeStart!!.format(TIME),
+                        scheduler.timeEnd!!.format(TIME),
+                        scheduler.professionalPerson?.name
+                    ),
+                    Locale.getDefault()
                 )
             )
         }
@@ -339,9 +362,7 @@ class SchedulerService(
             val formatedDates = conflicts.joinToString(separator = ", \n") { it.scheduledDate!!.format(DATE) }
 
             throw BusinessException(
-                "Não foi possível concluir o agendamento recorrente pois houveram um ou mais conflitos. As datas com compromissos conflitantes são:\\n\\n%s".format(
-                    formatedDates
-                )
+                messageSource.getMessage("scheduler.error.recurrent.conflicts", arrayOf(formatedDates), Locale.getDefault())
             )
         }
     }
@@ -352,7 +373,9 @@ class SchedulerService(
 
         when {
             timeStart <= actualHour.plusHours(1) && scheduler.scheduledDate == dateNow() -> {
-                throw BusinessException("O horário de início deve ser definido com 1 hora de antecedência")
+                throw BusinessException(
+                    messageSource.getMessage("scheduler.error.start.time.antecedence", null, Locale.getDefault())
+                )
             }
         }
     }
@@ -369,11 +392,11 @@ class SchedulerService(
         val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
         if (scheduler.timeStart!! < startWorkTime || scheduler.timeStart!! > endWorkTime) {
+            val start = startWorkTime.format(TIME)
+            val end = endWorkTime.format(TIME)
+
             throw BusinessException(
-                "O horário de início deve ser entre %s e %s".format(
-                    startWorkTime.format(TIME),
-                    endWorkTime.format(TIME)
-                )
+                messageSource.getMessage("scheduler.error.start.time.between.worktime", arrayOf(start, end), Locale.getDefault())
             )
         }
     }
@@ -388,29 +411,32 @@ class SchedulerService(
         val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
         if (scheduler.timeEnd!! < startWorkTime || scheduler.timeEnd!! > endWorkTime) {
+            val start = startWorkTime.format(TIME)
+            val end = endWorkTime.format(TIME)
+
             throw BusinessException(
-                "O horário de fim deve ser entre %s e %s".format(startWorkTime.format(TIME), endWorkTime.format(TIME))
+                messageSource.getMessage("scheduler.error.end.time.between.worktime", arrayOf(start, end), Locale.getDefault())
             )
         }
     }
 
     private fun validateTimePeriod(scheduler: Scheduler) {
         if (scheduler.timeStart!!.isAfter(scheduler.timeEnd!!) || scheduler.timeStart == scheduler.timeEnd) {
-            throw BusinessException("Os horários de Início e Fim são inválidos")
+            throw BusinessException(messageSource.getMessage("scheduler.error.invalid.period", null, Locale.getDefault()))
         }
     }
 
     private fun validateDateConfigPeriod(recurrentConfig: RecurrentConfigDTO) {
         if (recurrentConfig.dateStart.isAfter(recurrentConfig.dateEnd) ||
             recurrentConfig.dateStart == recurrentConfig.dateEnd) {
-            throw BusinessException("As datas de Início e Fim são inválidas")
+            throw BusinessException(messageSource.getMessage("scheduler.error.invalid.recurrent.period", null, Locale.getDefault()))
         }
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerBatch(schedulerDTOList: List<SchedulerDTO>) {
         if (schedulerDTOList.any { it.type == EnumSchedulerType.RECURRENT }) {
-            throw BusinessException("Não é possível realizar agendamentos recorrentes em lote. Tenha certeza que na lista de agendamentos não há agendamentos recorrentes.")
+            throw BusinessException(messageSource.getMessage("scheduler.error.recurrent.batch", null, Locale.getDefault()))
         }
 
         val schedules = schedulerDTOList.map { schedulerDTO ->
@@ -434,7 +460,7 @@ class SchedulerService(
     private fun validateDensityRange(config: SchedulerConfig) {
         if (config.minScheduleDensity > config.maxScheduleDensity ||
             config.minScheduleDensity == config.maxScheduleDensity) {
-            throw BusinessException("Os valores da densidade dos eventos são inválidos.")
+            throw BusinessException(messageSource.getMessage("scheduler.config.error.invalid.density.range", null, Locale.getDefault()))
         }
     }
 

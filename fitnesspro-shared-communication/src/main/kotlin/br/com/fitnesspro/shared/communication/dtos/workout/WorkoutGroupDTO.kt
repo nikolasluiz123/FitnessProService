@@ -7,9 +7,10 @@ import jakarta.validation.constraints.Size
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 
+@Schema(description = "Classe DTO usada para manutenção de um grupo muscular do treino")
 data class WorkoutGroupDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
-    @field:Size(min = 1, max = 255, message = "O identificador deve ter entre 1 e 255 caracteres")
+    @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
     override var id: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
@@ -19,19 +20,19 @@ data class WorkoutGroupDTO(
     override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "O campo ativo é obrigatório")
+    @field:NotNull(message = "{workoutGroupDTO.active.notNull}")
     var active: Boolean = true,
 
     @Schema(description = "Nome do grupo de treino", example = "Treino A", required = true)
-    @field:NotNull(message = "O nome do grupo de treino é obrigatório")
-    @field:Size(min = 1, max = 255, message = "O nome do grupo de treino deve ter entre 1 e 255 caracteres")
+    @field:NotNull(message = "{workoutGroupDTO.name.notNull}")
+    @field:Size(min = 1, max = 255, message = "{workoutGroupDTO.name.size}")
     var name: String? = null,
 
     @Schema(description = "Identificador do treino", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
-    @field:NotNull(message = "O identificador do treino é obrigatório")
+    @field:NotNull(message = "{workoutGroupDTO.workoutId.notNull}")
     var workoutId: String? = null,
 
     @Schema(description = "Dia da semana", example = "MONDAY", required = true)
-    @field:NotNull(message = "O dia da semana é obrigatório")
+    @field:NotNull(message = "{workoutGroupDTO.dayWeek.notNull}")
     var dayWeek: DayOfWeek? = null,
 ): AuditableDTO

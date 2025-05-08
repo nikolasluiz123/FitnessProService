@@ -13,14 +13,17 @@ import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import br.com.fitnesspro.shared.communication.helper.HashHelper
 import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
+import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UserService(
     private val userRepository: IUserRepository,
     private val tokenService: TokenService,
-    private val deviceService: DeviceService
+    private val deviceService: DeviceService,
+    private val messageSource: MessageSource
 ) {
     fun login(authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
         return try {
@@ -43,10 +46,12 @@ class UserService(
                 success = true
             )
         } catch (_: UserNotFoundException) {
+            val message = messageSource.getMessage("auth.error.invalid.credentials", null, Locale.getDefault())
+
             AuthenticationServiceResponse(
                 code = HttpStatus.NOT_FOUND.value(),
                 success = false,
-                error = "Credenciais inválidas, por favor, redigite."
+                error = message
             )
         }
     }
@@ -55,12 +60,15 @@ class UserService(
         val user = userRepository.findByEmailAndPassword(authenticationDTO.email!!, authenticationDTO.password!!)
 
         if (user == null) {
-            throw UserNotFoundException("Usuário não encontrado")
+            val message = messageSource.getMessage("auth.error.user.not.found", null, Locale.getDefault())
+            throw UserNotFoundException(message)
         }
 
         if (authenticationDTO.adminAuth && user.type != EnumUserType.ADMINISTRATOR) {
-            throw BusinessException("Usuário não autorizado")
+            val message = messageSource.getMessage("auth.error.user.permission.denied", null, Locale.getDefault())
+            throw BusinessException(message)
         }
+
         return user
     }
 

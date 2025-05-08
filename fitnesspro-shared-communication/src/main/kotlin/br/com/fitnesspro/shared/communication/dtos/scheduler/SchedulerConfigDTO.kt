@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
+@Schema(description = "Classe DTO usada para manutenção de uma configuração dos agendamentos da pessoa")
 data class SchedulerConfigDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "O identificador deve ter entre 1 e 255 caracteres")

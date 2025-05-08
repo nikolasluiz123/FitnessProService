@@ -3,6 +3,7 @@ package br.com.fitnesspro.shared.communication.dtos.logs
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
+@Schema(description = "Classe DTO usada para atualização de um pacote de log de execução")
 data class UpdatableExecutionLogPackageInfosDTO(
     @Schema(description = "Quantidade de itens inseridos. Utilizado na importação de dados.", required = false)
     var insertedItemsCount: Int? = null,

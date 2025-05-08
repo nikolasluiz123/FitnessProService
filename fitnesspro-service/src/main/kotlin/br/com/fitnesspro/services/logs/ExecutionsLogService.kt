@@ -27,6 +27,7 @@ import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 import org.springframework.web.method.HandlerMethod
 import java.time.LocalDateTime
@@ -41,7 +42,8 @@ class ExecutionsLogService(
     private val userRepository: IUserRepository,
     private val deviceRepository: IDeviceRepository,
     private val applicationRepository: IApplicationRepository,
-    private val logsServiceMapper: LogsServiceMapper
+    private val logsServiceMapper: LogsServiceMapper,
+    private val messageSource: MessageSource
 ) {
 
     fun saveLogPreHandle(request: HttpServletRequest, handler: HandlerMethod) {
@@ -131,7 +133,8 @@ class ExecutionsLogService(
             method == "PUT" -> PUT
             method == "DELETE" -> DELETE
             else -> {
-                throw IllegalArgumentException("Tipo de execução não identificado")
+                val message = messageSource.getMessage("execution.log.error.invalid.type", null, Locale.getDefault())
+                throw IllegalArgumentException(message)
             }
         }
     }
@@ -179,7 +182,8 @@ class ExecutionsLogService(
 
     fun updateExecutionLog(id: String, dto: UpdatableExecutionLogInfosDTO) {
         val log = logRepository.findById(id).orElseThrow {
-            throw EntityNotFoundException("Não foi encontrado um ExecutionLog com o identificador $id")
+            val message = messageSource.getMessage("execution.log.error.not.found", arrayOf(id), Locale.getDefault())
+            throw EntityNotFoundException(message)
         }
 
         log.apply {
@@ -193,7 +197,8 @@ class ExecutionsLogService(
 
     fun updateExecutionLogPackage(id: String, dto: UpdatableExecutionLogPackageInfosDTO) {
         val logPackage = logPackageRepository.findById(id).orElseThrow {
-            throw EntityNotFoundException("Não foi encontrado um ExecutionLogPackage com o identificador $id")
+            val message = messageSource.getMessage("execution.log.package.error.not.found", arrayOf(id), Locale.getDefault())
+            throw EntityNotFoundException(message)
         }
 
         logPackage.apply {

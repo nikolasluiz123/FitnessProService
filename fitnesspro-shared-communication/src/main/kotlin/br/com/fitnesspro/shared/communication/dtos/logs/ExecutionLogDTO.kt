@@ -6,6 +6,7 @@ import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
+@Schema(description = "Classe DTO usada para leitura de um log de execução")
 data class ExecutionLogDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     override var id: String? = null,

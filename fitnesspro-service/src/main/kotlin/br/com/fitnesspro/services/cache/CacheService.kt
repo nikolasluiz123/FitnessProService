@@ -7,11 +7,14 @@ import br.com.fitnesspro.shared.communication.dtos.cache.CacheEntryDTO
 import com.github.benmanes.caffeine.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.cache.caffeine.CaffeineCache
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class CacheService(
-    private val cacheManager: CacheManager
+    private val cacheManager: CacheManager,
+    private val messageSource: MessageSource
 ) {
 
     fun getListCaches(): List<CacheDTO> {
@@ -56,7 +59,8 @@ class CacheService(
             }
 
             else -> {
-                throw BusinessException("Valores inválidos informados nas configurações de limpeza de cache.")
+                val message = messageSource.getMessage("cache.invalid.values", null, Locale.getDefault())
+                throw BusinessException(message)
             }
         }
     }

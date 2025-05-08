@@ -23,7 +23,9 @@ import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import br.com.fitnesspro.shared.communication.query.filter.PersonFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class PersonService(
@@ -34,7 +36,8 @@ class PersonService(
     private val schedulerService: SchedulerService,
     private val firebaseAuthenticationService: FirebaseAuthenticationService,
     private val personServiceMapper: PersonServiceMapper,
-    private val deviceService: DeviceService
+    private val deviceService: DeviceService,
+    private val messageSource: MessageSource
 ) {
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
@@ -76,11 +79,13 @@ class PersonService(
     @Throws(BusinessException::class)
     private fun validateUser(user: User) {
         if (customUserRepository.isEmailInUse(user.email!!, user.id)) {
-            throw BusinessException("Este e-mail já está em uso")
+            val message = messageSource.getMessage("person.error.email.in.use", null, Locale.getDefault())
+            throw BusinessException(message)
         }
 
         if (user.password.length < 6) {
-            throw BusinessException("Sua senha deve possuir pelo menos 6 caracteres")
+            val message = messageSource.getMessage("person.error.password.short", null, Locale.getDefault())
+            throw BusinessException(message)
         }
     }
 

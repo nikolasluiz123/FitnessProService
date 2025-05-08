@@ -6,9 +6,10 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
+@Schema(description = "Classe DTO usada para manutenção de uma tarefas agendadas")
 data class ScheduledTaskDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
-    @field:Size(min = 1, max = 255, message = "O identificador deve ter entre 1 e 255 caracteres")
+    @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
     override var id: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
@@ -18,26 +19,26 @@ data class ScheduledTaskDTO(
     override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "O campo ativo é obrigatório")
+    @field:NotNull(message = "{scheduledTaskDTO.active.notNull}")
     var active: Boolean? = null,
 
     @Schema(description = "Nome da tarefa", required = true)
-    @field:NotNull(message = "O nome da tarefa é obrigatório")
+    @field:NotNull(message = "{scheduledTaskDTO.name.notNull}")
+    @field:Size(min = 1, max = 255, message = "{scheduledTaskDTO.name.size}")
     var name: String? = null,
 
     @Schema(description = "Intervalo em milissegundos", required = true)
-    @field:NotNull(message = "O intervalo em milissegundos é obrigatório")
+    @field:NotNull(message = "{scheduledTaskDTO.intervalMillis.notNull}")
     var intervalMillis: Long? = null,
 
     @Schema(description = "Data da última execução", required = false)
     var lastExecutionTime: LocalDateTime? = null,
 
     @Schema(description = "Nome da chave da classe responsável pela execução", required = true)
+    @field:NotNull(message = "{scheduledTaskDTO.handlerBeanName.notNull}")
+    @field:Size(max = 255, message = "{scheduledTaskDTO.handlerBeanName.size}")
     var handlerBeanName: String? = null,
 
-    @Schema(
-        description = "JSON de parâmetros de configuração que o handler pode recuperar e utilizar na execução",
-        required = true
-    )
+    @Schema(description = "JSON de parâmetros de configuração que o handler pode recuperar e utilizar na execução")
     var configJson: String? = null,
 ) : AuditableDTO

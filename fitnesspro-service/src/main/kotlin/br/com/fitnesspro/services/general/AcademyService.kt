@@ -20,7 +20,9 @@ import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class AcademyService(
@@ -28,7 +30,8 @@ class AcademyService(
     private val customPersonAcademyTimeRepository: ICustomPersonAcademyTimeRepository,
     private val academyRepository: IAcademyRepository,
     private val customAcademyRepository: ICustomAcademyRepository,
-    private val academyServiceMapper: AcademyServiceMapper
+    private val academyServiceMapper: AcademyServiceMapper,
+    private val messageSource: MessageSource
 ) {
 
     @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
@@ -51,13 +54,17 @@ class AcademyService(
         )
 
         if (conflictPersonAcademyTime != null) {
-            throw BusinessException(
-                "Não foi possível definir este horário pois há um conflito com o horário de %s das %s até %s.".format(
+            val message = messageSource.getMessage(
+                "academy.error.time.conflict",
+                arrayOf(
                     conflictPersonAcademyTime.dayOfWeek!!.getFirstPartFullDisplayName(),
                     conflictPersonAcademyTime.timeStart!!.format(TIME),
                     conflictPersonAcademyTime.timeEnd!!.format(TIME)
-                )
+                ),
+                Locale.getDefault()
             )
+
+            throw BusinessException(message)
         }
     }
 

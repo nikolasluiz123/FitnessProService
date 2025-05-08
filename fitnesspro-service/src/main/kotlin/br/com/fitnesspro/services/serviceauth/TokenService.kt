@@ -8,9 +8,6 @@ import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
 import br.com.fitnesspro.repository.serviceauth.ICustomServiceTokenRepository
 import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
 import br.com.fitnesspro.repository.serviceauth.IServiceTokenRepository
-import br.com.fitnesspro.services.mappers.ApplicationServiceMapper
-import br.com.fitnesspro.services.mappers.DeviceServiceMapper
-import br.com.fitnesspro.services.mappers.PersonServiceMapper
 import br.com.fitnesspro.services.mappers.TokenServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
@@ -26,9 +23,11 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import org.springframework.context.MessageSource
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator
 import org.springframework.stereotype.Service
 import java.security.Key
+import java.util.*
 import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
@@ -39,10 +38,8 @@ class TokenService(
     private val deviceRepository: IDeviceRepository,
     private val userRepository: IUserRepository,
     private val applicationRepository: IApplicationRepository,
-    private val applicationServiceMapper: ApplicationServiceMapper,
-    private val personServiceMapper: PersonServiceMapper,
-    private val deviceServiceMapper: DeviceServiceMapper,
-    private val tokenServiceMapper: TokenServiceMapper
+    private val tokenServiceMapper: TokenServiceMapper,
+    private val messageSource: MessageSource
 ) {
 
     private final val secretKey = System.getenv("JWT_SECRET")
@@ -68,9 +65,7 @@ class TokenService(
     fun generateServiceToken(dto: ServiceTokenGenerationDTO): ServiceTokenDTO {
         when (dto.type!!) {
             EnumTokenType.USER_AUTHENTICATION_TOKEN -> {
-                if (dto.userId.isNullOrEmpty()) {
-                    throw BusinessException("Para gerar um token USER_AUTHENTICATION_TOKEN é obrigatório informar userId")
-                }
+                validateEntityId(dto.userId, dto::userId.name, dto.type)
 
                 val creationDate = dateTimeNow()
                 val expirationDate = creationDate.plusHours(1)
@@ -90,9 +85,7 @@ class TokenService(
             }
 
             EnumTokenType.DEVICE_TOKEN -> {
-                if (dto.deviceId.isNullOrEmpty()) {
-                    throw BusinessException("Para gerar um token DEVICE_TOKEN é obrigatório informar deviceId")
-                }
+                validateEntityId(dto.deviceId, dto::deviceId.name, dto.type)
 
                 val creationDate = dateTimeNow()
                 val expirationDate = creationDate.plusHours(12)
@@ -112,6 +105,8 @@ class TokenService(
             }
 
             EnumTokenType.APPLICATION_TOKEN -> {
+                validateEntityId(dto.applicationId, dto::applicationId.name, dto.type)
+
                 val creationDate = dateTimeNow()
                 val application = applicationRepository.findById(dto.applicationId!!).get()
 
@@ -130,8 +125,24 @@ class TokenService(
         }
     }
 
+    private fun validateEntityId(id: String?, fieldName: String, tokenType: EnumTokenType?) {
+        if (id.isNullOrEmpty()) {
+            val message = messageSource.getMessage(
+                "service.token.error.required.field.token.generation",
+                arrayOf(tokenType?.name!!, fieldName),
+                Locale.getDefault()
+            )
+
+            throw BusinessException(message)
+        }
+    }
+
     fun invalidateToken(tokenId: String) {
-        val serviceToken = tokenRepository.findById(tokenId).getOrElse { throw NotFoundTokenException() }
+        val serviceToken = tokenRepository.findById(tokenId).getOrElse {
+            throw NotFoundTokenException(
+                messageSource.getMessage("core.service.error.token.not.found", null, Locale.getDefault())
+            )
+        }
         serviceToken.expirationDate = dateTimeNow()
 
         tokenRepository.save(serviceToken)
@@ -164,10 +175,14 @@ class TokenService(
     }
 
     fun getValidatedServiceToken(jwtToken: String): ServiceTokenDTO {
-        val dto = getServiceTokenDTO(jwtToken) ?: throw NotFoundTokenException()
+        val dto = getServiceTokenDTO(jwtToken) ?: throw NotFoundTokenException(
+            messageSource.getMessage("core.service.error.token.not.found", null, Locale.getDefault())
+        )
 
         if (isTokenExpired(dto)) {
-            throw ExpiredTokenException()
+            throw ExpiredTokenException(
+                messageSource.getMessage("core.service.error.token.expired", null, Locale.getDefault())
+            )
         }
 
         return dto

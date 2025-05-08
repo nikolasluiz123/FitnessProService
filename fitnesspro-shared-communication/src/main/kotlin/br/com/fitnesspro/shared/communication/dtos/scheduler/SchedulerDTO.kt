@@ -12,6 +12,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+@Schema(description = "Classe DTO usada para manutenção de um agendamento")
 data class SchedulerDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "O identificador deve ter entre 1 e 255 caracteres")

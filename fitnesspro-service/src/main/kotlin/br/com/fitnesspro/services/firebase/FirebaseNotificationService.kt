@@ -11,13 +11,15 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.MulticastMessage
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class FirebaseNotificationService(
-    private val deviceService: DeviceService
+    private val deviceService: DeviceService,
+    private val messageSource: MessageSource
 ) {
-
     fun sendExternalNotification(notificationDTO: NotificationDTO) {
         val notification = FitnessProNotificationData(
             title = notificationDTO.title!!,
@@ -40,7 +42,8 @@ class FirebaseNotificationService(
 
         if (failedDevices.isNotEmpty()) {
             val devicesFail = failedDevices.joinToString()
-            throw FirebaseNotificationException("Não foi possível enviar a notificação para os seguintes dispositivos: $devicesFail")
+            val message = messageSource.getMessage("notification.error.send", arrayOf(devicesFail), Locale.getDefault())
+            throw FirebaseNotificationException(message)
         }
     }
 
@@ -76,7 +79,8 @@ class FirebaseNotificationService(
         notification: FitnessProNotificationData
     ): List<NotificationResult> {
         if (devicesTokens.isEmpty()) {
-            throw FirebaseNotificationException("Nenhum dispositivo encontrado para realizar a notificação.")
+            val message = messageSource.getMessage("notification.error.empty.devices", null, Locale.getDefault())
+            throw FirebaseNotificationException(message)
         }
 
         return if (devicesTokens.size > 1) {

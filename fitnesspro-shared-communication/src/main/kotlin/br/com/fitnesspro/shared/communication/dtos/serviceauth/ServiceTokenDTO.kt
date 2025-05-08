@@ -6,6 +6,7 @@ import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
+@Schema(description = "Classe DTO usada para leitura de um token")
 data class ServiceTokenDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false, readOnly = true)
     override var id: String? = null,

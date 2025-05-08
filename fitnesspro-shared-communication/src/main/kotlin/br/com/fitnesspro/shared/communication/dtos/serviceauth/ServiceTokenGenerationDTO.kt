@@ -4,9 +4,10 @@ import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 
+@Schema(description = "Classe DTO usada para geração de um token")
 data class ServiceTokenGenerationDTO(
     @Schema(description = "Tipo de token", required = true)
-    @field:NotNull(message = "O tipo do token é obrigatório")
+    @field:NotNull(message = "{serviceTokenGenerationDTO.type.notNull}")
     var type: EnumTokenType? = null,
 
     @Schema(description = "Identificador do usuário a qual o token pertence", required = false)
