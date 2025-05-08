@@ -23,10 +23,6 @@ data class SchedulerConfigDTO(
     @field:NotNull(message = "O campo ativo é obrigatório")
     var active: Boolean = false,
 
-    @Schema(description = "Valor booleano que representa se o alarme está ativado", required = true)
-    @field:NotNull(message = "O campo alarme é obrigatório")
-    var alarm: Boolean = false,
-
     @Schema(description = "Valor booleano que representa se a notificação está ativada", required = true)
     @field:NotNull(message = "O campo notificação é obrigatório")
     var notification: Boolean = false,

@@ -31,8 +31,6 @@ data class SchedulerConfig(
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
 
-    var alarm: Boolean = false,
-
     var notification: Boolean = false,
 
     @Column(name = "min_schedule_density", nullable = false)

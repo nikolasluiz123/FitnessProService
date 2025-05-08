@@ -77,7 +77,6 @@ class SchedulerServiceMapper(
             dto.id == null -> {
                 SchedulerConfig(
                     active = dto.active,
-                    alarm = dto.alarm,
                     notification = dto.notification,
                     minScheduleDensity = dto.minScheduleDensity,
                     maxScheduleDensity = dto.maxScheduleDensity,
@@ -88,7 +87,6 @@ class SchedulerServiceMapper(
             schedulerConfig?.isPresent == true -> {
                 schedulerConfig.get().copy(
                     active = dto.active,
-                    alarm = dto.alarm,
                     notification = dto.notification,
                     minScheduleDensity = dto.minScheduleDensity,
                     maxScheduleDensity = dto.maxScheduleDensity,
@@ -100,7 +98,6 @@ class SchedulerServiceMapper(
                 SchedulerConfig(
                     id = dto.id!!,
                     active = dto.active,
-                    alarm = dto.alarm,
                     notification = dto.notification,
                     minScheduleDensity = dto.minScheduleDensity,
                     maxScheduleDensity = dto.maxScheduleDensity,
@@ -116,7 +113,6 @@ class SchedulerServiceMapper(
             creationDate = model.creationDate,
             updateDate = model.updateDate,
             active = model.active,
-            alarm = model.alarm,
             notification = model.notification,
             minScheduleDensity = model.minScheduleDensity,
             maxScheduleDensity = model.maxScheduleDensity,
