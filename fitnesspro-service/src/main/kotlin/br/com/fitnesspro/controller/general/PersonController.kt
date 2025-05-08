@@ -6,6 +6,7 @@ import br.com.fitnesspro.services.general.AcademyService
 import br.com.fitnesspro.services.general.PersonService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
+import br.com.fitnesspro.shared.communication.dtos.general.FindPersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
@@ -150,11 +151,11 @@ class PersonController(
         )
     }
 
-    @GetMapping("${EndPointsV1.PERSON_EMAIL}/{email}")
+    @PostMapping(EndPointsV1.PERSON_EMAIL)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getPersonByEmail(@PathVariable email: String): ResponseEntity<SingleValueServiceResponse<PersonDTO?>> {
-        val person = personService.getPersonByEmail(email)
+    fun getPersonByEmail(@RequestBody dto: FindPersonDTO): ResponseEntity<SingleValueServiceResponse<PersonDTO?>> {
+        val person = personService.getPersonByEmail(dto.email!!, dto.password)
         return ResponseEntity.ok(SingleValueServiceResponse(value = person, code = HttpStatus.OK.value(), success = true))
     }
 

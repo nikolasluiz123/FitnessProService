@@ -134,7 +134,7 @@ class PersonService(
         return customPersonRepository.getCountListPersons(filter)
     }
 
-    fun getPersonByEmail(email: String): PersonDTO? {
-        return customPersonRepository.findByEmail(email)?.let(personServiceMapper::getPersonDTO)
+    fun getPersonByEmail(email: String, password: String?): PersonDTO? {
+        return customPersonRepository.findByEmail(email, password)?.let(personServiceMapper::getPersonDTO)
     }
 }

@@ -103,8 +103,8 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         return result
     }
 
-    override fun findByEmail(email: String): Person? {
-        val params = mutableListOf(Parameter("pEmail", email))
+    override fun findByEmail(email: String, password: String?): Person? {
+        val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
             add(" select person ")
@@ -116,6 +116,12 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
 
         val where = StringJoiner(QR_NL).apply {
             add(" where person.user.email = :pEmail ")
+            params.add(Parameter("pEmail", email))
+
+            password?.let {
+                add(" and person.user.password = :pPassword ")
+                params.add(Parameter("pPassword", it))
+            }
         }
 
         val sql = StringJoiner(QR_NL).apply {

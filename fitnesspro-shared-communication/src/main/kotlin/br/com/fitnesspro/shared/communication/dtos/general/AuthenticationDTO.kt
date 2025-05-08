@@ -23,7 +23,6 @@ data class AuthenticationDTO(
     var adminAuth: Boolean = false,
 
     @Schema(description = "DTO do dispositivo que está autenticando")
-    @field:NotNull(message = "{authenticationDTO.deviceDTO.notNull}")
     var deviceDTO: DeviceDTO? = null,
 
     @Schema(description = "Token JWT da aplicação que está fazendo a chamada")

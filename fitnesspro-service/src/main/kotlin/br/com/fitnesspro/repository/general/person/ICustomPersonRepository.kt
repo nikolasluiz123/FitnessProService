@@ -15,7 +15,7 @@ interface ICustomPersonRepository {
 
     fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<User>
 
-    fun findByEmail(email: String): Person?
+    fun findByEmail(email: String, password: String?): Person?
 
     fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<PersonDTO>
 
