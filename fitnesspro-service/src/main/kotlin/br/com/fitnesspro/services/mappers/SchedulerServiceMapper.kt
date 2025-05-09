@@ -76,7 +76,6 @@ class SchedulerServiceMapper(
         return when {
             dto.id == null -> {
                 SchedulerConfig(
-                    active = dto.active,
                     notification = dto.notification,
                     notificationAntecedenceTime = dto.notificationAntecedenceTime,
                     minScheduleDensity = dto.minScheduleDensity,
@@ -87,7 +86,6 @@ class SchedulerServiceMapper(
 
             schedulerConfig?.isPresent == true -> {
                 schedulerConfig.get().copy(
-                    active = dto.active,
                     notification = dto.notification,
                     notificationAntecedenceTime = dto.notificationAntecedenceTime,
                     minScheduleDensity = dto.minScheduleDensity,
@@ -99,7 +97,6 @@ class SchedulerServiceMapper(
             else -> {
                 SchedulerConfig(
                     id = dto.id!!,
-                    active = dto.active,
                     notification = dto.notification,
                     notificationAntecedenceTime = dto.notificationAntecedenceTime,
                     minScheduleDensity = dto.minScheduleDensity,
@@ -115,7 +112,6 @@ class SchedulerServiceMapper(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,
-            active = model.active,
             notification = model.notification,
             notificationAntecedenceTime = model.notificationAntecedenceTime,
             minScheduleDensity = model.minScheduleDensity,

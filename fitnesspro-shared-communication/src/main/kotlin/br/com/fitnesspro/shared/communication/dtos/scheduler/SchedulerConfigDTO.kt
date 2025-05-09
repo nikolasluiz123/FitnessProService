@@ -19,10 +19,6 @@ data class SchedulerConfigDTO(
     @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
 
-    @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "{schedulerConfigDTO.active.notNull}")
-    var active: Boolean = false,
-
     @Schema(description = "Valor booleano que representa se a notificação está ativada", required = true)
     @field:NotNull(message = "{schedulerConfigDTO.notification.notNull}")
     var notification: Boolean = false,

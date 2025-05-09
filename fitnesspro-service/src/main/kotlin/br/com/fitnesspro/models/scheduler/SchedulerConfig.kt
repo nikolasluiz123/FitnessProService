@@ -33,7 +33,7 @@ data class SchedulerConfig(
 
     var notification: Boolean = false,
 
-    @Column(name = "notification_antecedence_time", nullable = false)
+    @Column(name = "notification_antecedence_time", nullable = false, columnDefinition = "integer default 30")
     var notificationAntecedenceTime: Int = 30,
 
     @Column(name = "min_schedule_density", nullable = false)
