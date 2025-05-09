@@ -78,6 +78,7 @@ class SchedulerServiceMapper(
                 SchedulerConfig(
                     active = dto.active,
                     notification = dto.notification,
+                    notificationAntecedenceTime = dto.notificationAntecedenceTime,
                     minScheduleDensity = dto.minScheduleDensity,
                     maxScheduleDensity = dto.maxScheduleDensity,
                     person = personRepository.findById(dto.personId!!).get(),
@@ -88,6 +89,7 @@ class SchedulerServiceMapper(
                 schedulerConfig.get().copy(
                     active = dto.active,
                     notification = dto.notification,
+                    notificationAntecedenceTime = dto.notificationAntecedenceTime,
                     minScheduleDensity = dto.minScheduleDensity,
                     maxScheduleDensity = dto.maxScheduleDensity,
                     person = personRepository.findById(dto.personId!!).get(),
@@ -99,6 +101,7 @@ class SchedulerServiceMapper(
                     id = dto.id!!,
                     active = dto.active,
                     notification = dto.notification,
+                    notificationAntecedenceTime = dto.notificationAntecedenceTime,
                     minScheduleDensity = dto.minScheduleDensity,
                     maxScheduleDensity = dto.maxScheduleDensity,
                     person = personRepository.findById(dto.personId!!).get(),
@@ -114,6 +117,7 @@ class SchedulerServiceMapper(
             updateDate = model.updateDate,
             active = model.active,
             notification = model.notification,
+            notificationAntecedenceTime = model.notificationAntecedenceTime,
             minScheduleDensity = model.minScheduleDensity,
             maxScheduleDensity = model.maxScheduleDensity,
             personId = model.person?.id,

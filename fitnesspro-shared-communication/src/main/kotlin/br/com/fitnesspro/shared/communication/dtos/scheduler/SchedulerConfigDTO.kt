@@ -27,6 +27,11 @@ data class SchedulerConfigDTO(
     @field:NotNull(message = "{schedulerConfigDTO.notification.notNull}")
     var notification: Boolean = false,
 
+    @Schema(description = "Tempo de antecedência da notificação em minutos", example = "30", required = true)
+    @field:NotNull(message = "{schedulerConfigDTO.notificationAntecedenceTime.notNull}")
+    @field:Min(value = 30, message = "{schedulerConfigDTO.notificationAntecedenceTime.min}")
+    var notificationAntecedenceTime: Int = 30,
+
     @Schema(description = "Densidade mínima de agendamento", example = "1", required = true)
     @field:Min(value = 1, message = "{schedulerConfigDTO.minScheduleDensity.min}")
     var minScheduleDensity: Int = 1,
