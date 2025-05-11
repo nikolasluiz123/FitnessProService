@@ -1,5 +1,8 @@
 name: Deploy Spring Boot App
 
+permissions:
+  contents: write
+
 on:
   push:
     branches:
