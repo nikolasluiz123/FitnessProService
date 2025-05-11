@@ -11,14 +11,10 @@
 
     <groupId>br.com</groupId>
     <artifactId>fitnesspro</artifactId>
-    <version>${fitnesspro.version}</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>fitnesspro</name>
     <description>FitnessPro Service</description>
-
-    <properties>
-        <fitnesspro.version>1.0.0</fitnesspro.version>
-    </properties>
 
     <distributionManagement>
         <repository>
