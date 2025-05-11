@@ -92,6 +92,7 @@ jobs:
 
   tag-and-release:
     name: Create Tag and Release
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
