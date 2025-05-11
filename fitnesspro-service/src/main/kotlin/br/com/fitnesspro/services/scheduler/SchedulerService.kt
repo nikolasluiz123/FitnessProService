@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class SchedulerService(
@@ -63,11 +64,14 @@ class SchedulerService(
 
         when (schedulerDTO.type!!) {
             EnumSchedulerType.SUGGESTION, EnumSchedulerType.UNIQUE -> {
-                val oldSchedulerOptional = schedulerRepository.findById(schedulerDTO.id!!)
+                val oldSchedulerDTO = schedulerRepository.findById(schedulerDTO.id!!).getOrNull()?.let {
+                    schedulerServiceMapper.getSchedulerDTO(it)
+                }
+
                 val scheduler = schedulerServiceMapper.getScheduler(schedulerDTO)
 
                 schedulerRepository.save(scheduler)
-                sendNotification(schedulerDTO, oldSchedulerOptional = oldSchedulerOptional)
+                sendNotification(schedulerDTO, oldSchedulerDTO = oldSchedulerDTO)
             }
 
             EnumSchedulerType.RECURRENT -> {
@@ -125,22 +129,21 @@ class SchedulerService(
 
     private fun sendNotification(
         schedulerDTO: SchedulerDTO,
-        oldSchedulerOptional: Optional<Scheduler>? = null,
+        oldSchedulerDTO: SchedulerDTO? = null,
         scheduledDates: List<LocalDate> = emptyList()
     ) {
-        if (oldSchedulerOptional?.isPresent == true) {
-            val oldScheduler = oldSchedulerOptional.get()
+        if (oldSchedulerDTO != null) {
 
             when {
-                oldScheduler.situation == SCHEDULED && schedulerDTO.situation == CONFIRMED -> {
+                oldSchedulerDTO.situation == SCHEDULED && schedulerDTO.situation == CONFIRMED -> {
                     notifyMemberSchedulerConfirmed(schedulerDTO)
                 }
 
-                oldScheduler.situation != CANCELLED && schedulerDTO.situation == CANCELLED -> {
+                oldSchedulerDTO.situation != CANCELLED && schedulerDTO.situation == CANCELLED -> {
                     notifyMemberSchedulerCancelled(schedulerDTO)
                 }
 
-                oldScheduler.dateTimeStart != schedulerDTO.dateTimeStart || oldScheduler.dateTimeEnd != schedulerDTO.dateTimeEnd -> {
+                oldSchedulerDTO.dateTimeStart != schedulerDTO.dateTimeStart || oldSchedulerDTO.dateTimeEnd != schedulerDTO.dateTimeEnd -> {
                     notifyMemberSchedulerTimeChanged(schedulerDTO)
                 }
             }
