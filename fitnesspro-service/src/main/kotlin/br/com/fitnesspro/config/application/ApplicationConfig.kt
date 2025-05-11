@@ -1,5 +1,6 @@
 package br.com.fitnesspro.config.application
 
+import br.com.fitnesspro.config.gson.SelectiveGsonHttpMessageConverter
 import br.com.fitnesspro.config.interceptors.LoggingInterceptor
 import br.com.fitnesspro.repository.general.user.IUserRepository
 import com.google.gson.Gson
@@ -7,10 +8,8 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.MediaType
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.StringHttpMessageConverter
-import org.springframework.http.converter.json.GsonHttpMessageConverter
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -67,13 +66,7 @@ class ApplicationConfig(
     }
 
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-        converters.clear()
-
-        val converter = GsonHttpMessageConverter(gson).apply {
-            supportedMediaTypes = listOf(MediaType.APPLICATION_JSON, MediaType("application", "json", StandardCharsets.UTF_8))
-        }
-
-        converters.add(0, converter)
+        converters.add(0, SelectiveGsonHttpMessageConverter(gson))
     }
 
     @Bean
