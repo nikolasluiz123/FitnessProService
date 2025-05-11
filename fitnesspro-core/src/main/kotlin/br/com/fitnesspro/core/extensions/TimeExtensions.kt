@@ -64,6 +64,16 @@ fun LocalDateTime.format(pattern: EnumDateTimePatterns, zoneId: ZoneId? = null):
     }
 }
 
+fun OffsetDateTime.format(pattern: EnumDateTimePatterns, zoneId: ZoneId? = null): String {
+    val formatter = DateTimeFormatter.ofPattern(pattern.pattern)
+
+    return if (zoneId != null) {
+        this.atZoneSameInstant(zoneId).format(formatter)
+    } else {
+        this.format(formatter)
+    }
+}
+
 fun YearMonth.format(enumDateTimePatterns: EnumDateTimePatterns): String {
     return this.format(DateTimeFormatter.ofPattern(enumDateTimePatterns.pattern))
 }
@@ -76,7 +86,9 @@ fun Duration.formatAsHMS(): String {
     return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
 
-fun timeNow(): LocalTime = LocalTime.now()
+fun timeNow(zoneId: ZoneId? = ZoneId.systemDefault()): LocalTime {
+    return LocalTime.now(zoneId)
+}
 
 fun dateNow(): LocalDate = LocalDate.now()
 

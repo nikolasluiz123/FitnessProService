@@ -2,12 +2,15 @@ package br.com.fitnesspro.config.application
 
 import br.com.fitnesspro.config.interceptors.LoggingInterceptor
 import br.com.fitnesspro.repository.general.user.IUserRepository
+import com.google.gson.Gson
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.server.WebServerFactoryCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
+import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.StringHttpMessageConverter
+import org.springframework.http.converter.json.GsonHttpMessageConverter
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -15,7 +18,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.nio.charset.StandardCharsets
@@ -23,7 +25,8 @@ import java.nio.charset.StandardCharsets
 @Configuration
 class ApplicationConfig(
     private val userRepository: IUserRepository,
-    private val loggingInterceptor: LoggingInterceptor
+    private val loggingInterceptor: LoggingInterceptor,
+    private val gson: Gson
 ): WebMvcConfigurer {
 
     @Bean
@@ -52,8 +55,25 @@ class ApplicationConfig(
         return FitnessProPasswordEncoder()
     }
 
-    override fun configureContentNegotiation(configurer: ContentNegotiationConfigurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8)
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(loggingInterceptor)
+            .addPathPatterns("/**")
+            .excludePathPatterns(
+                "/health-check",
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/api/v1/logs",
+                "/api/v1/logs/**")
+    }
+
+    override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
+        converters.clear()
+
+        val converter = GsonHttpMessageConverter(gson).apply {
+            supportedMediaTypes = listOf(MediaType.APPLICATION_JSON, MediaType("application", "json", StandardCharsets.UTF_8))
+        }
+
+        converters.add(0, converter)
     }
 
     @Bean
@@ -70,16 +90,5 @@ class ApplicationConfig(
     @Bean
     fun stringHttpMessageConverter(): StringHttpMessageConverter {
         return StringHttpMessageConverter(StandardCharsets.UTF_8)
-    }
-
-    override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(loggingInterceptor)
-            .addPathPatterns("/**")
-            .excludePathPatterns(
-                "/health-check",
-                "/swagger-ui/**",
-                "/v3/api-docs/**",
-                "/api/v1/logs",
-                "/api/v1/logs/**")
     }
 }

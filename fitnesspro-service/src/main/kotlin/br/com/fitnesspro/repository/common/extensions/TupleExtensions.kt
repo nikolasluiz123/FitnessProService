@@ -5,6 +5,8 @@ import java.sql.Date
 import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 fun Tuple.getString(alias: String): String? = get(alias, String::class.java)
 
@@ -20,6 +22,11 @@ fun Tuple.getLocalDateTimeFromTimeStamp(alias: String): LocalDateTime? {
 fun Tuple.getLocalDateFromDate(alias: String): LocalDate? {
     val date: Date? = this.get(alias, Date::class.java)
     return date?.toLocalDate()
+}
+
+fun Tuple.getOffsetDateTime(alias: String): OffsetDateTime? {
+    val timeStamp = this.get(alias, Timestamp::class.java)
+    return timeStamp?.toInstant()?.atOffset(ZoneOffset.UTC)
 }
 
 fun Tuple.getShortAsInt(alias: String): Int? = get(alias, java.lang.Short::class.java)?.toInt()

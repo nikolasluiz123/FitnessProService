@@ -7,9 +7,8 @@ import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumCompromiseType
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import jakarta.persistence.*
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.*
 
 @Entity
@@ -44,17 +43,14 @@ data class Scheduler(
     @JoinColumn(name = "professional_person_id", nullable = false)
     var professionalPerson: Person? = null,
 
-    @Column(name = "scheduled_date", nullable = false)
-    var scheduledDate: LocalDate? = null,
+    @Column(name = "date_time_start", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    var dateTimeStart: OffsetDateTime? = null,
 
-    @Column(name = "time_start", nullable = false)
-    var timeStart: LocalTime? = null,
+    @Column(name = "date_time_end", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    var dateTimeEnd: OffsetDateTime? = null,
 
-    @Column(name = "time_end", nullable = false)
-    var timeEnd: LocalTime? = null,
-
-    @Column(name = "canceled_date")
-    var canceledDate: LocalDateTime? = null,
+    @Column(name = "canceled_date", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    var canceledDate: OffsetDateTime? = null,
 
     @ManyToOne
     @JoinColumn(name = "cancellation_person_id")
@@ -67,5 +63,8 @@ data class Scheduler(
     var compromiseType: EnumCompromiseType? = null,
 
     @Column(length = 4096)
-    var observation: String? = null
+    var observation: String? = null,
+
+    @Column(columnDefinition = "boolean default false   ")
+    var notified: Boolean = false,
 ): IntegratedModel, AuditableModel

@@ -8,4 +8,8 @@ interface IFitnessProServiceResponse : Serializable {
     var success: Boolean
     var error: String?
     val errorType: EnumErrorType?
+
+    fun isSuccessWithoutConnection(): Boolean {
+        return success || errorType == EnumErrorType.NETWORK
+    }
 }

@@ -1,41 +1,64 @@
 package br.com.fitnesspro.services.scheduledtask.tasks
 
 import br.com.fitnesspro.config.gson.defaultGSon
-import br.com.fitnesspro.repository.firebase.FirebaseChatRepository
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.repository.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.services.firebase.FirebaseNotificationService
 import br.com.fitnesspro.services.logs.ExecutionsLogService
 import br.com.fitnesspro.services.scheduledtask.tasks.common.IScheduledTaskExecutorService
+import br.com.fitnesspro.services.scheduler.SchedulerService
 import br.com.fitnesspro.services.serviceauth.DeviceService
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
+import br.com.fitnesspro.shared.communication.notification.SchedulerNotificationCustomData
+import br.com.fitnesspro.to.TOSchedulerAntecedenceNotificationInfo
 import com.google.gson.GsonBuilder
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class ChatNotificationExecutorService(
+class SchedulerAntecedenceNotificationExecutorService(
     private val firebaseNotificationService: FirebaseNotificationService,
-    private val firebaseChatRepository: FirebaseChatRepository,
+    private val customSchedulerRepository: ICustomSchedulerRepository,
+    private val schedulerService: SchedulerService,
     private val logService: ExecutionsLogService,
-    private val deviceService: DeviceService
-): IScheduledTaskExecutorService<Nothing> {
+    private val deviceService: DeviceService,
+    private val messageSource: MessageSource
+): IScheduledTaskExecutorService<Nothing?> {
 
     override fun execute(config: Nothing?, pairIds: Pair<String, String>) {
-        val mapPersonNotificationsQuerySnapshots = firebaseChatRepository.getListQueryReferenceMessageNotification()
+        val toNotificationInfo = customSchedulerRepository.getListTOSchedulerAntecedenceNotificationInfo()
         val additionalInformation = StringJoiner("\n")
+        val schedulerIdsSuccess = mutableListOf<String>()
 
-        if (mapPersonNotificationsQuerySnapshots.isNotEmpty()) {
-            val mapPersonNotificationDocuments = firebaseChatRepository.getListMessageNotificationDocument(mapPersonNotificationsQuerySnapshots)
-
-            val results = mapPersonNotificationDocuments.flatMap { (personId, notifications) ->
-                firebaseNotificationService.sendNotificationToPerson(
-                    title = "",
-                    message = "",
-                    personIds = listOf(personId),
-                    channel = EnumNotificationChannel.NEW_MESSAGE_CHAT_CHANNEL,
-                    customJSONData = GsonBuilder().defaultGSon().toJson(notifications)
+        if (toNotificationInfo.isNotEmpty()) {
+            val results = toNotificationInfo.flatMap { notificationInfo ->
+                val customData = SchedulerNotificationCustomData(
+                    recurrent = false,
+                    schedulerId = notificationInfo.schedulerId,
+                    schedulerDate = notificationInfo.dateTimeStart.toLocalDate()
                 )
+
+                val (title, message) = getNotificationText(notificationInfo)
+
+                val result = firebaseNotificationService.sendNotificationToPerson(
+                    title = title,
+                    message = message,
+                    personIds = listOf(notificationInfo.personToSendNotificationId),
+                    channel = EnumNotificationChannel.SCHEDULER_CHANNEL,
+                    customJSONData = GsonBuilder().defaultGSon().toJson(customData)
+                )
+
+                if (result.first().success()) {
+                    schedulerIdsSuccess.add(notificationInfo.schedulerId)
+                }
+
+                result
             }
+
+            schedulerService.updateSchedulersNotified(schedulerIdsSuccess)
 
             val successDevicesIds = results.flatMap { it.idsDevicesSuccess }
             val errorDevicesIds = results.flatMap { it.idsDevicesError }
@@ -62,6 +85,22 @@ class ChatNotificationExecutorService(
         }
 
         logService.updateScheduledTaskLogWithAdditionalInfos(pairIds.second, additionalInformation)
+    }
+
+    private fun getNotificationText(notificationInfo: TOSchedulerAntecedenceNotificationInfo): Pair<String, String> {
+        val title = messageSource.getMessage("scheduler.antecedence.notification.title", null, Locale.getDefault())
+
+        val message = messageSource.getMessage(
+            "scheduler.antecedence.notification.message",
+            arrayOf(
+                notificationInfo.dateTimeStart.format(EnumDateTimePatterns.DAY_MONTH),
+                notificationInfo.dateTimeStart.format(EnumDateTimePatterns.TIME),
+                notificationInfo.otherPersonName
+            ),
+            Locale.getDefault()
+        )
+
+        return Pair(title, message)
     }
 
     fun StringJoiner.addProcessLog(

@@ -77,7 +77,20 @@ class SchedulerService(
                     .toList()
 
                 val schedules = scheduleDates.map { date ->
-                    schedulerServiceMapper.getScheduler(schedulerDTO).copy(scheduledDate = date)
+                    val newStart = schedulerDTO.dateTimeStart!!
+                        .withYear(date.year)
+                        .withMonth(date.monthValue)
+                        .withDayOfMonth(date.dayOfMonth)
+
+                    val newEnd = schedulerDTO.dateTimeEnd!!
+                        .withYear(date.year)
+                        .withMonth(date.monthValue)
+                        .withDayOfMonth(date.dayOfMonth)
+
+                    schedulerServiceMapper.getScheduler(schedulerDTO).copy(
+                        dateTimeStart = newStart,
+                        dateTimeEnd = newEnd
+                    )
                 }
 
                 validateConflictRecurrent(schedules)
@@ -87,11 +100,11 @@ class SchedulerService(
                 val workout = Workout(
                     academyMemberPerson = firstScheduler.academyMemberPerson,
                     professionalPerson = firstScheduler.professionalPerson,
-                    dateStart = firstScheduler.scheduledDate,
-                    dateEnd = schedules.last().scheduledDate,
+                    dateStart = firstScheduler.dateTimeStart?.toLocalDate(),
+                    dateEnd = schedules.last().dateTimeStart?.toLocalDate(),
                 )
 
-                val workoutGroups = schedules.map { it.scheduledDate!!.dayOfWeek }.distinct().map {
+                val workoutGroups = schedules.map { it.dateTimeStart?.toLocalDate()!!.dayOfWeek }.distinct().map {
                     WorkoutGroup(
                         dayWeek = it,
                         workout = workout,
@@ -122,7 +135,7 @@ class SchedulerService(
                     notifyMemberSchedulerCancelled(schedulerDTO)
                 }
 
-                scheduler.timeStart != schedulerDTO.timeStart || scheduler.timeEnd != schedulerDTO.timeEnd -> {
+                scheduler.dateTimeStart != schedulerDTO.dateTimeStart || scheduler.dateTimeEnd != schedulerDTO.dateTimeEnd -> {
                     notifyMemberSchedulerTimeChanged(schedulerDTO)
                 }
             }
@@ -145,15 +158,15 @@ class SchedulerService(
 
     private fun notifyMemberSchedulerConfirmed(schedulerDTO: SchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
-        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
-        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
-        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val date = schedulerDTO.dateTimeStart?.format(DAY_MONTH, ZoneId.of(zoneId))
+        val start = schedulerDTO.dateTimeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.dateTimeEnd?.format(TIME, ZoneId.of(zoneId))
         val professionalName = getProfessionalFirstName(schedulerDTO)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
             schedulerId = schedulerDTO.id!!,
-            schedulerDate = schedulerDTO.scheduledDate!!
+            schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
         firebaseNotificationService.sendNotificationToPerson(
@@ -174,15 +187,15 @@ class SchedulerService(
         }
 
         val zoneId = deviceService.getDeviceFromPerson(personIdToNotify!!)?.zoneId!!
-        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
-        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
-        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val date = schedulerDTO.dateTimeStart?.format(DAY_MONTH, ZoneId.of(zoneId))
+        val start = schedulerDTO.dateTimeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.dateTimeEnd?.format(TIME, ZoneId.of(zoneId))
         val personName = getPersonFirstName(cancellationPerson)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
             schedulerId = schedulerDTO.id!!,
-            schedulerDate = schedulerDTO.scheduledDate!!
+            schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
         firebaseNotificationService.sendNotificationToPerson(
@@ -199,12 +212,13 @@ class SchedulerService(
     }
 
     private fun notifyMemberSchedulerTimeChanged(schedulerDTO: SchedulerDTO) {
-        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
+        val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
+        val date = schedulerDTO.dateTimeStart?.format(DAY_MONTH, ZoneId.of(zoneId))
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
             schedulerId = schedulerDTO.id!!,
-            schedulerDate = schedulerDTO.scheduledDate!!
+            schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
         firebaseNotificationService.sendNotificationToPerson(
@@ -218,15 +232,15 @@ class SchedulerService(
 
     private fun notifyProfessionalNewSuggestionScheduler(schedulerDTO: SchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.professionalPersonId!!)?.zoneId!!
-        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
-        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
-        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val date = schedulerDTO.dateTimeStart?.format(DAY_MONTH, ZoneId.of(zoneId))
+        val start = schedulerDTO.dateTimeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.dateTimeEnd?.format(TIME, ZoneId.of(zoneId))
         val memberName = getMemberFirstName(schedulerDTO)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
             schedulerId = schedulerDTO.id!!,
-            schedulerDate = schedulerDTO.scheduledDate!!
+            schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
         firebaseNotificationService.sendNotificationToPerson(
@@ -246,15 +260,15 @@ class SchedulerService(
 
     private fun notifyMemberNewUniqueScheduler(schedulerDTO: SchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
-        val date = schedulerDTO.scheduledDate?.format(DAY_MONTH)
-        val start = schedulerDTO.timeStart?.format(TIME, ZoneId.of(zoneId))
-        val end = schedulerDTO.timeEnd?.format(TIME, ZoneId.of(zoneId))
+        val date = schedulerDTO.dateTimeStart?.format(DAY_MONTH, ZoneId.of(zoneId))
+        val start = schedulerDTO.dateTimeStart?.format(TIME, ZoneId.of(zoneId))
+        val end = schedulerDTO.dateTimeEnd?.format(TIME, ZoneId.of(zoneId))
         val professionalName = getProfessionalFirstName(schedulerDTO)
 
         val data = SchedulerNotificationCustomData(
             recurrent = false,
             schedulerId = schedulerDTO.id!!,
-            schedulerDate = schedulerDTO.scheduledDate!!
+            schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
         firebaseNotificationService.sendNotificationToPerson(
@@ -276,7 +290,7 @@ class SchedulerService(
         val data = SchedulerNotificationCustomData(
             recurrent = true,
             schedulerId = schedulerDTO.id!!,
-            schedulerDate = schedulerDTO.scheduledDate!!
+            schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
         firebaseNotificationService.sendNotificationToPerson(
@@ -325,9 +339,8 @@ class SchedulerService(
             schedulerId = scheduler.id,
             personId = person.id,
             userType = person.user?.type!!,
-            scheduledDate = scheduler.scheduledDate!!,
-            start = scheduler.timeStart!!,
-            end = scheduler.timeEnd!!
+            start = scheduler.dateTimeStart!!,
+            end = scheduler.dateTimeEnd!!
         )
 
         if (hasConflict) {
@@ -335,9 +348,9 @@ class SchedulerService(
                 messageSource.getMessage(
                     "scheduler.error.conflict",
                     arrayOf(
-                        scheduler.scheduledDate!!.format(DATE),
-                        scheduler.timeStart!!.format(TIME),
-                        scheduler.timeEnd!!.format(TIME),
+                        scheduler.dateTimeStart!!.format(DATE),
+                        scheduler.dateTimeStart!!.format(TIME),
+                        scheduler.dateTimeEnd!!.format(TIME),
                         scheduler.professionalPerson?.name
                     ),
                     Locale.getDefault()
@@ -352,14 +365,13 @@ class SchedulerService(
                 schedulerId = scheduler.id,
                 personId = scheduler.academyMemberPerson?.id!!,
                 userType = scheduler.academyMemberPerson?.user?.type!!,
-                scheduledDate = scheduler.scheduledDate!!,
-                start = scheduler.timeStart!!,
-                end = scheduler.timeEnd!!
+                start = scheduler.dateTimeStart!!,
+                end = scheduler.dateTimeEnd!!
             )
         }
 
         if (conflicts.isNotEmpty()) {
-            val formatedDates = conflicts.joinToString(separator = ", \n") { it.scheduledDate!!.format(DATE) }
+            val formatedDates = conflicts.joinToString(separator = ", \n") { it.dateTimeStart!!.format(DATE) }
 
             throw BusinessException(
                 messageSource.getMessage("scheduler.error.recurrent.conflicts", arrayOf(formatedDates), Locale.getDefault())
@@ -368,11 +380,12 @@ class SchedulerService(
     }
 
     private fun validateStartTime(scheduler: Scheduler) {
-        val actualHour = timeNow()
-        val timeStart = scheduler.timeStart!!
+        val dateTimeStart = scheduler.dateTimeStart!!
+        val actualHour = timeNow(dateTimeStart.toZonedDateTime()?.zone!!)
+        val timeStart = dateTimeStart.toLocalTime()
 
         when {
-            timeStart <= actualHour.plusHours(1) && scheduler.scheduledDate == dateNow() -> {
+            timeStart <= actualHour.plusHours(1) && dateTimeStart.toLocalDate() == dateNow() -> {
                 throw BusinessException(
                     messageSource.getMessage("scheduler.error.start.time.antecedence", null, Locale.getDefault())
                 )
@@ -385,13 +398,13 @@ class SchedulerService(
 
         val academyTimes = customAcademyRepository.getPersonAcademyTimeList(
             personId = scheduler.professionalPerson?.id!!,
-            dayOfWeek = scheduler.scheduledDate?.dayOfWeek!!
+            dayOfWeek = scheduler.dateTimeStart?.toLocalDate()?.dayOfWeek!!
         )
 
         val startWorkTime = academyTimes.minOf { it.timeStart!! }
         val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
-        if (scheduler.timeStart!! < startWorkTime || scheduler.timeStart!! > endWorkTime) {
+        if (scheduler.dateTimeStart!!.toLocalTime() < startWorkTime || scheduler.dateTimeStart!!.toLocalTime() > endWorkTime) {
             val start = startWorkTime.format(TIME)
             val end = endWorkTime.format(TIME)
 
@@ -404,13 +417,13 @@ class SchedulerService(
     private fun validateEndTimeSuggestionScheduler(scheduler: Scheduler) {
         val academyTimes = customAcademyRepository.getPersonAcademyTimeList(
             personId = scheduler.professionalPerson?.id!!,
-            dayOfWeek = scheduler.scheduledDate?.dayOfWeek!!
+            dayOfWeek = scheduler.dateTimeStart?.toLocalDate()?.dayOfWeek!!
         )
 
         val startWorkTime = academyTimes.minOf { it.timeStart!! }
         val endWorkTime = academyTimes.maxOf { it.timeEnd!! }
 
-        if (scheduler.timeEnd!! < startWorkTime || scheduler.timeEnd!! > endWorkTime) {
+        if (scheduler.dateTimeEnd!!.toLocalTime() < startWorkTime || scheduler.dateTimeEnd!!.toLocalTime() > endWorkTime) {
             val start = startWorkTime.format(TIME)
             val end = endWorkTime.format(TIME)
 
@@ -421,7 +434,7 @@ class SchedulerService(
     }
 
     private fun validateTimePeriod(scheduler: Scheduler) {
-        if (scheduler.timeStart!!.isAfter(scheduler.timeEnd!!) || scheduler.timeStart == scheduler.timeEnd) {
+        if (scheduler.dateTimeStart!!.isAfter(scheduler.dateTimeEnd!!) || scheduler.dateTimeStart == scheduler.dateTimeEnd) {
             throw BusinessException(messageSource.getMessage("scheduler.error.invalid.period", null, Locale.getDefault()))
         }
     }
@@ -484,6 +497,14 @@ class SchedulerService(
     @Cacheable(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfigDTO> {
         return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map(schedulerServiceMapper::getSchedulerConfigDTO)
+    }
+
+    fun updateSchedulersNotified(schedulerIdsSuccess: List<String>) {
+        val schedulers = schedulerRepository.findAllById(schedulerIdsSuccess).onEach {
+            it.notified = true
+        }
+
+        schedulerRepository.saveAll(schedulers)
     }
 
 }

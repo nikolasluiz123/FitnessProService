@@ -2,7 +2,7 @@ package br.com.fitnesspro.core.enums
 
 enum class EnumDateTimePatterns(val pattern: String) {
     DATE("dd/MM/yyyy"),
-    DATE_SQLITE("yyyy-MM-dd"),
+    DATE_SQL("yyyy-MM-dd"),
     DATE_ONLY_NUMBERS("ddMMyyyy"),
     TIME("HH:mm"),
     TIME_ONLY_NUMBERS("HHmm"),
