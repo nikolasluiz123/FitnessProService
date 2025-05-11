@@ -63,9 +63,11 @@ class SchedulerService(
 
         when (schedulerDTO.type!!) {
             EnumSchedulerType.SUGGESTION, EnumSchedulerType.UNIQUE -> {
+                val oldSchedulerOptional = schedulerRepository.findById(schedulerDTO.id!!)
                 val scheduler = schedulerServiceMapper.getScheduler(schedulerDTO)
-                sendNotification(schedulerDTO)
+
                 schedulerRepository.save(scheduler)
+                sendNotification(schedulerDTO, oldSchedulerOptional = oldSchedulerOptional)
             }
 
             EnumSchedulerType.RECURRENT -> {
@@ -111,31 +113,34 @@ class SchedulerService(
                     )
                 }
 
-                sendNotification(schedulerDTO, scheduleDates)
 
                 schedulerRepository.saveAll(schedules)
                 workoutRepository.save(workout)
                 workoutGroupRepository.saveAll(workoutGroups)
+
+                sendNotification(schedulerDTO, scheduledDates = scheduleDates)
             }
         }
     }
 
-    private fun sendNotification(schedulerDTO: SchedulerDTO, scheduledDates: List<LocalDate> = emptyList()) {
-        val schedulerOptional = schedulerDTO.id?.let { schedulerRepository.findById(it) }
-
-        if (schedulerOptional?.isPresent == true) {
-            val scheduler = schedulerOptional.get()
+    private fun sendNotification(
+        schedulerDTO: SchedulerDTO,
+        oldSchedulerOptional: Optional<Scheduler>? = null,
+        scheduledDates: List<LocalDate> = emptyList()
+    ) {
+        if (oldSchedulerOptional?.isPresent == true) {
+            val oldScheduler = oldSchedulerOptional.get()
 
             when {
-                scheduler.situation == SCHEDULED && schedulerDTO.situation == CONFIRMED -> {
+                oldScheduler.situation == SCHEDULED && schedulerDTO.situation == CONFIRMED -> {
                     notifyMemberSchedulerConfirmed(schedulerDTO)
                 }
 
-                scheduler.situation != CANCELLED && schedulerDTO.situation == CANCELLED -> {
+                oldScheduler.situation != CANCELLED && schedulerDTO.situation == CANCELLED -> {
                     notifyMemberSchedulerCancelled(schedulerDTO)
                 }
 
-                scheduler.dateTimeStart != schedulerDTO.dateTimeStart || scheduler.dateTimeEnd != schedulerDTO.dateTimeEnd -> {
+                oldScheduler.dateTimeStart != schedulerDTO.dateTimeStart || oldScheduler.dateTimeEnd != schedulerDTO.dateTimeEnd -> {
                     notifyMemberSchedulerTimeChanged(schedulerDTO)
                 }
             }
@@ -289,7 +294,7 @@ class SchedulerService(
 
         val data = SchedulerNotificationCustomData(
             recurrent = true,
-            schedulerId = schedulerDTO.id!!,
+            schedulerId = schedulerDTO.id,
             schedulerDate = schedulerDTO.dateTimeStart!!.toLocalDate()
         )
 
@@ -454,7 +459,6 @@ class SchedulerService(
 
         val schedules = schedulerDTOList.map { schedulerDTO ->
             validateScheduler(schedulerDTO)
-            sendNotification(schedulerDTO)
             schedulerServiceMapper.getScheduler(schedulerDTO)
         }
 

@@ -30,7 +30,6 @@ data class WorkoutGroup(
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
 
-    @Column(nullable = false)
     var name: String? = null,
 
     @JoinColumn(name = "workout_id", nullable = false)
