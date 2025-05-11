@@ -150,7 +150,7 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
         val where = StringJoiner(QR_NL).apply {
             add(" where config.active = true ")
             add(" and scheduler.active = true ")
-            add(" and scheduler.notified = false ")
+            add(" and scheduler.notified_antecedence = false ")
             add(" and scheduler.situation in (:pScheduled, :pConfirmed) ")
             add(" and date_trunc('minute', current_timestamp + make_interval(mins => config.notification_antecedence_time)) = date_trunc('minute', scheduler.date_time_start) ")
 

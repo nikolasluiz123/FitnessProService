@@ -65,6 +65,6 @@ data class Scheduler(
     @Column(length = 4096)
     var observation: String? = null,
 
-    @Column(columnDefinition = "boolean default false   ")
-    var notified: Boolean = false,
+    @Column(name = "notified_antecedence", columnDefinition = "boolean default false   ")
+    var notifiedAntecedence: Boolean = false,
 ): IntegratedModel, AuditableModel

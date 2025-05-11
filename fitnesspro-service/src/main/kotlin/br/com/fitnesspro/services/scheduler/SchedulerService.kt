@@ -508,7 +508,7 @@ class SchedulerService(
 
     fun updateSchedulersNotified(schedulerIdsSuccess: List<String>) {
         val schedulers = schedulerRepository.findAllById(schedulerIdsSuccess).onEach {
-            it.notified = true
+            it.notifiedAntecedence = true
         }
 
         schedulerRepository.saveAll(schedulers)

@@ -68,5 +68,5 @@ data class SchedulerDTO(
     var recurrentConfig: RecurrentConfigDTO? = null,
 
     @Schema(description = "Indica se os usuários foram notificados sobre a proximidade da data do compromisso", readOnly = true)
-    var notified: Boolean = false
+    var notifiedAntecedence: Boolean = false
 ): AuditableDTO
