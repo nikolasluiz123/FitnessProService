@@ -127,8 +127,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           name: "Release ${{ env.VERSION }}"
-          draft: false
-          prerelease: false
+          generate_release_notes: true
 
   deploy:
     runs-on: ubuntu-latest
