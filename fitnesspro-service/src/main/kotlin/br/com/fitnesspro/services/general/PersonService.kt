@@ -45,11 +45,12 @@ class PersonService(
         val person = personServiceMapper.getPerson(personDTO)
         preparePersonSave(personDTO, person)
 
+        val personExists = personDTO.id?.let { personRepository.findById(it).isPresent } ?: false
+
         userRepository.save(person.user!!)
         personRepository.save(person)
 
         if (personDTO.active) {
-            val personExists = personDTO.id?.let { personRepository.findById(it).isPresent } ?: false
             firebaseAuthenticationService.saveUser(personDTO, personExists)
         } else {
             firebaseAuthenticationService.deleteUser(personDTO)
