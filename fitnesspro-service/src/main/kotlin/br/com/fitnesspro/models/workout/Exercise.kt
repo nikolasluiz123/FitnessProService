@@ -48,6 +48,6 @@ data class Exercise(
     @ManyToOne
     var workoutGroup: WorkoutGroup? = null,
 
-    @Column(name = "exercise_order", nullable = false)
-    var exerciseOrder: Int? = null,
+    @Column(name = "exercise_order", nullable = false, columnDefinition = "integer default 1")
+    var exerciseOrder: Int = 1,
 ): IntegratedModel, AuditableModel
