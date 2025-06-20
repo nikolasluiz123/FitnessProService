@@ -6,6 +6,11 @@ const val PERSON_USER_IMPORT_CACHE_NAME = "v1.person.user.import"
 const val PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME = "v1.person.academy.time.import"
 const val SCHEDULER_IMPORT_CACHE_NAME = "v1.scheduler.import"
 const val SCHEDULER_CONFIG_IMPORT_CACHE_NAME = "v1.scheduler.config.import"
+const val WORKOUT_IMPORT_CACHE_NAME = "v1.workout.import"
+const val WORKOUT_GROUP_IMPORT_CACHE_NAME = "v1.workout.group.import"
+const val EXERCISE_IMPORT_CACHE_NAME = "v1.exercise.import"
+const val VIDEO_EXERCISE_IMPORT_CACHE_NAME = "v1.video.exercise.import"
+const val VIDEO_IMPORT_CACHE_NAME = "v1.video.import"
 
 val cacheNames = arrayOf(
     ACADEMY_IMPORT_CACHE_NAME,

@@ -17,7 +17,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.MessageSource

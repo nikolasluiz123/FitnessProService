@@ -63,6 +63,7 @@ class WorkoutServiceMapper(
                     name = dto.name!!,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
+                    groupOrder = dto.groupOrder!!,
                 )
             }
 
@@ -72,6 +73,7 @@ class WorkoutServiceMapper(
                     name = dto.name!!,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
+                    groupOrder = dto.groupOrder!!,
                 )
             }
 
@@ -82,8 +84,35 @@ class WorkoutServiceMapper(
                     name = dto.name!!,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
+                    groupOrder = dto.groupOrder!!,
                 )
             }
         }
+    }
+
+    fun getWorkoutGroupDTO(workoutGroup: WorkoutGroup): WorkoutGroupDTO {
+        return WorkoutGroupDTO(
+            id = workoutGroup.id,
+            creationDate = workoutGroup.creationDate,
+            updateDate = workoutGroup.updateDate,
+            active = workoutGroup.active,
+            name = workoutGroup.name,
+            workoutId = workoutGroup.workout?.id,
+            dayWeek = workoutGroup.dayWeek,
+            groupOrder = workoutGroup.groupOrder,
+        )
+    }
+
+    fun getWorkoutDTO(workout: Workout): WorkoutDTO {
+        return WorkoutDTO(
+            id = workout.id,
+            creationDate = workout.creationDate,
+            updateDate = workout.updateDate,
+            active = workout.active,
+            academyMemberPersonId = workout.academyMemberPerson?.id,
+            professionalPersonId = workout.professionalPerson?.id,
+            dateStart = workout.dateStart,
+            dateEnd = workout.dateEnd,
+        )
     }
 }

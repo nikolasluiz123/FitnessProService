@@ -9,7 +9,7 @@ import br.com.fitnesspro.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository

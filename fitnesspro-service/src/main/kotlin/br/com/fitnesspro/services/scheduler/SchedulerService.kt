@@ -32,7 +32,7 @@ import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSitua
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
 import br.com.fitnesspro.shared.communication.notification.SchedulerNotificationCustomData
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import com.google.gson.GsonBuilder
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
