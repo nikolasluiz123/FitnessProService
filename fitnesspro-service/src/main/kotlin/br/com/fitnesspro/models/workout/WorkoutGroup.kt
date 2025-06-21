@@ -38,4 +38,7 @@ data class WorkoutGroup(
 
     @Column(name = "day_week", nullable = false)
     var dayWeek: DayOfWeek? = null,
+
+    @Column(name = "group_order", nullable = false, columnDefinition = "integer default 1")
+    var groupOrder: Int = 1,
 ) : IntegratedModel, AuditableModel

@@ -10,7 +10,7 @@ import br.com.fitnesspro.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.to.TOSchedulerAntecedenceNotificationInfo
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException

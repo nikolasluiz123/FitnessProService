@@ -1,6 +1,6 @@
-package br.com.fitnesspro.repository.scheduler
+package br.com.fitnesspro.repository.workout
 
-import br.com.fitnesspro.models.scheduler.SchedulerConfig
+import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.repository.common.query.Parameter
 import br.com.fitnesspro.repository.common.query.getResultList
@@ -13,30 +13,30 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
-    
+class CustomVideoRepositoryImpl: ICustomVideoRepository {
+
     @PersistenceContext
     private lateinit var entityManager: EntityManager
-    
-    override fun getSchedulerConfigImport(
+
+    override fun getVideosImport(
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos
-    ): List<SchedulerConfig> {
+    ): List<Video> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select config ")
+            add(" select video ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${SchedulerConfig::class.java.name} config ")
+            add(" from ${Video::class.java.name} video ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where 1=1 ")
 
             filter.lastUpdateDate?.let {
-                add(" and config.updateDate >= :pLastUpdateDate ")
+                add(" and video.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -47,11 +47,13 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
             add(where.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), SchedulerConfig::class.java)
+        val query = entityManager.createQuery(sql.toString(), Video::class.java)
         query.setParameters(params)
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        return query.getResultList(SchedulerConfig::class.java)
+        val result = query.getResultList(Video::class.java)
+
+        return result
     }
 }

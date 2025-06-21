@@ -3,7 +3,7 @@ package br.com.fitnesspro.repository.scheduler
 import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.to.TOSchedulerAntecedenceNotificationInfo
 import java.time.OffsetDateTime
 

@@ -76,4 +76,10 @@ object EndPointsV1 {
     const val NOTIFICATION = "notification"
     const val NOTIFICATION_V1 = "$API_V1/$NOTIFICATION"
     const val NOTIFICATION_NOTIFY_ALL = "/all"
+
+    const val EXERCISE: String = "exercise"
+    const val EXERCISE_V1 = "$API_V1/$EXERCISE"
+    const val EXERCISE_EXPORT = "/export"
+    const val EXERCISE_IMPORT = "/import"
+
 }

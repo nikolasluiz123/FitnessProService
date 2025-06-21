@@ -6,7 +6,7 @@ import br.com.fitnesspro.repository.common.query.Parameter
 import br.com.fitnesspro.repository.common.query.getResultList
 import br.com.fitnesspro.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.NoResultException
 import jakarta.persistence.PersistenceContext
