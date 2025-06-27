@@ -10,6 +10,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
+import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
@@ -37,6 +38,25 @@ class ReportController(
     fun saveSchedulerReport(@RequestBody @Valid schedulerReportDTO: SchedulerReportDTO): ResponseEntity<PersistenceServiceResponse<SchedulerReportDTO>> {
         reportService.saveSchedulerReport(schedulerReportDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = schedulerReportDTO))
+    }
+
+    @PostMapping(EndPointsV1.SCHEDULER_REPORT_EXPORT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun saveSchedulerReportBatch(@RequestBody @Valid schedulerReportDTOList: List<SchedulerReportDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+        reportService.saveSchedulerReportBatch(schedulerReportDTOList)
+
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
+
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.SCHEDULER_REPORT_IMPORT)

@@ -2,6 +2,8 @@ package br.com.fitnesspro.services.general
 
 import br.com.fitnesspro.config.application.cache.REPORT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.SCHEDULER_REPORT_IMPORT_CACHE_NAME
+import br.com.fitnesspro.models.general.Report
+import br.com.fitnesspro.models.general.SchedulerReport
 import br.com.fitnesspro.repository.general.report.ICustomReportRepository
 import br.com.fitnesspro.repository.general.report.ICustomSchedulerReportRepository
 import br.com.fitnesspro.repository.general.report.IReportRepository
@@ -32,6 +34,23 @@ class ReportService(
         schedulerReportDTO.report?.id = report.id
         val schedulerReport = reportServiceMapper.getSchedulerReport(schedulerReportDTO)
         schedulerReportRepository.save(schedulerReport)
+    }
+
+    @CacheEvict(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME, REPORT_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveSchedulerReportBatch(schedulerReportDTOList: List<SchedulerReportDTO>) {
+        val reports = mutableListOf<Report>()
+        val schedulerReports = mutableListOf<SchedulerReport>()
+
+        schedulerReportDTOList.forEach {
+            val report = reportServiceMapper.getReport(it.report!!)
+            reports.add(report)
+
+            val schedulerReport = reportServiceMapper.getSchedulerReport(it)
+            schedulerReports.add(schedulerReport)
+        }
+
+        reportRepository.saveAll(reports)
+        schedulerReportRepository.saveAll(schedulerReports)
     }
 
     @Cacheable(cacheNames = [REPORT_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")

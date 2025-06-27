@@ -72,7 +72,7 @@ class ReportServiceMapper(
             dto.id == null -> {
                 SchedulerReport(
                     person = personRepository.findById(dto.personId!!).get(),
-                    report = reportRepository.findById(dto.report?.id!!).get(),
+                    report = getReport(dto.report!!),
                     reportContext = dto.reportContext
                 )
             }
@@ -80,7 +80,7 @@ class ReportServiceMapper(
             schedulerReport?.isPresent == true -> {
                 schedulerReport.get().copy(
                     person = personRepository.findById(dto.personId!!).get(),
-                    report = reportRepository.findById(dto.report?.id!!).get(),
+                    report = getReport(dto.report!!),
                     reportContext = dto.reportContext
                 )
             }
@@ -89,7 +89,7 @@ class ReportServiceMapper(
                 SchedulerReport(
                     id = dto.id!!,
                     person = personRepository.findById(dto.personId!!).get(),
-                    report = reportRepository.findById(dto.report?.id!!).get(),
+                    report = getReport(dto.report!!),
                     reportContext = dto.reportContext
                 )
             }

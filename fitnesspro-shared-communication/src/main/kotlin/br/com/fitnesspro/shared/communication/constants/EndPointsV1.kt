@@ -84,7 +84,6 @@ object EndPointsV1 {
 
     const val REPORT: String = "report"
     const val REPORT_V1 = "$API_V1/$REPORT"
-    const val REPORT_EXPORT = "/export"
     const val REPORT_IMPORT = "/import"
     const val SCHEDULER_REPORT = "/scheduler"
     const val DELETE_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/{reportId}"
