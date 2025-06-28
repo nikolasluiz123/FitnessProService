@@ -6,8 +6,9 @@ import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.repository.common.query.Parameter
 import br.com.fitnesspro.repository.common.query.getResultList
 import br.com.fitnesspro.repository.common.query.setParameters
+import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -19,7 +20,7 @@ class CustomReportRepositoryImpl: ICustomReportRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getReportsFromSchedulerImport(filter: SchedulerReportImportFilter, pageInfos: ImportPageInfos): List<Report> {
+    override fun getReportsImport(filter: ReportImportFilter, pageInfos: ImportPageInfos): List<Report> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -27,12 +28,17 @@ class CustomReportRepositoryImpl: ICustomReportRepository {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${SchedulerReport::class.java.name} sr ")
-            add(" inner join sr.report report ")
+            when (filter.reportContext) {
+                EnumReportContext.SCHEDULERS_REPORT -> {
+                    add(" from ${SchedulerReport::class.java.name} intermediate ")
+                }
+            }
+
+            add(" inner join intermediate.report report ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where sr.person.id = :pPersonId ")
+            add(" where intermediate.person.id = :pPersonId ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 

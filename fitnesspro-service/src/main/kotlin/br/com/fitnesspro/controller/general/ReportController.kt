@@ -9,6 +9,7 @@ import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
@@ -85,12 +86,12 @@ class ReportController(
     @GetMapping(EndPointsV1.REPORT_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importReportsFromScheduler(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ReportDTO>> {
+    fun importReports(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ReportDTO>> {
         val defaultGSon = GsonBuilder().defaultGSon()
-        val commonImportFilter = defaultGSon.fromJson(filter, SchedulerReportImportFilter::class.java)
+        val importFilter = defaultGSon.fromJson(filter, ReportImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
-        val values = reportService.getReportsFromSchedulerImport(commonImportFilter, importPageInfos)
+        val values = reportService.getReportsImport(importFilter, importPageInfos)
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
 

@@ -13,6 +13,7 @@ import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
 import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -54,8 +55,8 @@ class ReportService(
     }
 
     @Cacheable(cacheNames = [REPORT_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getReportsFromSchedulerImport(filter: SchedulerReportImportFilter, pageInfos: ImportPageInfos): List<ReportDTO> {
-        return customReportRepository.getReportsFromSchedulerImport(filter, pageInfos).map(reportServiceMapper::getReportDTO)
+    fun getReportsImport(filter: ReportImportFilter, pageInfos: ImportPageInfos): List<ReportDTO> {
+        return customReportRepository.getReportsImport(filter, pageInfos).map(reportServiceMapper::getReportDTO)
     }
 
     @Cacheable(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")

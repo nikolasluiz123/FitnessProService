@@ -88,7 +88,7 @@ object EndPointsV1 {
     const val SCHEDULER_REPORT = "/scheduler"
     const val DELETE_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/{reportId}"
     const val DELETE_ALL_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/all"
-    const val SCHEDULER_REPORT_EXPORT = "/$SCHEDULER/export"
-    const val SCHEDULER_REPORT_IMPORT = "/$SCHEDULER/import"
+    const val SCHEDULER_REPORT_EXPORT = "$SCHEDULER_REPORT/export"
+    const val SCHEDULER_REPORT_IMPORT = "$SCHEDULER_REPORT/import"
 
 }
