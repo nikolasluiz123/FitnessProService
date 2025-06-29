@@ -1,12 +1,13 @@
 package br.com.fitnesspro.repository.workout
 
 import br.com.fitnesspro.models.workout.Video
+import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.repository.common.query.Parameter
 import br.com.fitnesspro.repository.common.query.getResultList
 import br.com.fitnesspro.repository.common.query.setParameters
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -19,7 +20,7 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
     private lateinit var entityManager: EntityManager
 
     override fun getVideosImport(
-        filter: CommonImportFilter,
+        filter: WorkoutModuleImportFilter,
         pageInfos: ImportPageInfos
     ): List<Video> {
         val params = mutableListOf<Parameter>()
@@ -29,11 +30,18 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${Video::class.java.name} video ")
+            add(" from ${VideoExercise::class.java.name} videoExercise ")
+            add(" inner join videoExercise.exercise exercise ")
+            add(" inner join exercise.workoutGroup workoutGroup ")
+            add(" inner join workoutGroup.workout ")
+            add(" inner join videoExercise.video ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where 1=1 ")
+            add(" where ( ")
+            add("           workout.professionalPerson.id = :pPersonId ")
+            add("           or workout.academyMemberPerson.id = :pPersonId ")
+            add("       ) ")
 
             filter.lastUpdateDate?.let {
                 add(" and video.updateDate >= :pLastUpdateDate ")

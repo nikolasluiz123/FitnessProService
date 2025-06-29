@@ -5,6 +5,7 @@ import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_IMPORT_CACHE_NA
 import br.com.fitnesspro.repository.workout.ICustomExerciseRepository
 import br.com.fitnesspro.repository.workout.ICustomVideoExerciseRepository
 import br.com.fitnesspro.repository.workout.IExerciseRepository
+import br.com.fitnesspro.repository.workout.IVideoExerciseRepository
 import br.com.fitnesspro.services.mappers.ExerciseServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service
 @Service
 class ExerciseService(
     private val exerciseRepository: IExerciseRepository,
+    private val videoExerciseRepository: IVideoExerciseRepository,
     private val customExerciseRepository: ICustomExerciseRepository,
     private val customVideoExerciseRepository: ICustomVideoExerciseRepository,
     private val workoutService: WorkoutService,
@@ -38,5 +40,25 @@ class ExerciseService(
     @Cacheable(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getVideoExercisesImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<VideoExerciseDTO> {
         return customVideoExerciseRepository.getVideoExercisesImport(filter, pageInfos).map(exerciseServiceMapper::getVideoExerciseDTO)
+    }
+
+    /**
+     * Função que salva os [br.com.fitnesspro.models.workout.Exercise] vindos de uma exportação do móvel.
+     *
+     * O [ExerciseDTO.workoutGroupDTO] é totalmente ignorado nesse processamento, pois, [WorkoutService.saveWorkoutGroupBatch]
+     * já vai ter persistido o [br.com.fitnesspro.models.workout.WorkoutGroup] devido à ordem das execuções.
+     */
+    @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveExerciseBatch(exerciseDTOs: List<ExerciseDTO>) {
+        val exercises = exerciseDTOs.map {
+            exerciseServiceMapper.getExercise(dto = it)
+        }
+
+        exerciseRepository.saveAll(exercises)
+    }
+
+    fun saveExerciseVideoBatch(exerciseVideoDTOs: List<VideoExerciseDTO>) {
+        val videos = exerciseVideoDTOs.map(exerciseServiceMapper::getVideoExercise)
+        videoExerciseRepository.saveAll(videos)
     }
 }

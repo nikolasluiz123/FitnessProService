@@ -81,5 +81,11 @@ object EndPointsV1 {
     const val EXERCISE_V1 = "$API_V1/$EXERCISE"
     const val EXERCISE_EXPORT = "/export"
     const val EXERCISE_IMPORT = "/import"
+    const val EXERCISE_VIDEO_IMPORT = "/video/import"
+    const val EXERCISE_VIDEO_EXPORT = "/video/export"
 
+    const val VIDEO = "video"
+    const val VIDEO_V1 = "$API_V1/$VIDEO"
+    const val VIDEO_EXPORT = "/export"
+    const val VIDEO_IMPORT = "/import"
 }

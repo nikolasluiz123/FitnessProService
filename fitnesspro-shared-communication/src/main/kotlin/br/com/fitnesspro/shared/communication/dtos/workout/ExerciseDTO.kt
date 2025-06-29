@@ -55,7 +55,6 @@ data class ExerciseDTO(
     @field:Min(value = 1, message = "{exerciseDTO.exerciseOrder.min}")
     var exerciseOrder: Int? = null,
 
-    @Schema(description = "DTO para atualização das informações do Grupo Muscular do Exercício", required = true)
-    @field:NotNull(message = "{exerciseDTO.workoutGroupDTO.notNull}")
+    @Schema(description = "DTO para atualização das informações do Grupo Muscular do Exercício. É opcional pois há cenários onde não vamos processar o grupo, apenas o exercício.", required = false)
     var workoutGroupDTO: WorkoutGroupDTO? = null
 ) : AuditableDTO
