@@ -43,6 +43,8 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
             add("           or workout.academyMemberPerson.id = :pPersonId ")
             add("       ) ")
 
+            params.add(Parameter(name = "pPersonId", value = filter.personId))
+
             filter.lastUpdateDate?.let {
                 add(" and video.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
