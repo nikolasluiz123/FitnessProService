@@ -62,4 +62,20 @@ class CustomExerciseRepositoryImpl: ICustomExerciseRepository {
 
         return result
     }
+
+    override fun inactivateExercisesFromWorkoutGroup(workoutGroupId: String) {
+        val params = mutableListOf<Parameter>()
+
+        val update = StringJoiner(QR_NL).apply {
+            add(" update ${Exercise::class.java.name} exercise ")
+            add(" set exercise.active = false, ")
+            add("     exercise.updateDate = current_timestamp ")
+            add(" where exercise.workoutGroup.id = :pWorkoutGroupId ")
+        }
+
+        val query = entityManager.createQuery(update.toString())
+        query.setParameters(params)
+
+        query.executeUpdate()
+    }
 }

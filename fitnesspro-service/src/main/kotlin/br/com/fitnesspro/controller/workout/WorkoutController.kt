@@ -10,6 +10,7 @@ import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
@@ -83,6 +84,14 @@ class WorkoutController(
     fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse<WorkoutGroupDTO>> {
         workoutService.saveWorkoutGroup(workoutGroupDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = workoutGroupDTO))
+    }
+
+    @PutMapping(EndPointsV1.WORKOUT_GROUP_INACTIVATE)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun inactivateWorkoutGroup(@PathVariable("workoutGroupId") workoutGroupId: String): ResponseEntity<FitnessProServiceResponse> {
+        workoutService.inactivateWorkoutGroup(workoutGroupId)
+        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)

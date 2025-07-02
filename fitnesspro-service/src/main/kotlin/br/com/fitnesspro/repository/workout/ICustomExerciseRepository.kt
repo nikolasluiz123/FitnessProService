@@ -8,4 +8,6 @@ interface ICustomExerciseRepository {
 
     fun getExercisesImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<Exercise>
 
+    fun inactivateExercisesFromWorkoutGroup(workoutGroupId: String)
+
 }

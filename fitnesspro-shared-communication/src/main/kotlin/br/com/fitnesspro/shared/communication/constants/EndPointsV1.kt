@@ -40,6 +40,7 @@ object EndPointsV1 {
     const val WORKOUT_EXPORT = "/export"
     const val WORKOUT_IMPORT = "/import"
     const val WORKOUT_GROUP = "/group"
+    const val WORKOUT_GROUP_INACTIVATE = "/group/inactivate/{workoutGroupId}"
     const val WORKOUT_GROUP_EXPORT = "/group/export"
     const val WORKOUT_GROUP_IMPORT = "/group/import"
 

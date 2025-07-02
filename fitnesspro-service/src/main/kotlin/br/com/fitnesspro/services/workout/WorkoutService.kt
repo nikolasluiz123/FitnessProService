@@ -2,10 +2,7 @@ package br.com.fitnesspro.services.workout
 
 import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.WORKOUT_IMPORT_CACHE_NAME
-import br.com.fitnesspro.repository.workout.ICustomWorkoutGroupRepository
-import br.com.fitnesspro.repository.workout.ICustomWorkoutRepository
-import br.com.fitnesspro.repository.workout.IWorkoutGroupRepository
-import br.com.fitnesspro.repository.workout.IWorkoutRepository
+import br.com.fitnesspro.repository.workout.*
 import br.com.fitnesspro.services.mappers.WorkoutServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
@@ -21,6 +18,7 @@ class WorkoutService(
     private val workoutGroupRepository: IWorkoutGroupRepository,
     private val customWorkoutRepository: ICustomWorkoutRepository,
     private val customWorkoutGroupRepository: ICustomWorkoutGroupRepository,
+    private val customExerciseRepository: ICustomExerciseRepository,
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
@@ -52,5 +50,15 @@ class WorkoutService(
     @Cacheable(cacheNames = [WORKOUT_GROUP_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getWorkoutGroupsImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<WorkoutGroupDTO> {
         return customWorkoutGroupRepository.getWorkoutGroupsImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutGroupDTO)
+    }
+
+    @CacheEvict(cacheNames = [WORKOUT_GROUP_IMPORT_CACHE_NAME], allEntries = true)
+    fun inactivateWorkoutGroup(workoutGroupId: String) {
+        workoutGroupRepository.findById(workoutGroupId).get().apply {
+            active = false
+            workoutGroupRepository.save(this)
+        }
+
+        customExerciseRepository.inactivateExercisesFromWorkoutGroup(workoutGroupId)
     }
 }
