@@ -65,6 +65,7 @@ class CustomExerciseRepositoryImpl: ICustomExerciseRepository {
 
     override fun inactivateExercisesFromWorkoutGroup(workoutGroupId: String) {
         val params = mutableListOf<Parameter>()
+        params.add(Parameter(name = "pWorkoutGroupId", value = workoutGroupId))
 
         val update = StringJoiner(QR_NL).apply {
             add(" update ${Exercise::class.java.name} exercise ")
