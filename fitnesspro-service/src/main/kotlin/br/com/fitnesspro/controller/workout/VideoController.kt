@@ -5,11 +5,13 @@ import br.com.fitnesspro.config.request.EnumRequestAttributes
 import br.com.fitnesspro.services.workout.VideoService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -26,6 +28,14 @@ import org.springframework.web.bind.annotation.*
 class VideoController(
     private val videoService: VideoService
 ) {
+
+    @PostMapping
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun createVideo(@RequestBody @Valid newVideoExerciseDTO: NewVideoExerciseDTO): ResponseEntity<PersistenceServiceResponse<NewVideoExerciseDTO>> {
+        videoService.createVideo(newVideoExerciseDTO)
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = newVideoExerciseDTO))
+    }
 
     @GetMapping(EndPointsV1.VIDEO_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])

@@ -7,6 +7,7 @@ import br.com.fitnesspro.repository.workout.ICustomVideoRepository
 import br.com.fitnesspro.repository.workout.IVideoExerciseRepository
 import br.com.fitnesspro.repository.workout.IVideoRepository
 import br.com.fitnesspro.services.mappers.VideoServiceMapper
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -40,12 +41,18 @@ class VideoService(
         return customVideoExerciseRepository.getVideoExercisesImport(filter, pageInfos).map(videoServiceMapper::getVideoExerciseDTO)
     }
 
+    @CacheEvict(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
     fun saveExerciseVideoBatch(exerciseVideoDTOs: List<VideoExerciseDTO>) {
         val videos = exerciseVideoDTOs.map(videoServiceMapper::getVideoExercise)
         videoExerciseRepository.saveAll(videos)
     }
 
-    fun deleteVideosFromExercise(exerciseId: String) {
+    @CacheEvict(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
+    fun createVideo(newVideoExerciseDTO: NewVideoExerciseDTO) {
+        val video = videoServiceMapper.getVideo(newVideoExerciseDTO.videoDTO!!)
+        videoRepository.save(video)
 
+        val videoExercise = videoServiceMapper.getVideoExercise(newVideoExerciseDTO)
+        videoExerciseRepository.save(videoExercise)
     }
 }

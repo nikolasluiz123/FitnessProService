@@ -5,6 +5,7 @@ import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.repository.workout.IExerciseRepository
 import br.com.fitnesspro.repository.workout.IVideoExerciseRepository
 import br.com.fitnesspro.repository.workout.IVideoRepository
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import org.springframework.stereotype.Service
@@ -113,6 +114,35 @@ class VideoServiceMapper(
                     active = dto.active,
                     exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
                     video = videoRepository.findById(dto.videoId!!).get()
+                )
+            }
+        }
+    }
+
+    fun getVideoExercise(dto: NewVideoExerciseDTO): VideoExercise {
+        val video = dto.id?.let { videoExerciseRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                VideoExercise(
+                    active = dto.active,
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
+                    video = videoRepository.findById(dto.videoDTO?.id!!).get()
+                )
+            }
+
+            video?.isPresent == true -> {
+                video.get().copy(
+                    active = dto.active
+                )
+            }
+
+            else -> {
+                VideoExercise(
+                    id = dto.id!!,
+                    active = dto.active,
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
+                    video = videoRepository.findById(dto.videoDTO?.id!!).get()
                 )
             }
         }
