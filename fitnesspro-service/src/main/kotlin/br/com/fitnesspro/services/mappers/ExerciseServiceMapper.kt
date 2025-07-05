@@ -1,19 +1,13 @@
 package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.workout.Exercise
-import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.repository.workout.IExerciseRepository
-import br.com.fitnesspro.repository.workout.IVideoExerciseRepository
-import br.com.fitnesspro.repository.workout.IVideoRepository
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
 import org.springframework.stereotype.Service
 
 @Service
 class ExerciseServiceMapper(
     private val exerciseRepository: IExerciseRepository,
-    private val videoExerciseRepository: IVideoExerciseRepository,
-    private val videoRepository: IVideoRepository,
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
@@ -81,45 +75,5 @@ class ExerciseServiceMapper(
             exerciseOrder = model.exerciseOrder,
             workoutGroupDTO = workoutServiceMapper.getWorkoutGroupDTO(model.workoutGroup!!)
         )
-    }
-
-    fun getVideoExerciseDTO(model: VideoExercise): VideoExerciseDTO {
-        return VideoExerciseDTO(
-            id = model.id,
-            creationDate = model.creationDate,
-            updateDate = model.updateDate,
-            active = model.active,
-            exerciseId = model.exercise?.id!!,
-            videoId = model.video?.id!!
-        )
-    }
-
-    fun getVideoExercise(dto: VideoExerciseDTO): VideoExercise {
-        val video = dto.id?.let { videoExerciseRepository.findById(it) }
-
-        return when {
-            dto.id == null -> {
-                VideoExercise(
-                    active = dto.active,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
-                )
-            }
-
-            video?.isPresent == true -> {
-                video.get().copy(
-                    active = dto.active
-                )
-            }
-
-            else -> {
-                VideoExercise(
-                    id = dto.id!!,
-                    active = dto.active,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
-                )
-            }
-        }
     }
 }

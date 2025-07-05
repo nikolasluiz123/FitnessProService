@@ -3,6 +3,7 @@ package br.com.fitnesspro.controller.workout
 import br.com.fitnesspro.config.gson.defaultGSon
 import br.com.fitnesspro.config.request.EnumRequestAttributes
 import br.com.fitnesspro.services.workout.ExerciseService
+import br.com.fitnesspro.services.workout.VideoService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
@@ -26,7 +27,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping(EndPointsV1.EXERCISE_V1)
 @Tag(name = "Exercise Controller", description = "Operações de Manutenção dos Exercícios dos Treinos")
 class ExerciseController(
-    private val exerciseService: ExerciseService
+    private val exerciseService: ExerciseService,
+    private val videoService: VideoService
 ) {
 
     @PostMapping
@@ -85,7 +87,7 @@ class ExerciseController(
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
-        val values = exerciseService.getVideoExercisesImport(commonImportFilter, importPageInfos)
+        val values = videoService.getVideoExercisesImport(commonImportFilter, importPageInfos)
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
@@ -103,7 +105,7 @@ class ExerciseController(
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
     fun saveExerciseVideosBatch(@RequestBody @Valid exerciseVideoDTOs: List<VideoExerciseDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
-        exerciseService.saveExerciseVideoBatch(exerciseVideoDTOs)
+        videoService.saveExerciseVideoBatch(exerciseVideoDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
