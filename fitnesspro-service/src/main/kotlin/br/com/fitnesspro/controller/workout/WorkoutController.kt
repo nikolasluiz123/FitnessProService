@@ -38,6 +38,15 @@ class WorkoutController(
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = workoutDTO))
     }
 
+    @PutMapping(EndPointsV1.WORKOUT_INACTIVATE)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun inactivateWorkout(@PathVariable("workoutId") workoutId: String): ResponseEntity<FitnessProServiceResponse> {
+        workoutService.inactivateWorkout(workoutId)
+        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
+    }
+
+
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")

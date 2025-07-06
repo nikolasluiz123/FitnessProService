@@ -37,6 +37,7 @@ object EndPointsV1 {
 
     const val WORKOUT = "workout"
     const val WORKOUT_V1 = "$API_V1/$WORKOUT"
+    const val WORKOUT_INACTIVATE = "/inactivate/{workoutId}"
     const val WORKOUT_EXPORT = "/export"
     const val WORKOUT_IMPORT = "/import"
     const val WORKOUT_GROUP = "/group"

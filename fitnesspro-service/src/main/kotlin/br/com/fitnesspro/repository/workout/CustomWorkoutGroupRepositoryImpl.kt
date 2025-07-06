@@ -62,4 +62,32 @@ class CustomWorkoutGroupRepositoryImpl: ICustomWorkoutGroupRepository {
 
         return result
     }
+
+    override fun getListWorkoutGroupIdFromWorkout(workoutId: String): List<String> {
+        val params = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select group.id as id ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${WorkoutGroup::class.java.name} group ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where group.workout.id = :pId ")
+            params.add(Parameter(name = "pId", value = workoutId))
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), String::class.java)
+        query.setParameters(params)
+
+        return query.getResultList(String::class.java)
+    }
 }

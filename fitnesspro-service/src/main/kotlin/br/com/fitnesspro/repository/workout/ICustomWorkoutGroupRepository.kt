@@ -7,4 +7,6 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 interface ICustomWorkoutGroupRepository {
 
     fun getWorkoutGroupsImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<WorkoutGroup>
+
+    fun getListWorkoutGroupIdFromWorkout(workoutId: String): List<String>
 }

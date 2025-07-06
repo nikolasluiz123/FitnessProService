@@ -22,7 +22,6 @@ class WorkoutService(
     private val videoRepository: IVideoRepository,
     private val customWorkoutRepository: ICustomWorkoutRepository,
     private val customWorkoutGroupRepository: ICustomWorkoutGroupRepository,
-    private val customExerciseRepository: ICustomExerciseRepository,
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
@@ -86,5 +85,17 @@ class WorkoutService(
         val exerciseVideos = videoExerciseRepository.findByExerciseIdIn(exerciseIds)
         videoExerciseRepository.deleteAll(exerciseVideos)
         videoRepository.deleteAll(exerciseVideos.map { it.video })
+    }
+
+    @CacheEvict(cacheNames = [WORKOUT_IMPORT_CACHE_NAME, WORKOUT_GROUP_IMPORT_CACHE_NAME, EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
+    fun inactivateWorkout(workoutId: String) {
+        workoutRepository.findById(workoutId).get().apply {
+            active = false
+            workoutRepository.save(this)
+        }
+
+        customWorkoutGroupRepository.getListWorkoutGroupIdFromWorkout(workoutId).forEach { workoutGroupId ->
+            inactivateWorkoutGroup(workoutGroupId)
+        }
     }
 }
