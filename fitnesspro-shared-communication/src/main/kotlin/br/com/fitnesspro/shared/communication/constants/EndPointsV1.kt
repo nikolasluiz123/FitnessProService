@@ -29,6 +29,7 @@ object EndPointsV1 {
 
     const val SCHEDULER = "scheduler"
     const val SCHEDULER_V1 = "$API_V1/$SCHEDULER"
+    const val SCHEDULER_RECURRENT = "/recurrent"
     const val SCHEDULER_EXPORT = "/export"
     const val SCHEDULER_IMPORT = "/import"
     const val SCHEDULER_CONFIG = "/config"

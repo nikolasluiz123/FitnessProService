@@ -11,8 +11,6 @@ import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
-import br.com.fitnesspro.models.workout.Workout
-import br.com.fitnesspro.models.workout.WorkoutGroup
 import br.com.fitnesspro.repository.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.repository.general.person.IPersonRepository
 import br.com.fitnesspro.repository.scheduler.ICustomSchedulerConfigRepository
@@ -23,8 +21,9 @@ import br.com.fitnesspro.repository.workout.IWorkoutGroupRepository
 import br.com.fitnesspro.repository.workout.IWorkoutRepository
 import br.com.fitnesspro.services.firebase.FirebaseNotificationService
 import br.com.fitnesspro.services.mappers.SchedulerServiceMapper
+import br.com.fitnesspro.services.mappers.WorkoutServiceMapper
 import br.com.fitnesspro.services.serviceauth.DeviceService
-import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentSchedulerDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
@@ -56,6 +55,7 @@ class SchedulerService(
     private val firebaseNotificationService: FirebaseNotificationService,
     private val deviceService: DeviceService,
     private val schedulerServiceMapper: SchedulerServiceMapper,
+    private val workoutServiceMapper: WorkoutServiceMapper,
     private val messageSource: MessageSource
 ) {
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
@@ -75,56 +75,35 @@ class SchedulerService(
             }
 
             EnumSchedulerType.RECURRENT -> {
-                val config = schedulerDTO.recurrentConfig!!
-
-                val scheduleDates = generateSequence(config.dateStart) { it.plusDays(1) }
-                    .takeWhile { it <= config.dateEnd }
-                    .filter { config.dayWeeks.contains(it.dayOfWeek) }
-                    .toList()
-
-                val schedules = scheduleDates.map { date ->
-                    val newStart = schedulerDTO.dateTimeStart!!
-                        .withYear(date.year)
-                        .withMonth(date.monthValue)
-                        .withDayOfMonth(date.dayOfMonth)
-
-                    val newEnd = schedulerDTO.dateTimeEnd!!
-                        .withYear(date.year)
-                        .withMonth(date.monthValue)
-                        .withDayOfMonth(date.dayOfMonth)
-
-                    schedulerServiceMapper.getScheduler(schedulerDTO).copy(
-                        dateTimeStart = newStart,
-                        dateTimeEnd = newEnd
-                    )
-                }
-
-                validateConflictRecurrent(schedules)
-
-                val firstScheduler = schedules.first()
-
-                val workout = Workout(
-                    academyMemberPerson = firstScheduler.academyMemberPerson,
-                    professionalPerson = firstScheduler.professionalPerson,
-                    dateStart = firstScheduler.dateTimeStart?.toLocalDate(),
-                    dateEnd = schedules.last().dateTimeStart?.toLocalDate(),
+                throw IllegalArgumentException(
+                    messageSource.getMessage("scheduler.error.recurrent.with.common.save", null, Locale.getDefault())
                 )
-
-                val workoutGroups = schedules.map { it.dateTimeStart?.toLocalDate()!!.dayOfWeek }.distinct().map {
-                    WorkoutGroup(
-                        dayWeek = it,
-                        workout = workout,
-                    )
-                }
-
-
-                schedulerRepository.saveAll(schedules)
-                workoutRepository.save(workout)
-                workoutGroupRepository.saveAll(workoutGroups)
-
-                sendNotification(schedulerDTO, scheduledDates = scheduleDates)
             }
         }
+    }
+
+    @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveRecurrentScheduler(recurrentSchedulerDTO: RecurrentSchedulerDTO) {
+        val schedules = recurrentSchedulerDTO.schedules.map(schedulerServiceMapper::getScheduler)
+        validateConflictRecurrent(schedules)
+        schedulerRepository.saveAll(schedules)
+
+        val workout = workoutServiceMapper.getWorkout(recurrentSchedulerDTO.workoutDTO!!)
+        workoutRepository.save(workout)
+
+        val workoutGrupos = recurrentSchedulerDTO.workoutGroups.map(workoutServiceMapper::getWorkoutGroup)
+        workoutGroupRepository.saveAll(workoutGrupos)
+
+        val firstScheduler = schedules.first()
+        val notificationSchedulerDTO = SchedulerDTO(
+            id = firstScheduler.id,
+            professionalPersonId = firstScheduler.professionalPerson?.id,
+            academyMemberPersonId = firstScheduler.academyMemberPerson?.id,
+            dateTimeStart = firstScheduler.dateTimeStart,
+            type = EnumSchedulerType.RECURRENT
+        )
+
+        sendNotification(notificationSchedulerDTO, scheduledDates = schedules.map { it.dateTimeStart!!.toLocalDate() })
     }
 
     private fun sendNotification(
@@ -334,9 +313,6 @@ class SchedulerService(
             }
 
             EnumSchedulerType.RECURRENT -> {
-                validateStartTime(scheduler)
-                validateTimePeriod(scheduler)
-                validateDateConfigPeriod(dto.recurrentConfig!!)
             }
         }
     }
@@ -444,13 +420,6 @@ class SchedulerService(
     private fun validateTimePeriod(scheduler: Scheduler) {
         if (scheduler.dateTimeStart!!.isAfter(scheduler.dateTimeEnd!!) || scheduler.dateTimeStart == scheduler.dateTimeEnd) {
             throw BusinessException(messageSource.getMessage("scheduler.error.invalid.period", null, Locale.getDefault()))
-        }
-    }
-
-    private fun validateDateConfigPeriod(recurrentConfig: RecurrentConfigDTO) {
-        if (recurrentConfig.dateStart.isAfter(recurrentConfig.dateEnd) ||
-            recurrentConfig.dateStart == recurrentConfig.dateEnd) {
-            throw BusinessException(messageSource.getMessage("scheduler.error.invalid.recurrent.period", null, Locale.getDefault()))
         }
     }
 

@@ -60,7 +60,7 @@ class WorkoutServiceMapper(
             dto.id == null -> {
                 WorkoutGroup(
                     active = dto.active,
-                    name = dto.name!!,
+                    name = dto.name,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
                     groupOrder = dto.groupOrder!!,
@@ -70,7 +70,7 @@ class WorkoutServiceMapper(
             workoutGroup?.isPresent == true -> {
                 workoutGroup.get().copy(
                     active = dto.active,
-                    name = dto.name!!,
+                    name = dto.name,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
                     groupOrder = dto.groupOrder!!,
@@ -81,7 +81,7 @@ class WorkoutServiceMapper(
                 WorkoutGroup(
                     id = dto.id!!,
                     active = dto.active,
-                    name = dto.name!!,
+                    name = dto.name,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
                     groupOrder = dto.groupOrder!!,

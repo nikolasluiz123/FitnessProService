@@ -131,7 +131,6 @@ class SchedulerServiceMapper(
             situation = model.situation,
             compromiseType = model.compromiseType,
             observation = model.observation,
-            recurrentConfig = null,
             active = model.active,
             type = null
         )

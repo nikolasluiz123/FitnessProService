@@ -4,12 +4,15 @@ import br.com.fitnesspro.config.gson.defaultGSon
 import br.com.fitnesspro.config.request.EnumRequestAttributes
 import br.com.fitnesspro.services.scheduler.SchedulerService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
+import br.com.fitnesspro.shared.communication.constants.EndPointsV1.SCHEDULER_RECURRENT
 import br.com.fitnesspro.shared.communication.constants.Timeouts
+import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentSchedulerDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
+import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
@@ -35,6 +38,14 @@ class SchedulerController(
     fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse<SchedulerDTO>> {
         schedulerService.saveScheduler(schedulerDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = schedulerDTO))
+    }
+
+    @PostMapping(SCHEDULER_RECURRENT)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun saveRecurrentScheduler(@RequestBody @Valid recurrentSchedulerDTO: RecurrentSchedulerDTO): ResponseEntity<FitnessProServiceResponse> {
+        schedulerService.saveRecurrentScheduler(recurrentSchedulerDTO)
+        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)

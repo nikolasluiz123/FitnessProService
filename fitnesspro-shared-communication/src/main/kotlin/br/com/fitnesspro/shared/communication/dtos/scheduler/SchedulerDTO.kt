@@ -64,9 +64,6 @@ data class SchedulerDTO(
     @field:NotNull(message = "{schedulerDTO.type.notNull}")
     var type: EnumSchedulerType? = null,
 
-    @Schema(description = "Configuração de recorrência", required = false)
-    var recurrentConfig: RecurrentConfigDTO? = null,
-
     @Schema(description = "Indica se os usuários foram notificados sobre a proximidade da data do compromisso", readOnly = true)
     var notifiedAntecedence: Boolean = false
 ): AuditableDTO
