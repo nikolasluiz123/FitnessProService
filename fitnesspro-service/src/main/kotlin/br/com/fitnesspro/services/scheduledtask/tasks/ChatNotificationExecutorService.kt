@@ -1,7 +1,7 @@
 package br.com.fitnesspro.services.scheduledtask.tasks
 
 import br.com.fitnesspro.config.gson.defaultGSon
-import br.com.fitnesspro.repository.firebase.FirebaseChatRepository
+import br.com.fitnesspro.repository.jpa.firebase.FirebaseChatRepository
 import br.com.fitnesspro.services.firebase.FirebaseNotificationService
 import br.com.fitnesspro.services.logs.ExecutionsLogService
 import br.com.fitnesspro.services.scheduledtask.tasks.common.IScheduledTaskExecutorService

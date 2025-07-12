@@ -3,9 +3,9 @@ package br.com.fitnesspro.services.scheduledtask.tasks
 import br.com.fitnesspro.manager.tasks.config.DeleteOldExecutionLogsConfig
 import br.com.fitnesspro.models.logs.ExecutionLog
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
-import br.com.fitnesspro.repository.executions.ICustomExecutionsLogRepository
-import br.com.fitnesspro.repository.executions.IExecutionsLogPackageRepository
-import br.com.fitnesspro.repository.executions.IExecutionsLogRepository
+import br.com.fitnesspro.repository.jpa.executions.ICustomExecutionsLogRepository
+import br.com.fitnesspro.repository.jpa.executions.IExecutionsLogPackageRepository
+import br.com.fitnesspro.repository.jpa.executions.IExecutionsLogRepository
 import br.com.fitnesspro.services.logs.ExecutionsLogService
 import br.com.fitnesspro.services.scheduledtask.tasks.common.IScheduledTaskExecutorService
 import org.springframework.stereotype.Service

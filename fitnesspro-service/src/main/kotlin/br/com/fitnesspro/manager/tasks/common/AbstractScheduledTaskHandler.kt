@@ -32,11 +32,13 @@ abstract class AbstractScheduledTaskHandler<CONFIG>(
 
             scheduledTaskService.updateLastExecutionTime(getHandlerIdentifier())
         } catch (ex: Exception) {
-            logService.updateScheduledTaskLog(
-                logId = pairIds.first!!,
-                logPackageId = pairIds.second!!,
-                exception = ex
-            )
+            if (pairIds.first != null && pairIds.second != null) {
+                logService.updateScheduledTaskLog(
+                    logId = pairIds.first!!,
+                    logPackageId = pairIds.second!!,
+                    exception = ex
+                )
+            }
 
             ex.printStackTrace()
         }

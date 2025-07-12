@@ -1,7 +1,7 @@
 package br.com.fitnesspro.services.serviceauth
 
-import br.com.fitnesspro.repository.serviceauth.ICustomDeviceRepository
-import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
+import br.com.fitnesspro.repository.auditable.serviceauth.IDeviceRepository
+import br.com.fitnesspro.repository.jpa.serviceauth.ICustomDeviceRepository
 import br.com.fitnesspro.services.mappers.DeviceServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.paging.PageInfos

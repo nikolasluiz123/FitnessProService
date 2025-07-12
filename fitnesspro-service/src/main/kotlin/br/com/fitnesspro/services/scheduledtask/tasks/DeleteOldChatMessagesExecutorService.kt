@@ -1,7 +1,7 @@
 package br.com.fitnesspro.services.scheduledtask.tasks
 
 import br.com.fitnesspro.manager.tasks.config.DeleteOldChatMessagesConfig
-import br.com.fitnesspro.repository.firebase.IFirebaseChatRepository
+import br.com.fitnesspro.repository.jpa.firebase.IFirebaseChatRepository
 import br.com.fitnesspro.services.logs.ExecutionsLogService
 import br.com.fitnesspro.services.scheduledtask.tasks.common.IScheduledTaskExecutorService
 import org.springframework.stereotype.Service

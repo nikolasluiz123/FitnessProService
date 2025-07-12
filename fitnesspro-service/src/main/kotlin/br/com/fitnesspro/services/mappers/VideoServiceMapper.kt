@@ -2,9 +2,9 @@ package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.models.workout.VideoExercise
-import br.com.fitnesspro.repository.workout.IExerciseRepository
-import br.com.fitnesspro.repository.workout.IVideoExerciseRepository
-import br.com.fitnesspro.repository.workout.IVideoRepository
+import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
+import br.com.fitnesspro.repository.auditable.workout.IVideoExerciseRepository
+import br.com.fitnesspro.repository.auditable.workout.IVideoRepository
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO

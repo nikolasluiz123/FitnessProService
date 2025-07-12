@@ -2,10 +2,10 @@ package br.com.fitnesspro.services.workout
 
 import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.VIDEO_IMPORT_CACHE_NAME
-import br.com.fitnesspro.repository.workout.ICustomVideoExerciseRepository
-import br.com.fitnesspro.repository.workout.ICustomVideoRepository
-import br.com.fitnesspro.repository.workout.IVideoExerciseRepository
-import br.com.fitnesspro.repository.workout.IVideoRepository
+import br.com.fitnesspro.repository.auditable.workout.IVideoExerciseRepository
+import br.com.fitnesspro.repository.auditable.workout.IVideoRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomVideoExerciseRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomVideoRepository
 import br.com.fitnesspro.services.mappers.VideoServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO

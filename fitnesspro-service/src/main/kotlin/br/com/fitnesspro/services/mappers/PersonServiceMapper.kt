@@ -2,8 +2,8 @@ package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.repository.general.person.IPersonRepository
-import br.com.fitnesspro.repository.general.user.IUserRepository
+import br.com.fitnesspro.repository.auditable.general.IPersonRepository
+import br.com.fitnesspro.repository.auditable.general.IUserRepository
 import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import org.springframework.stereotype.Service

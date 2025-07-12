@@ -1,8 +1,9 @@
 package br.com.fitnesspro.services.workout
 
 import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
-import br.com.fitnesspro.repository.workout.ICustomExerciseRepository
-import br.com.fitnesspro.repository.workout.IExerciseRepository
+import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
+import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomExerciseRepository
 import br.com.fitnesspro.services.mappers.ExerciseServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -18,7 +19,7 @@ class ExerciseService(
     private val workoutService: WorkoutService,
     private val exerciseServiceMapper: ExerciseServiceMapper
 ) {
-    @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
+    @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME, WORKOUT_GROUP_IMPORT_CACHE_NAME], allEntries = true)
     fun saveExercise(exerciseDTO: ExerciseDTO) {
         workoutService.saveWorkoutGroup(exerciseDTO.workoutGroupDTO!!)
 

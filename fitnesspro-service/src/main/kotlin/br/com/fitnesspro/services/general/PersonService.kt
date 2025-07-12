@@ -5,10 +5,10 @@ import br.com.fitnesspro.config.application.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.repository.general.person.ICustomPersonRepository
-import br.com.fitnesspro.repository.general.person.IPersonRepository
-import br.com.fitnesspro.repository.general.user.ICustomUserRepository
-import br.com.fitnesspro.repository.general.user.IUserRepository
+import br.com.fitnesspro.repository.auditable.general.IPersonRepository
+import br.com.fitnesspro.repository.auditable.general.IUserRepository
+import br.com.fitnesspro.repository.jpa.general.person.ICustomPersonRepository
+import br.com.fitnesspro.repository.jpa.general.user.ICustomUserRepository
 import br.com.fitnesspro.services.firebase.FirebaseAuthenticationService
 import br.com.fitnesspro.services.mappers.PersonServiceMapper
 import br.com.fitnesspro.services.scheduler.SchedulerService

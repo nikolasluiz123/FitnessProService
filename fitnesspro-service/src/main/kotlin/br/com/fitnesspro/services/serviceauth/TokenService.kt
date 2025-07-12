@@ -3,11 +3,11 @@ package br.com.fitnesspro.services.serviceauth
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.models.serviceauth.ServiceToken
-import br.com.fitnesspro.repository.general.user.IUserRepository
-import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
-import br.com.fitnesspro.repository.serviceauth.ICustomServiceTokenRepository
-import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
-import br.com.fitnesspro.repository.serviceauth.IServiceTokenRepository
+import br.com.fitnesspro.repository.auditable.general.IUserRepository
+import br.com.fitnesspro.repository.auditable.serviceauth.IDeviceRepository
+import br.com.fitnesspro.repository.jpa.serviceauth.IApplicationRepository
+import br.com.fitnesspro.repository.jpa.serviceauth.ICustomServiceTokenRepository
+import br.com.fitnesspro.repository.jpa.serviceauth.IServiceTokenRepository
 import br.com.fitnesspro.services.mappers.TokenServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO

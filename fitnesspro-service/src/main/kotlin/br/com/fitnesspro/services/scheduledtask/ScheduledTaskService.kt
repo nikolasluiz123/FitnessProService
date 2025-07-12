@@ -3,8 +3,8 @@ package br.com.fitnesspro.services.scheduledtask
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.manager.ScheduledTaskSavedEvent
-import br.com.fitnesspro.repository.scheduledtask.ICustomScheduledTaskRepository
-import br.com.fitnesspro.repository.scheduledtask.IScheduledTaskRepository
+import br.com.fitnesspro.repository.auditable.scheduledtask.IScheduledTaskRepository
+import br.com.fitnesspro.repository.jpa.scheduledtask.ICustomScheduledTaskRepository
 import br.com.fitnesspro.services.mappers.ScheduledTaskServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.scheduledtask.ScheduledTaskDTO
 import org.springframework.context.ApplicationEventPublisher

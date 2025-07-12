@@ -3,7 +3,7 @@ package br.com.fitnesspro.services.scheduledtask.tasks
 import br.com.fitnesspro.config.gson.defaultGSon
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.repository.scheduler.ICustomSchedulerRepository
+import br.com.fitnesspro.repository.jpa.scheduler.ICustomSchedulerRepository
 import br.com.fitnesspro.services.firebase.FirebaseNotificationService
 import br.com.fitnesspro.services.logs.ExecutionsLogService
 import br.com.fitnesspro.services.scheduledtask.tasks.common.IScheduledTaskExecutorService

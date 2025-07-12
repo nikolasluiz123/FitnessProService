@@ -3,7 +3,9 @@ package br.com.fitnesspro.services.workout
 import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.WORKOUT_IMPORT_CACHE_NAME
-import br.com.fitnesspro.repository.workout.*
+import br.com.fitnesspro.repository.auditable.workout.*
+import br.com.fitnesspro.repository.jpa.workout.ICustomWorkoutGroupRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomWorkoutRepository
 import br.com.fitnesspro.services.mappers.WorkoutServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO

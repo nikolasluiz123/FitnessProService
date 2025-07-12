@@ -4,9 +4,9 @@ import br.com.fitnesspro.models.general.User
 import br.com.fitnesspro.models.serviceauth.Application
 import br.com.fitnesspro.models.serviceauth.Device
 import br.com.fitnesspro.models.serviceauth.ServiceToken
-import br.com.fitnesspro.repository.general.user.IUserRepository
-import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
-import br.com.fitnesspro.repository.serviceauth.IDeviceRepository
+import br.com.fitnesspro.repository.auditable.general.IUserRepository
+import br.com.fitnesspro.repository.auditable.serviceauth.IDeviceRepository
+import br.com.fitnesspro.repository.jpa.serviceauth.IApplicationRepository
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenDTO
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import org.springframework.stereotype.Service

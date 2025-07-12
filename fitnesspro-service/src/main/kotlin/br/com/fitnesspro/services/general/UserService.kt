@@ -3,7 +3,7 @@ package br.com.fitnesspro.services.general
 import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.exception.UserNotFoundException
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.repository.general.user.IUserRepository
+import br.com.fitnesspro.repository.auditable.general.IUserRepository
 import br.com.fitnesspro.services.serviceauth.DeviceService
 import br.com.fitnesspro.services.serviceauth.TokenService
 import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO

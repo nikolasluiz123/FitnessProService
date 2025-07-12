@@ -1,7 +1,7 @@
 package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.workout.Exercise
-import br.com.fitnesspro.repository.workout.IExerciseRepository
+import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import org.springframework.stereotype.Service
 
@@ -39,7 +39,7 @@ class ExerciseServiceMapper(
                     rest = dto.rest,
                     observation = dto.observation,
                     exerciseOrder = dto.exerciseOrder!!,
-                    workoutGroup = workoutServiceMapper.getWorkoutGroup(dto.workoutGroupDTO!!)
+                    workoutGroup = dto.workoutGroupDTO?.let(workoutServiceMapper::getWorkoutGroup) ?: exercise.get().workoutGroup!!,
                 )
             }
 

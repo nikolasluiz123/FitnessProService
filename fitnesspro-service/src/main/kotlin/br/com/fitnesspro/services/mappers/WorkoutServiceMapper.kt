@@ -2,9 +2,9 @@ package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.workout.Workout
 import br.com.fitnesspro.models.workout.WorkoutGroup
-import br.com.fitnesspro.repository.general.person.IPersonRepository
-import br.com.fitnesspro.repository.workout.IWorkoutGroupRepository
-import br.com.fitnesspro.repository.workout.IWorkoutRepository
+import br.com.fitnesspro.repository.auditable.general.IPersonRepository
+import br.com.fitnesspro.repository.auditable.workout.IWorkoutGroupRepository
+import br.com.fitnesspro.repository.auditable.workout.IWorkoutRepository
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
 import org.springframework.stereotype.Service

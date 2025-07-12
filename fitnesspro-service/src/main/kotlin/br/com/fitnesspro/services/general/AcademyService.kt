@@ -7,10 +7,10 @@ import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
 import br.com.fitnesspro.exception.BusinessException
 import br.com.fitnesspro.models.general.PersonAcademyTime
-import br.com.fitnesspro.repository.general.academy.IAcademyRepository
-import br.com.fitnesspro.repository.general.academy.ICustomAcademyRepository
-import br.com.fitnesspro.repository.general.person.ICustomPersonAcademyTimeRepository
-import br.com.fitnesspro.repository.general.person.IPersonAcademyTimeRepository
+import br.com.fitnesspro.repository.auditable.general.IAcademyRepository
+import br.com.fitnesspro.repository.auditable.general.IPersonAcademyTimeRepository
+import br.com.fitnesspro.repository.jpa.general.academy.ICustomAcademyRepository
+import br.com.fitnesspro.repository.jpa.general.person.ICustomPersonAcademyTimeRepository
 import br.com.fitnesspro.services.mappers.AcademyServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO

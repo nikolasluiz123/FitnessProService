@@ -1,8 +1,8 @@
 package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.serviceauth.Device
-import br.com.fitnesspro.repository.general.person.IPersonRepository
-import br.com.fitnesspro.repository.serviceauth.IApplicationRepository
+import br.com.fitnesspro.repository.auditable.general.IPersonRepository
+import br.com.fitnesspro.repository.jpa.serviceauth.IApplicationRepository
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import org.springframework.stereotype.Service
 

@@ -2,9 +2,9 @@ package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
-import br.com.fitnesspro.repository.general.person.IPersonRepository
-import br.com.fitnesspro.repository.scheduler.ISchedulerConfigRepository
-import br.com.fitnesspro.repository.scheduler.ISchedulerRepository
+import br.com.fitnesspro.repository.auditable.general.IPersonRepository
+import br.com.fitnesspro.repository.auditable.scheduler.ISchedulerConfigRepository
+import br.com.fitnesspro.repository.auditable.scheduler.ISchedulerRepository
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import org.springframework.stereotype.Service
