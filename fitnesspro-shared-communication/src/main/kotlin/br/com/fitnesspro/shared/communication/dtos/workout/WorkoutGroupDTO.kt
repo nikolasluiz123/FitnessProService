@@ -24,8 +24,7 @@ data class WorkoutGroupDTO(
     var active: Boolean = true,
 
     @Schema(description = "Nome do grupo de treino", example = "Treino A", required = true)
-    @field:NotNull(message = "{workoutGroupDTO.name.notNull}")
-    @field:Size(min = 1, max = 255, message = "{workoutGroupDTO.name.size}")
+    @field:Size(max = 255, message = "{workoutGroupDTO.name.size}")
     var name: String? = null,
 
     @Schema(description = "Identificador do treino", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
