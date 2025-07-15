@@ -2,19 +2,18 @@ package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.models.workout.VideoExercise
-import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
-import br.com.fitnesspro.repository.auditable.workout.IVideoExerciseRepository
-import br.com.fitnesspro.repository.auditable.workout.IVideoRepository
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
+import br.com.fitnesspro.models.workout.VideoExerciseExecution
+import br.com.fitnesspro.repository.auditable.workout.*
+import br.com.fitnesspro.shared.communication.dtos.workout.*
 import org.springframework.stereotype.Service
 
 @Service
 class VideoServiceMapper(
     private val videoRepository: IVideoRepository,
     private val videoExerciseRepository: IVideoExerciseRepository,
-    private val exerciseRepository: IExerciseRepository
+    private val videoExerciseExecutionRepository: IVideoExerciseExecutionRepository,
+    private val exerciseRepository: IExerciseRepository,
+    private val exerciseExecutionRepository: IExerciseExecutionRepository
 ) {
 
     fun getVideoDTO(model: Video): VideoDTO {
@@ -146,5 +145,74 @@ class VideoServiceMapper(
                 )
             }
         }
+    }
+
+    fun getVideoExerciseExecution(dto: NewVideoExerciseExecutionDTO): VideoExerciseExecution {
+        val video = dto.id?.let { videoExerciseExecutionRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                VideoExerciseExecution(
+                    active = dto.active,
+                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).get(),
+                    video = videoRepository.findById(dto.videoDTO?.id!!).get()
+                )
+            }
+
+            video?.isPresent == true -> {
+                video.get().copy(
+                    active = dto.active,
+                )
+            }
+
+            else -> {
+                VideoExerciseExecution(
+                    id = dto.id!!,
+                    active = dto.active,
+                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).get(),
+                    video = videoRepository.findById(dto.videoDTO?.id!!).get()
+                )
+            }
+        }
+    }
+
+    fun getVideoExerciseExecution(dto: VideoExerciseExecutionDTO): VideoExerciseExecution {
+        val video = dto.id?.let { videoExerciseExecutionRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                VideoExerciseExecution(
+                    active = dto.active,
+                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).get(),
+                    video = videoRepository.findById(dto.videoId!!).get()
+                )
+            }
+
+            video?.isPresent == true -> {
+                video.get().copy(
+                    active = dto.active,
+                )
+            }
+
+            else -> {
+                VideoExerciseExecution(
+                    id = dto.id!!,
+                    active = dto.active,
+                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).get(),
+                    video = videoRepository.findById(dto.videoId!!).get()
+                )
+            }
+        }
+    }
+
+    fun getVideoExerciseExecutionDTO(model: VideoExerciseExecution): VideoExerciseExecutionDTO {
+        return VideoExerciseExecutionDTO(
+            id = model.id,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate,
+            active = model.active,
+            exerciseExecutionId = model.exerciseExecution?.id!!,
+            videoId = model.video?.id!!
+        )
     }
 }

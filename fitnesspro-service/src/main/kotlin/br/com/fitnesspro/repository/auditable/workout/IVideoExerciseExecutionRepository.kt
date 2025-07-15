@@ -1,0 +1,6 @@
+package br.com.fitnesspro.repository.auditable.workout
+
+import br.com.fitnesspro.models.workout.VideoExerciseExecution
+import br.com.fitnesspro.repository.common.IAuditableFitnessProRepository
+
+interface IVideoExerciseExecutionRepository: IAuditableFitnessProRepository<VideoExerciseExecution>

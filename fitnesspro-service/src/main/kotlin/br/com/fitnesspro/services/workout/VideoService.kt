@@ -1,15 +1,18 @@
 package br.com.fitnesspro.services.workout
 
+import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.VIDEO_IMPORT_CACHE_NAME
+import br.com.fitnesspro.models.workout.Video
+import br.com.fitnesspro.models.workout.VideoExerciseExecution
+import br.com.fitnesspro.repository.auditable.workout.IVideoExerciseExecutionRepository
 import br.com.fitnesspro.repository.auditable.workout.IVideoExerciseRepository
 import br.com.fitnesspro.repository.auditable.workout.IVideoRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomVideoExerciseExecutionRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomVideoExerciseRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomVideoRepository
 import br.com.fitnesspro.services.mappers.VideoServiceMapper
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.VideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.*
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import org.springframework.cache.annotation.CacheEvict
@@ -20,8 +23,10 @@ import org.springframework.stereotype.Service
 class VideoService(
     private val videoRepository: IVideoRepository,
     private val videoExerciseRepository: IVideoExerciseRepository,
+    private val videoExerciseExecutionRepository: IVideoExerciseExecutionRepository,
     private val customVideoRepository: ICustomVideoRepository,
     private val customVideoExerciseRepository: ICustomVideoExerciseRepository,
+    private val customVideoExerciseExecutionRepository: ICustomVideoExerciseExecutionRepository,
     private val videoServiceMapper: VideoServiceMapper,
 ) {
 
@@ -48,11 +53,44 @@ class VideoService(
     }
 
     @CacheEvict(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
-    fun createVideo(newVideoExerciseDTO: NewVideoExerciseDTO) {
+    fun createExerciseVideo(newVideoExerciseDTO: NewVideoExerciseDTO) {
         val video = videoServiceMapper.getVideo(newVideoExerciseDTO.videoDTO!!)
         videoRepository.save(video)
 
         val videoExercise = videoServiceMapper.getVideoExercise(newVideoExerciseDTO)
         videoExerciseRepository.save(videoExercise)
+    }
+
+    @CacheEvict(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
+    fun createExerciseExecutionVideos(videosDTO: List<NewVideoExerciseExecutionDTO>) {
+        if (videosDTO.isNotEmpty()) {
+            val videos = mutableListOf<Video>()
+            val videosExerciseExecution = mutableListOf<VideoExerciseExecution>()
+
+            videosDTO.forEach {
+                videos.add(videoServiceMapper.getVideo(it.videoDTO!!))
+                videosExerciseExecution.add(videoServiceMapper.getVideoExerciseExecution(it))
+            }
+
+            videoRepository.saveAll(videos)
+            videoExerciseExecutionRepository.saveAll(videosExerciseExecution)
+        }
+    }
+
+    @CacheEvict(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
+    fun createExecutionVideo(newVideoExecutionDTO: NewVideoExerciseExecutionDTO) {
+        createExerciseExecutionVideos(listOf(newVideoExecutionDTO))
+    }
+
+    fun getVideoExercisesExecutionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<VideoExerciseExecutionDTO> {
+        return customVideoExerciseExecutionRepository.getVideoExercisesExecutionImport(filter, pageInfos).map { video ->
+            videoServiceMapper.getVideoExerciseExecutionDTO(video)
+        }
+    }
+
+    @CacheEvict(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveExerciseExecutionVideoBatch(videoDTOs: List<VideoExerciseExecutionDTO>) {
+        val videos = videoDTOs.map(videoServiceMapper::getVideoExerciseExecution)
+        videoExerciseExecutionRepository.saveAll(videos)
     }
 }

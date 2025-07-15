@@ -1,11 +1,17 @@
 package br.com.fitnesspro.services.workout
 
+import br.com.fitnesspro.config.application.cache.EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
+import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
+import br.com.fitnesspro.repository.auditable.workout.IExerciseExecutionRepository
 import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomExerciseExecutionRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomExerciseRepository
 import br.com.fitnesspro.services.mappers.ExerciseServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import org.springframework.cache.annotation.CacheEvict
@@ -15,8 +21,11 @@ import org.springframework.stereotype.Service
 @Service
 class ExerciseService(
     private val exerciseRepository: IExerciseRepository,
+    private val exerciseExecutionRepository: IExerciseExecutionRepository,
     private val customExerciseRepository: ICustomExerciseRepository,
+    private val customExerciseExecutionRepository: ICustomExerciseExecutionRepository,
     private val workoutService: WorkoutService,
+    private val videoService: VideoService,
     private val exerciseServiceMapper: ExerciseServiceMapper
 ) {
     @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME, WORKOUT_GROUP_IMPORT_CACHE_NAME], allEntries = true)
@@ -45,5 +54,29 @@ class ExerciseService(
         }
 
         exerciseRepository.saveAll(exercises)
+    }
+
+    @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME, VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
+    fun newExerciseExecution(newExerciseExecutionDTO: NewExerciseExecutionDTO) {
+        val exerciseExecution = exerciseServiceMapper.getExerciseExecution(newExerciseExecutionDTO.exerciseExecutionDTO!!)
+        exerciseExecutionRepository.save(exerciseExecution)
+
+        videoService.createExerciseExecutionVideos(newExerciseExecutionDTO.videosDTO)
+    }
+
+    @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveExerciseExecution(exerciseExecutionDTO: ExerciseExecutionDTO) {
+        val exerciseExecution = exerciseServiceMapper.getExerciseExecution(exerciseExecutionDTO)
+        exerciseExecutionRepository.save(exerciseExecution)
+    }
+
+    @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveExerciseExecutionBatch(exerciseDTOs: List<ExerciseExecutionDTO>) {
+        val exercises = exerciseDTOs.map(exerciseServiceMapper::getExerciseExecution)
+        exerciseExecutionRepository.saveAll(exercises)
+    }
+
+    fun getExercisesExecutionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ExerciseExecutionDTO> {
+        return customExerciseExecutionRepository.getExercisesExecutionImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseExecutionDTO)
     }
 }

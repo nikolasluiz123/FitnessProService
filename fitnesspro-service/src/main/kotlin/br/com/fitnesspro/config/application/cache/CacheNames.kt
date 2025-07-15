@@ -9,7 +9,9 @@ const val SCHEDULER_CONFIG_IMPORT_CACHE_NAME = "v1.scheduler.config.import"
 const val WORKOUT_IMPORT_CACHE_NAME = "v1.workout.import"
 const val WORKOUT_GROUP_IMPORT_CACHE_NAME = "v1.workout.group.import"
 const val EXERCISE_IMPORT_CACHE_NAME = "v1.exercise.import"
+const val EXERCISE_EXECUTION_IMPORT_CACHE_NAME = "v1.exercise.execution.import"
 const val VIDEO_EXERCISE_IMPORT_CACHE_NAME = "v1.video.exercise.import"
+const val VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME = "v1.video.exercise.execution.import"
 const val VIDEO_IMPORT_CACHE_NAME = "v1.video.import"
 
 val cacheNames = arrayOf(
@@ -22,6 +24,8 @@ val cacheNames = arrayOf(
     WORKOUT_IMPORT_CACHE_NAME,
     WORKOUT_GROUP_IMPORT_CACHE_NAME,
     EXERCISE_IMPORT_CACHE_NAME,
+    EXERCISE_EXECUTION_IMPORT_CACHE_NAME,
     VIDEO_EXERCISE_IMPORT_CACHE_NAME,
-    VIDEO_IMPORT_CACHE_NAME
+    VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME,
+    VIDEO_IMPORT_CACHE_NAME,
 )

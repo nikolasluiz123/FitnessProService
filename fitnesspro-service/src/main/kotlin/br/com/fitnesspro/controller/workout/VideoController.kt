@@ -6,6 +6,7 @@ import br.com.fitnesspro.services.workout.VideoService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
@@ -29,12 +30,20 @@ class VideoController(
     private val videoService: VideoService
 ) {
 
-    @PostMapping
+    @PostMapping(EndPointsV1.VIDEO_EXERCISE)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun createVideo(@RequestBody @Valid newVideoExerciseDTO: NewVideoExerciseDTO): ResponseEntity<PersistenceServiceResponse<NewVideoExerciseDTO>> {
-        videoService.createVideo(newVideoExerciseDTO)
+    fun createExerciseVideo(@RequestBody @Valid newVideoExerciseDTO: NewVideoExerciseDTO): ResponseEntity<PersistenceServiceResponse<NewVideoExerciseDTO>> {
+        videoService.createExerciseVideo(newVideoExerciseDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = newVideoExerciseDTO))
+    }
+
+    @PostMapping(EndPointsV1.VIDEO_EXECUTION)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun createExecutionVideo(@RequestBody @Valid newVideoExecutionDTO: NewVideoExerciseExecutionDTO): ResponseEntity<PersistenceServiceResponse<NewVideoExerciseExecutionDTO>> {
+        videoService.createExecutionVideo(newVideoExecutionDTO)
+        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = newVideoExecutionDTO))
     }
 
     @GetMapping(EndPointsV1.VIDEO_IMPORT)
