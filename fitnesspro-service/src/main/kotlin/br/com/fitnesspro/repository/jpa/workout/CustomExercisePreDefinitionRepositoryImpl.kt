@@ -1,6 +1,6 @@
 package br.com.fitnesspro.repository.jpa.workout
 
-import br.com.fitnesspro.models.workout.VideoExerciseExecution
+import br.com.fitnesspro.models.workout.ExercisePreDefinition
 import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.repository.common.query.Parameter
 import br.com.fitnesspro.repository.common.query.getResultList
@@ -13,39 +13,29 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class CustomVideoExerciseExecutionRepositoryImpl: ICustomVideoExerciseExecutionRepository {
+class CustomExercisePreDefinitionRepositoryImpl: ICustomExercisePreDefinitionRepository {
 
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getVideoExercisesExecutionImport(
-        filter: WorkoutModuleImportFilter,
-        pageInfos: ImportPageInfos
-    ): List<VideoExerciseExecution> {
+    override fun getExercisesPreDefinitionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ExercisePreDefinition> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select videoExecution ")
+            add(" select exercisePreDefinition ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${VideoExerciseExecution::class.java.name} videoExecution ")
-            add(" inner join videoExecution.exerciseExecution execution ")
-            add(" inner join execution.exercise exercise ")
-            add(" inner join exercise.workoutGroup group ")
-            add(" inner join group.workout workout ")
+            add(" from ${ExercisePreDefinition::class.java.name} exercisePreDefinition ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where ( ")
-            add("           workout.professionalPerson.id = :pPersonId ")
-            add("           or workout.academyMemberPerson.id = :pPersonId ")
-            add("       ) ")
+            add(" where exercisePreDefinition.personalTrainerPerson.id = :pPersonId ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDate?.let {
-                add(" and videoExecution.updateDate >= :pLastUpdateDate ")
+                add(" and exercisePreDefinition.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -56,11 +46,11 @@ class CustomVideoExerciseExecutionRepositoryImpl: ICustomVideoExerciseExecutionR
             add(where.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), VideoExerciseExecution::class.java)
+        val query = entityManager.createQuery(sql.toString(), ExercisePreDefinition::class.java)
         query.setParameters(params)
         query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
-        return query.getResultList(VideoExerciseExecution::class.java)
+        return query.getResultList(ExercisePreDefinition::class.java)
     }
 }

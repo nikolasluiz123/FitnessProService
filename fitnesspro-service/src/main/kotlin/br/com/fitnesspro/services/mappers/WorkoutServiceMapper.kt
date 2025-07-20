@@ -2,17 +2,21 @@ package br.com.fitnesspro.services.mappers
 
 import br.com.fitnesspro.models.workout.Workout
 import br.com.fitnesspro.models.workout.WorkoutGroup
+import br.com.fitnesspro.models.workout.WorkoutGroupPreDefinition
 import br.com.fitnesspro.repository.auditable.general.IPersonRepository
+import br.com.fitnesspro.repository.auditable.workout.IWorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.repository.auditable.workout.IWorkoutGroupRepository
 import br.com.fitnesspro.repository.auditable.workout.IWorkoutRepository
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
 import org.springframework.stereotype.Service
 
 @Service
 class WorkoutServiceMapper(
     private val workoutRepository: IWorkoutRepository,
     private val workoutGroupRepository: IWorkoutGroupRepository,
+    private val workoutGroupPreDefinitionRepository: IWorkoutGroupPreDefinitionRepository,
     private val personRepository: IPersonRepository
 ) {
 
@@ -63,7 +67,7 @@ class WorkoutServiceMapper(
                     name = dto.name,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
-                    groupOrder = dto.groupOrder!!,
+                    groupOrder = dto.groupOrder,
                 )
             }
 
@@ -73,7 +77,7 @@ class WorkoutServiceMapper(
                     name = dto.name,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
-                    groupOrder = dto.groupOrder!!,
+                    groupOrder = dto.groupOrder,
                 )
             }
 
@@ -84,7 +88,7 @@ class WorkoutServiceMapper(
                     name = dto.name,
                     workout = workoutRepository.findById(dto.workoutId!!).get(),
                     dayWeek = dto.dayWeek!!,
-                    groupOrder = dto.groupOrder!!,
+                    groupOrder = dto.groupOrder,
                 )
             }
         }
@@ -113,6 +117,47 @@ class WorkoutServiceMapper(
             professionalPersonId = workout.professionalPerson?.id,
             dateStart = workout.dateStart,
             dateEnd = workout.dateEnd,
+        )
+    }
+
+    fun getWorkoutGroupPreDefinition(dto: WorkoutGroupPreDefinitionDTO): WorkoutGroupPreDefinition {
+        val workoutGroupPreDefinition = dto.id?.let { workoutGroupPreDefinitionRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                WorkoutGroupPreDefinition(
+                    active = dto.active,
+                    name = dto.name,
+                    personalTrainerPerson = personRepository.findById(dto.personalTrainerPersonId!!).get()
+                )
+            }
+
+            workoutGroupPreDefinition?.isPresent == true -> {
+                workoutGroupPreDefinition.get().copy(
+                    active = dto.active,
+                    name = dto.name,
+                )
+            }
+
+            else -> {
+                WorkoutGroupPreDefinition(
+                    id = dto.id!!,
+                    active = dto.active,
+                    name = dto.name,
+                    personalTrainerPerson = personRepository.findById(dto.personalTrainerPersonId!!).get()
+                )
+            }
+        }
+    }
+
+    fun getWorkoutGroupPreDefinitionDTO(model: WorkoutGroupPreDefinition): WorkoutGroupPreDefinitionDTO {
+        return WorkoutGroupPreDefinitionDTO(
+            id = model.id,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate,
+            active = model.active,
+            name = model.name,
+            personalTrainerPersonId = model.personalTrainerPerson?.id,
         )
     }
 }

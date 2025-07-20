@@ -3,6 +3,7 @@ package br.com.fitnesspro.services.mappers
 import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.models.workout.VideoExerciseExecution
+import br.com.fitnesspro.models.workout.VideoExercisePreDefinition
 import br.com.fitnesspro.repository.auditable.workout.*
 import br.com.fitnesspro.shared.communication.dtos.workout.*
 import org.springframework.stereotype.Service
@@ -12,8 +13,10 @@ class VideoServiceMapper(
     private val videoRepository: IVideoRepository,
     private val videoExerciseRepository: IVideoExerciseRepository,
     private val videoExerciseExecutionRepository: IVideoExerciseExecutionRepository,
+    private val videoExercisePreDefinitionRepository: IVideoExercisePreDefinitionRepository,
     private val exerciseRepository: IExerciseRepository,
-    private val exerciseExecutionRepository: IExerciseExecutionRepository
+    private val exerciseExecutionRepository: IExerciseExecutionRepository,
+    private val exercisePreDefinitionRepository: IExercisePreDefinitionRepository
 ) {
 
     fun getVideoDTO(model: Video): VideoDTO {
@@ -212,6 +215,46 @@ class VideoServiceMapper(
             updateDate = model.updateDate,
             active = model.active,
             exerciseExecutionId = model.exerciseExecution?.id!!,
+            videoId = model.video?.id!!
+        )
+    }
+
+    fun getVideoExercisePreDefinition(dto: VideoExercisePreDefinitionDTO): VideoExercisePreDefinition {
+        val video = dto.id?.let { videoExercisePreDefinitionRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                VideoExercisePreDefinition(
+                    active = dto.active,
+                    exercisePreDefinition = exercisePreDefinitionRepository.findById(dto.exercisePreDefinitionId!!).get(),
+                    video = videoRepository.findById(dto.videoId!!).get()
+                )
+            }
+
+            video?.isPresent == true -> {
+                video.get().copy(
+                    active = dto.active,
+                )
+            }
+
+            else -> {
+                VideoExercisePreDefinition(
+                    id = dto.id!!,
+                    active = dto.active,
+                    exercisePreDefinition = exercisePreDefinitionRepository.findById(dto.exercisePreDefinitionId!!).get(),
+                    video = videoRepository.findById(dto.videoId!!).get()
+                )
+            }
+        }
+    }
+
+    fun getVideoExercisePreDefinitionDTO(model: VideoExercisePreDefinition): VideoExercisePreDefinitionDTO {
+        return VideoExercisePreDefinitionDTO(
+            id = model.id,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate,
+            active = model.active,
+            exercisePreDefinitionId = model.exercisePreDefinition?.id!!,
             videoId = model.video?.id!!
         )
     }

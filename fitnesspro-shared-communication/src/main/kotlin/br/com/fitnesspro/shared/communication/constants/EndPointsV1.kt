@@ -45,6 +45,8 @@ object EndPointsV1 {
     const val WORKOUT_GROUP_INACTIVATE = "/group/inactivate/{workoutGroupId}"
     const val WORKOUT_GROUP_EXPORT = "/group/export"
     const val WORKOUT_GROUP_IMPORT = "/group/import"
+    const val WORKOUT_GROUP_PREDEFINITION_EXPORT = "/group/predefinition/export"
+    const val WORKOUT_GROUP_PREDEFINITION_IMPORT = "/group/predefinition/import"
 
     const val LOGS = "logs"
     const val LOGS_V1 = "$API_V1/$LOGS"
@@ -92,6 +94,10 @@ object EndPointsV1 {
     const val EXERCISE_EXECUTION_EXPORT = "/execution/export"
     const val EXERCISE_EXECUTION_VIDEO_IMPORT = "/execution/video/import"
     const val EXERCISE_EXECUTION_VIDEO_EXPORT = "/execution/video/export"
+    const val EXERCISE_PREDEFINITION_IMPORT = "/predefinition/import"
+    const val EXERCISE_PREDEFINITION_EXPORT = "/predefinition/export"
+    const val EXERCISE_PREDEFINITION_VIDEO_IMPORT = "/predefinition/video/import"
+    const val EXERCISE_PREDEFINITION_VIDEO_EXPORT = "/predefinition/video/export"
 
     const val VIDEO = "video"
     const val VIDEO_V1 = "$API_V1/$VIDEO"

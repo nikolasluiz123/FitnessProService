@@ -1,16 +1,16 @@
 package br.com.fitnesspro.services.workout
 
-import br.com.fitnesspro.config.application.cache.EXERCISE_EXECUTION_IMPORT_CACHE_NAME
-import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
-import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
-import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
+import br.com.fitnesspro.config.application.cache.*
 import br.com.fitnesspro.repository.auditable.workout.IExerciseExecutionRepository
+import br.com.fitnesspro.repository.auditable.workout.IExercisePreDefinitionRepository
 import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomExerciseExecutionRepository
+import br.com.fitnesspro.repository.jpa.workout.ICustomExercisePreDefinitionRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomExerciseRepository
 import br.com.fitnesspro.services.mappers.ExerciseServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
@@ -22,8 +22,10 @@ import org.springframework.stereotype.Service
 class ExerciseService(
     private val exerciseRepository: IExerciseRepository,
     private val exerciseExecutionRepository: IExerciseExecutionRepository,
+    private val exercisePreDefinitionRepository: IExercisePreDefinitionRepository,
     private val customExerciseRepository: ICustomExerciseRepository,
     private val customExerciseExecutionRepository: ICustomExerciseExecutionRepository,
+    private val customExercisePreDefinitionRepository: ICustomExercisePreDefinitionRepository,
     private val workoutService: WorkoutService,
     private val videoService: VideoService,
     private val exerciseServiceMapper: ExerciseServiceMapper
@@ -76,7 +78,22 @@ class ExerciseService(
         exerciseExecutionRepository.saveAll(exercises)
     }
 
+    @Cacheable(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getExercisesExecutionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ExerciseExecutionDTO> {
         return customExerciseExecutionRepository.getExercisesExecutionImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseExecutionDTO)
+    }
+
+    @CacheEvict(cacheNames = [EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveExercisePreDefinitionBatch(exerciseDTOs: List<ExercisePreDefinitionDTO>) {
+        val exercises = exerciseDTOs.map {
+            exerciseServiceMapper.getExercisePreDefinition(dto = it)
+        }
+
+        exercisePreDefinitionRepository.saveAll(exercises)
+    }
+
+    @Cacheable(cacheNames = [EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    fun getExercisesPredefinitionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ExercisePreDefinitionDTO> {
+        return customExercisePreDefinitionRepository.getExercisesPreDefinitionImport(filter, pageInfos).map(exerciseServiceMapper::getExercisePreDefinitionDTO)
     }
 }

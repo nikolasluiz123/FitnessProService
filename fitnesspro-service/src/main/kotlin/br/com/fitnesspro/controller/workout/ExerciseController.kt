@@ -214,4 +214,84 @@ class ExerciseController(
         exerciseService.saveExerciseExecution(exerciseExecutionDTO)
         return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = exerciseExecutionDTO))
     }
+
+    @PostMapping(EndPointsV1.EXERCISE_PREDEFINITION_EXPORT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun saveExercisePreDefinitionBatch(@RequestBody @Valid exerciseDTOs: List<ExercisePreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+        exerciseService.saveExercisePreDefinitionBatch(exerciseDTOs)
+
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
+    }
+
+    @PostMapping(EndPointsV1.EXERCISE_PREDEFINITION_VIDEO_EXPORT)
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun saveExercisePreDefinitionVideosBatch(@RequestBody @Valid exerciseVideoDTOs: List<VideoExercisePreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+        videoService.saveExercisePreDefinitionVideosBatch(exerciseVideoDTOs)
+
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
+        return ResponseEntity.ok(
+            ExportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
+    }
+
+    @GetMapping(EndPointsV1.EXERCISE_PREDEFINITION_IMPORT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importExercisePreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ExercisePreDefinitionDTO>> {
+        val defaultGSon = GsonBuilder().defaultGSon()
+        val importFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
+        val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
+
+        val values = exerciseService.getExercisesPredefinitionImport(importFilter, importPageInfos)
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
+    }
+
+    @GetMapping(EndPointsV1.EXERCISE_PREDEFINITION_VIDEO_IMPORT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun importVideoExercisePreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<VideoExercisePreDefinitionDTO>> {
+        val defaultGSon = GsonBuilder().defaultGSon()
+        val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
+        val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
+
+        val values = videoService.getVideoExercisesPreDefinitionImport(commonImportFilter, importPageInfos)
+        val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
+        val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
+        return ResponseEntity.ok(
+            ImportationServiceResponse(
+                executionLogId = logId,
+                executionLogPackageId = logPackageId,
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true,
+            )
+        )
+    }
 }

@@ -2,13 +2,16 @@ package br.com.fitnesspro.services.workout
 
 import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
+import br.com.fitnesspro.config.application.cache.WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.WORKOUT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.repository.auditable.workout.*
+import br.com.fitnesspro.repository.jpa.workout.ICustomWorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomWorkoutGroupRepository
 import br.com.fitnesspro.repository.jpa.workout.ICustomWorkoutRepository
 import br.com.fitnesspro.services.mappers.WorkoutServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import org.springframework.cache.annotation.CacheEvict
@@ -22,8 +25,10 @@ class WorkoutService(
     private val videoExerciseRepository: IVideoExerciseRepository,
     private val exerciseRepository: IExerciseRepository,
     private val videoRepository: IVideoRepository,
+    private val workoutGroupPreDefinitionRepository: IWorkoutGroupPreDefinitionRepository,
     private val customWorkoutRepository: ICustomWorkoutRepository,
     private val customWorkoutGroupRepository: ICustomWorkoutGroupRepository,
+    private val customWorkoutGroupPreDefinitionRepository: ICustomWorkoutGroupPreDefinitionRepository,
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
@@ -99,5 +104,15 @@ class WorkoutService(
         customWorkoutGroupRepository.getListWorkoutGroupIdFromWorkout(workoutId).forEach { workoutGroupId ->
             inactivateWorkoutGroup(workoutGroupId)
         }
+    }
+
+    @CacheEvict(cacheNames = [WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME], allEntries = true)
+    fun saveWorkoutGroupPreDefinitionBatch(workoutGroups: List<WorkoutGroupPreDefinitionDTO>) {
+        workoutGroupPreDefinitionRepository.saveAll(workoutGroups.map(workoutServiceMapper::getWorkoutGroupPreDefinition))
+    }
+
+    @Cacheable(cacheNames = [WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    fun getWorkoutGroupsPreDefinitionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<WorkoutGroupPreDefinitionDTO> {
+        return customWorkoutGroupPreDefinitionRepository.getWorkoutGroupsPreDefinitionImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutGroupPreDefinitionDTO)
     }
 }
