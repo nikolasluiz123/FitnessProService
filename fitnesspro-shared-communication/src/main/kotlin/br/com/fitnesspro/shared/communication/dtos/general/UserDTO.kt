@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 @Schema(description = "Classe DTO usada para manutenção de um usuário")
 data class UserDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
-    @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
+    @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
@@ -22,21 +22,21 @@ data class UserDTO(
     override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "{userDTO.active.notNull}")
+    @field:NotNull(message = "userDTO.active.notNull")
     var active: Boolean = true,
 
     @Schema(description = "E-mail do usuário", example = "usuario@example.com", required = true)
-    @field:NotBlank(message = "{userDTO.email.notBlank}")
-    @field:Size(min = 1, max = 64, message = "{userDTO.email.size}")
-    @field:Email(message = "{userDTO.email.email}")
+    @field:NotBlank(message = "userDTO.email.notBlank")
+    @field:Size(min = 1, max = 64, message = "userDTO.email.size")
+    @field:Email(message = "userDTO.email.email")
     var email: String? = null,
 
     @Schema(description = "Senha do usuário", example = "senha123", required = true)
-    @field:NotBlank(message = "{userDTO.password.notBlank}")
-    @field:Size(min = 1, max = 1024, message = "{userDTO.password.size}")
+    @field:NotBlank(message = "userDTO.password.notBlank")
+    @field:Size(min = 1, max = 1024, message = "userDTO.password.size")
     var password: String? = null,
 
     @Schema(description = "Tipo de usuário", required = true)
-    @field:NotNull(message = "{userDTO.type.notNull}")
+    @field:NotNull(message = "userDTO.type.notNull")
     var type: EnumUserType? = null,
 ): AuditableDTO

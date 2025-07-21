@@ -12,11 +12,11 @@ data class ApplicationDTO(
     override var id: String? = null,
 
     @Schema(description = "Nome da aplicação", required = true)
-    @field:NotBlank(message = "{applicationDTO.name.notBlank}")
-    @field:Size(max = 255, message = "{applicationDTO.name.size}")
+    @field:NotBlank(message = "applicationDTO.name.notBlank")
+    @field:Size(max = 255, message = "applicationDTO.name.size")
     var name: String? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "{applicationDTO.active.notNull}")
+    @field:NotNull(message = "applicationDTO.active.notNull")
     var active: Boolean = true,
 ): BaseDTO

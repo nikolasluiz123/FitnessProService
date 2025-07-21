@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull
 data class CacheClearConfigDTO(
 
     @Schema(description = "Flag que indica se deve limpar todos os caches", required = true, example = "false")
-    @field:NotNull(message = "{cacheClearConfigDTO.clearAll.notNull}")
+    @field:NotNull(message = "cacheClearConfigDTO.clearAll.notNull")
     var clearAll: Boolean = false,
 
     @Schema(description = "Nome do cache específico que deseja limpar", example = "v1.person.user.import")

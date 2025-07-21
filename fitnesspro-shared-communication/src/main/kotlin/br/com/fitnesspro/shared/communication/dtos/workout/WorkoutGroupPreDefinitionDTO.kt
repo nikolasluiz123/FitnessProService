@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 @Schema(description = "Classe DTO usada para manutenção dos grupos musculares predefinidos")
 data class WorkoutGroupPreDefinitionDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
-    @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
+    @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
@@ -20,15 +20,16 @@ data class WorkoutGroupPreDefinitionDTO(
     override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "{workoutGroupPreDefinitionDTO.active.notNull}")
+    @field:NotNull(message = "workoutGroupPreDefinitionDTO.active.notNull")
     var active: Boolean = true,
 
     @Schema(description = "Nome do grupo de treino", example = "Treino A", required = true)
-    @field:Size(max = 255, message = "{workoutGroupPreDefinitionDTO.name.size}")
+    @field:NotEmpty(message = "workoutGroupPreDefinitionDTO.name.notBlank") // Sugestão: Adicionar esta chave ao ValidationMessages.properties
+    @field:Size(max = 255, message = "workoutGroupPreDefinitionDTO.name.size")
     var name: String? = null,
 
     @Schema(description = "Identificador do profissional", required = true)
-    @field:NotNull(message = "{workoutGroupPreDefinitionDTO.personalTrainerPersonId.notNull}")
-    @field:NotEmpty(message = "{workoutGroupPreDefinitionDTO.personalTrainerPersonId.notNull}")
+    @field:NotEmpty(message = "workoutGroupPreDefinitionDTO.personalTrainerPersonId.notNull")
+    @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     var personalTrainerPersonId: String? = null
 ): AuditableDTO

@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotNull
 @Schema(description = "Classe DTO usada apenas na criação do registro da execução de um exercício")
 data class NewExerciseExecutionDTO(
     @Schema(description = "DTO da execução do exercício", required = true)
-    @field:NotNull(message = "{newExerciseExecutionDTO.exerciseExecutionDTO.notNull}")
+    @field:NotNull(message = "newExerciseExecutionDTO.exerciseExecutionDTO.notNull")
     var exerciseExecutionDTO: ExerciseExecutionDTO? = null,
 
     @Schema(description = "Lista de DTOs dos vídeos da execução do exercício", required = false)
-    @field:NotNull(message = "{newExerciseExecutionDTO.videosDTO.notNull}")
+    @field:NotNull(message = "newExerciseExecutionDTO.videosDTO.notNull")
     var videosDTO: List<NewVideoExerciseExecutionDTO> = emptyList()
 )

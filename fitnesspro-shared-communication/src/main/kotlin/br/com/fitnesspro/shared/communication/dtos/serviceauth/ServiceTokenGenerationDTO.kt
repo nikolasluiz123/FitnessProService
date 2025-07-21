@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull
 @Schema(description = "Classe DTO usada para geração de um token")
 data class ServiceTokenGenerationDTO(
     @Schema(description = "Tipo de token", required = true)
-    @field:NotNull(message = "{serviceTokenGenerationDTO.type.notNull}")
+    @field:NotNull(message = "serviceTokenGenerationDTO.type.notNull")
     var type: EnumTokenType? = null,
 
     @Schema(description = "Identificador do usuário a qual o token pertence", required = false)

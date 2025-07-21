@@ -11,6 +11,6 @@ data class CacheEntryDTO(
         required = true,
         example = "2023-01-01T10:00:00"
     )
-    @field:NotBlank(message = "{cacheEntryDTO.key.notBlank}")
+    @field:NotBlank(message = "cacheEntryDTO.key.notBlank")
     val key: String = ""
 )

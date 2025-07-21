@@ -13,7 +13,7 @@ import java.time.OffsetDateTime
 @Schema(description = "Classe DTO usada para manutenção de um agendamento")
 data class SchedulerDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
-    @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
+    @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
@@ -23,23 +23,23 @@ data class SchedulerDTO(
     override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "{schedulerDTO.active.notNull}")
+    @field:NotNull(message = "schedulerDTO.active.notNull")
     var active: Boolean = true,
 
     @Schema(description = "Identificador do membro da academia", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
-    @field:NotNull(message = "{schedulerDTO.academyMemberPersonId.notNull}")
+    @field:NotNull(message = "schedulerDTO.academyMemberPersonId.notNull")
     var academyMemberPersonId: String? = null,
 
     @Schema(description = "Identificador do profissional", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
-    @field:NotNull(message = "{schedulerDTO.professionalPersonId.notNull}")
+    @field:NotNull(message = "schedulerDTO.professionalPersonId.notNull")
     var professionalPersonId: String? = null,
 
     @Schema(description = "Hora de início", example = "2025-05-10T10:15:30-03:00", required = true)
-    @field:NotNull(message = "{schedulerDTO.timeStart.notNull}")
+    @field:NotNull(message = "schedulerDTO.timeStart.notNull")
     var dateTimeStart: OffsetDateTime? = null,
 
     @Schema(description = "Hora de término", example = "2025-05-10T10:15:30-03:00", required = true)
-    @field:NotNull(message = "{schedulerDTO.timeEnd.notNull}")
+    @field:NotNull(message = "schedulerDTO.timeEnd.notNull")
     var dateTimeEnd: OffsetDateTime? = null,
 
     @Schema(description = "Data de cancelamento", example = "2025-05-10T10:15:30-03:00", required = false)
@@ -49,19 +49,19 @@ data class SchedulerDTO(
     var cancellationPersonId: String? = null,
 
     @Schema(description = "Situação do agendamento", required = true)
-    @field:NotNull(message = "{schedulerDTO.situation.notNull}")
+    @field:NotNull(message = "schedulerDTO.situation.notNull")
     var situation: EnumSchedulerSituation? = null,
 
     @Schema(description = "Tipo de compromisso", required = true)
-    @field:NotNull(message = "{schedulerDTO.compromiseType.notNull}")
+    @field:NotNull(message = "schedulerDTO.compromiseType.notNull")
     var compromiseType: EnumCompromiseType? = null,
 
     @Schema(description = "Observação", example = "Observação sobre o agendamento", required = false)
-    @field:Size(max = 4096, message = "{schedulerDTO.observation.size}")
+    @field:Size(max = 4096, message = "schedulerDTO.observation.size")
     var observation: String? = null,
 
     @Schema(description = "Tipo de agendamento", required = true)
-    @field:NotNull(message = "{schedulerDTO.type.notNull}")
+    @field:NotNull(message = "schedulerDTO.type.notNull")
     var type: EnumSchedulerType? = null,
 
     @Schema(description = "Indica se os usuários foram notificados sobre a proximidade da data do compromisso", readOnly = true)

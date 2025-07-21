@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 @Schema(description = "Classe DTO usada para manutenção de um treino")
 data class WorkoutDTO(
     @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
-    @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
+    @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
 
     @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
@@ -20,7 +20,7 @@ data class WorkoutDTO(
     override var updateDate: LocalDateTime? = null,
 
     @Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "{workoutDTO.active.notNull}")
+    @field:NotNull(message = "workoutDTO.active.notNull")
     var active: Boolean = true,
 
     @Schema(
@@ -28,7 +28,7 @@ data class WorkoutDTO(
         example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16",
         required = true
     )
-    @field:NotNull(message = "{workoutDTO.academyMemberPersonId.notNull}")
+    @field:NotNull(message = "workoutDTO.academyMemberPersonId.notNull")
         var academyMemberPersonId: String? = null,
 
     @Schema(
@@ -36,14 +36,14 @@ data class WorkoutDTO(
         example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16",
         required = true
     )
-    @field:NotNull(message = "O identificador do profissional é obrigatório")
+    @field:NotNull(message = "workoutDTO.professionalPersonId.notNull")
     var professionalPersonId: String? = null,
 
     @Schema(description = "Data de início", example = "2023-01-01", required = true)
-    @field:NotNull(message = "{workoutDTO.dateStart.notNull}")
+    @field:NotNull(message = "workoutDTO.dateStart.notNull")
     var dateStart: LocalDate? = null,
 
     @Schema(description = "Data de término", example = "2023-01-31", required = true)
-    @field:NotNull(message = "{workoutDTO.dateEnd.notNull}")
+    @field:NotNull(message = "workoutDTO.dateEnd.notNull")
     var dateEnd: LocalDate? = null,
 ) : AuditableDTO
