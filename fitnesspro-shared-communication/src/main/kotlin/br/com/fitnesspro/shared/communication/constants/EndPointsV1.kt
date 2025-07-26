@@ -105,4 +105,14 @@ object EndPointsV1 {
     const val VIDEO_EXECUTION = "/execution"
     const val VIDEO_EXPORT = "/export"
     const val VIDEO_IMPORT = "/import"
+
+    const val REPORT: String = "report"
+    const val REPORT_V1 = "$API_V1/$REPORT"
+    const val REPORT_IMPORT = "/import"
+    const val SCHEDULER_REPORT = "/scheduler"
+    const val DELETE_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/{reportId}"
+    const val DELETE_ALL_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/all"
+    const val SCHEDULER_REPORT_EXPORT = "$SCHEDULER_REPORT/export"
+    const val SCHEDULER_REPORT_IMPORT = "$SCHEDULER_REPORT/import"
+
 }

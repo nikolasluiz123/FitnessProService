@@ -37,17 +37,16 @@ class JWTAuthenticationFilter(
         filterChain: FilterChain
     ) {
         try {
-            val authHeader: String? = request.getHeader("Authorization")
+            val authHeader: String? = service.getRequestAuthorization(request)
 
-            if ((authHeader == null || !authHeader.startsWith("Bearer ")) && !isPermittedURLWithoutToken(request)) {
+            if ((authHeader == null || !service.hasBearerToken(request)) && !isPermittedURLWithoutToken(request)) {
                 throw NotFoundTokenException(
                     messageSource.getMessage("core.service.error.token.not.found", null, Locale.getDefault())
                 )
             }
 
             if (authHeader != null) {
-                val jwtToken = authHeader.substring(7)
-
+                val jwtToken = service.getJWTTokenFromRequest(request)!!
                 val serviceToken = service.getValidatedServiceToken(jwtToken)
 
                 when (serviceToken.type!!) {

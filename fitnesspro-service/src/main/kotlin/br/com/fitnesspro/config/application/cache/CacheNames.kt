@@ -16,6 +16,8 @@ const val VIDEO_EXERCISE_IMPORT_CACHE_NAME = "v1.video.exercise.import"
 const val VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME = "v1.video.exercise.execution.import"
 const val VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME = "v1.video.exercise.pre.definition.import"
 const val VIDEO_IMPORT_CACHE_NAME = "v1.video.import"
+const val REPORT_IMPORT_CACHE_NAME = "v1.report.import"
+const val SCHEDULER_REPORT_IMPORT_CACHE_NAME = "v1.scheduler.report.import"
 
 val cacheNames = arrayOf(
     ACADEMY_IMPORT_CACHE_NAME,
@@ -33,5 +35,7 @@ val cacheNames = arrayOf(
     VIDEO_EXERCISE_IMPORT_CACHE_NAME,
     VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME,
     VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME,
-    VIDEO_IMPORT_CACHE_NAME
+    VIDEO_IMPORT_CACHE_NAME,
+    REPORT_IMPORT_CACHE_NAME,
+    SCHEDULER_REPORT_IMPORT_CACHE_NAME
 )

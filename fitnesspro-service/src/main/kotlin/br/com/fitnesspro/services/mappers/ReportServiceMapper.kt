@@ -1,0 +1,109 @@
+package br.com.fitnesspro.services.mappers
+
+import br.com.fitnesspro.models.general.Report
+import br.com.fitnesspro.models.general.SchedulerReport
+import br.com.fitnesspro.repository.general.person.IPersonRepository
+import br.com.fitnesspro.repository.general.report.IReportRepository
+import br.com.fitnesspro.repository.general.report.ISchedulerReportRepository
+import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
+import org.springframework.stereotype.Service
+
+@Service
+class ReportServiceMapper(
+    private val reportRepository: IReportRepository,
+    private val schedulerReportRepository: ISchedulerReportRepository,
+    private val personRepository: IPersonRepository,
+) {
+    fun getReport(dto: ReportDTO): Report {
+        val report = dto.id?.let { reportRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                Report(
+                    name = dto.name!!,
+                    extension = dto.extension!!,
+                    filePath = dto.filePath!!,
+                    date = dto.date!!,
+                    kbSize = dto.kbSize!!,
+                )
+            }
+
+            report?.isPresent == true -> {
+                report.get().copy(
+                    name = dto.name!!,
+                    extension = dto.extension!!,
+                    filePath = dto.filePath!!,
+                    date = dto.date!!,
+                    kbSize = dto.kbSize!!,
+                )
+            }
+
+            else -> {
+                Report(
+                    id = dto.id!!,
+                    name = dto.name!!,
+                    extension = dto.extension!!,
+                    filePath = dto.filePath!!,
+                    date = dto.date!!,
+                    kbSize = dto.kbSize!!,
+                )
+            }
+        }
+    }
+
+    fun getReportDTO(model: Report): ReportDTO {
+        return ReportDTO(
+            id = model.id,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate,
+            name = model.name,
+            extension = model.extension,
+            filePath = model.filePath,
+            date = model.date,
+            kbSize = model.kbSize,
+        )
+    }
+
+    fun getSchedulerReport(dto: SchedulerReportDTO): SchedulerReport {
+        val schedulerReport = dto.id?.let { schedulerReportRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                SchedulerReport(
+                    person = personRepository.findById(dto.personId!!).get(),
+                    report = getReport(dto.report!!),
+                    reportContext = dto.reportContext
+                )
+            }
+
+            schedulerReport?.isPresent == true -> {
+                schedulerReport.get().copy(
+                    person = personRepository.findById(dto.personId!!).get(),
+                    report = getReport(dto.report!!),
+                    reportContext = dto.reportContext
+                )
+            }
+
+            else -> {
+                SchedulerReport(
+                    id = dto.id!!,
+                    person = personRepository.findById(dto.personId!!).get(),
+                    report = getReport(dto.report!!),
+                    reportContext = dto.reportContext
+                )
+            }
+        }
+    }
+
+    fun getSchedulerReportDTO(model: SchedulerReport): SchedulerReportDTO {
+        return SchedulerReportDTO(
+            id = model.id,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate,
+            personId = model.person?.id,
+            report = getReportDTO(reportRepository.findById(model.report?.id!!).get()),
+            reportContext = model.reportContext
+        )
+    }
+}

@@ -23,6 +23,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.MessageSource
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator
 import org.springframework.stereotype.Service
@@ -206,6 +207,23 @@ class TokenService(
 
     fun getCountListServiceToken(filter: ServiceTokenFilter): Int {
         return customServiceTokenRepository.getCountListServiceToken(filter)
+    }
+
+    fun getServiceTokenFromRequest(request: HttpServletRequest): ServiceTokenDTO? {
+        val jwtToken = getJWTTokenFromRequest(request) ?: return null
+        return getServiceTokenDTO(jwtToken)
+    }
+
+    fun getRequestAuthorization(request: HttpServletRequest): String? {
+        return request.getHeader("Authorization")
+    }
+
+    fun hasBearerToken(request: HttpServletRequest): Boolean {
+        return getRequestAuthorization(request)?.startsWith("Bearer ") ?: false
+    }
+
+    fun getJWTTokenFromRequest(request: HttpServletRequest): String? {
+        return getRequestAuthorization(request)?.substring(7)
     }
 
     private fun ServiceToken.toServiceTokenDTO(): ServiceTokenDTO {
