@@ -1,4 +1,4 @@
-package br.com.fitnesspro.repository.general.report
+package br.com.fitnesspro.repository.auditable.report
 
 import br.com.fitnesspro.models.general.Report
 import br.com.fitnesspro.repository.common.IAuditableFitnessProRepository

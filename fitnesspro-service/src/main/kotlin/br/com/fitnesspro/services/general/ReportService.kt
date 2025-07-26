@@ -4,10 +4,10 @@ import br.com.fitnesspro.config.application.cache.REPORT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.SCHEDULER_REPORT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.models.general.Report
 import br.com.fitnesspro.models.general.SchedulerReport
-import br.com.fitnesspro.repository.general.report.ICustomReportRepository
-import br.com.fitnesspro.repository.general.report.ICustomSchedulerReportRepository
-import br.com.fitnesspro.repository.general.report.IReportRepository
-import br.com.fitnesspro.repository.general.report.ISchedulerReportRepository
+import br.com.fitnesspro.repository.jpa.report.ICustomReportRepository
+import br.com.fitnesspro.repository.jpa.report.ICustomSchedulerReportRepository
+import br.com.fitnesspro.repository.auditable.report.IReportRepository
+import br.com.fitnesspro.repository.auditable.report.ISchedulerReportRepository
 import br.com.fitnesspro.services.mappers.ReportServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO

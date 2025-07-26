@@ -1,4 +1,4 @@
-package br.com.fitnesspro.repository.general.report
+package br.com.fitnesspro.repository.jpa.report
 
 import br.com.fitnesspro.models.general.SchedulerReport
 import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext
