@@ -6,42 +6,42 @@ import java.time.LocalDateTime
 
 @Schema(description = "Classe DTO usada para manutenção de um pacote de log de execução")
 data class ExecutionLogPackageDTO(
-    @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
+    @field:Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     override var id: String? = null,
 
-    @Schema(description = "Momento que o serviço começou a executar a operação", required = true)
+    @field:Schema(description = "Momento que o serviço começou a executar a operação", required = true)
     val serviceExecutionStart: LocalDateTime? = null,
 
-    @Schema(description = "Momento que o serviço terminou de executar a operação", required = false)
+    @field:Schema(description = "Momento que o serviço terminou de executar a operação", required = false)
     val serviceExecutionEnd: LocalDateTime? = null,
 
-    @Schema(description = "Momento que o client começou a executar a operação", required = false)
+    @field:Schema(description = "Momento que o client começou a executar a operação", required = false)
     val clientExecutionStart: LocalDateTime? = null,
 
-    @Schema(description = "Momento que o client terminou de executar a operação", required = false)
+    @field:Schema(description = "Momento que o client terminou de executar a operação", required = false)
     val clientExecutionEnd: LocalDateTime? = null,
 
-    @Schema(description = "Request body enviado na requisição", required = false)
+    @field:Schema(description = "Request body enviado na requisição", required = false)
     val requestBody: String? = null,
 
-    @Schema(description = "Response body retornado na requisição", required = false)
+    @field:Schema(description = "Response body retornado na requisição", required = false)
     val responseBody: String? = null,
 
-    @Schema(description = "Stack de erro", required = false)
+    @field:Schema(description = "Stack de erro", required = false)
     val error: String? = null,
 
-    @Schema(description = "Informações adicionais sobre a execução, onde podem conter logs específicos do processamento realizado.", required = false)
+    @field:Schema(description = "Informações adicionais sobre a execução, onde podem conter logs específicos do processamento realizado.", required = false)
     val executionAdditionalInfos: String? = null,
 
-    @Schema(description = "Identificador do log de execução", required = true)
+    @field:Schema(description = "Identificador do log de execução", required = true)
     val executionLogId: String? = null,
 
-    @Schema(description = "Quantidade de itens inseridos", required = false)
+    @field:Schema(description = "Quantidade de itens inseridos", required = false)
     val insertedItemsCount: Int? = null,
 
-    @Schema(description = "Quantidade de itens atualizados", required = false)
+    @field:Schema(description = "Quantidade de itens atualizados", required = false)
     val updatedItemsCount: Int? = null,
 
-    @Schema(description = "Quantidade de itens enviados na exportação", required = false)
+    @field:Schema(description = "Quantidade de itens enviados na exportação", required = false)
     val allItemsCount: Int? = null,
 ): BaseDTO

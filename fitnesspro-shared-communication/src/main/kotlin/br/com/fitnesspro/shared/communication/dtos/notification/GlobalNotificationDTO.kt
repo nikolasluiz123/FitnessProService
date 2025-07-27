@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotBlank
 
 @Schema(description = "Classe DTO usada para enviar uma notificação para todos os dispositivos")
 data class GlobalNotificationDTO(
-    @Schema(description = "Título que será exibido na notificação", required = true)
+    @field:Schema(description = "Título que será exibido na notificação", required = true)
     @field:NotBlank(message = "globalNotificationDTO.title.notBlank")
     var title: String? = null,
 
-    @Schema(description = "Mensagem que será exibida na notificação", required = true)
+    @field:Schema(description = "Mensagem que será exibida na notificação", required = true)
     @field:NotBlank(message = "globalNotificationDTO.message.notBlank")
     var message: String? = null,
 )

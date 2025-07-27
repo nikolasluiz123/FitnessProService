@@ -38,6 +38,7 @@ class ScheduledTaskManager(
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun scheduleTask(task: ScheduledTaskDTO) {
         val handler = handlers[task.handlerBeanName]
         val typedHandler = handler as IScheduledTaskHandler<Any>

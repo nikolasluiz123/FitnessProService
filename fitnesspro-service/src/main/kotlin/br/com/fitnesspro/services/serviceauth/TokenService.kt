@@ -20,15 +20,14 @@ import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ServiceTokenFilter
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.MessageSource
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator
 import org.springframework.stereotype.Service
-import java.security.Key
 import java.util.*
+import javax.crypto.SecretKey
 import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
@@ -53,12 +52,12 @@ class TokenService(
     fun generateTokenJWT(username: String): String {
         return Jwts
             .builder()
-            .setSubject(username)
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .subject(username)
+            .signWith(getSignInKey(), Jwts.SIG.HS256)
             .compact()
     }
 
-    private fun getSignInKey(): Key {
+    private fun getSignInKey(): SecretKey {
         val keyBytes: ByteArray = Decoders.BASE64.decode(secretKey)
         return Keys.hmacShaKeyFor(keyBytes)
     }

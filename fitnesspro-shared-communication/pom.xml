@@ -14,11 +14,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>17</java.version>
-        <springdoc.web.version>2.8.4</springdoc.web.version>
-        <jjwt.version>0.11.5</jjwt.version>
-        <jack.version>2.18.2</jack.version>
-        <maven.plugin.version>3.1.1</maven.plugin.version>
+        <maven.plugin.version>3.1.4</maven.plugin.version>
     </properties>
 
     <dependencies>

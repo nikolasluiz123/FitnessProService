@@ -9,25 +9,25 @@ import java.time.LocalDateTime
 
 @Schema(description = "Classe DTO usada para vincular o relatório de agendamentos ao profissional")
 data class SchedulerReportDTO(
-    @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
+    @field:Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "{baseDTO.id.size}")
     override var id: String? = null,
 
-    @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    @field:Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var creationDate: LocalDateTime? = null,
 
-    @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    @field:Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
 
-    @Schema(description = "Identificador do profissional", required = true)
+    @field:Schema(description = "Identificador do profissional", required = true)
     @field:NotNull(message = "{schedulerReportDTO.personId.notNull}")
     var personId: String? = null,
 
-    @Schema(description = "Identificador do relatório", required = true)
+    @field:Schema(description = "Identificador do relatório", required = true)
     @field:NotNull(message = "{schedulerReportDTO.report.notNull}")
     var report: ReportDTO? = null,
 
-    @Schema(description = "Contexto do relatório", required = true)
+    @field:Schema(description = "Contexto do relatório", required = true)
     @field:NotNull(message = "{schedulerReportDTO.reportContext.notNull}")
     var reportContext: EnumReportContext? = null
 ): AuditableDTO

@@ -6,15 +6,15 @@ import jakarta.validation.constraints.NotEmpty
 
 @Schema(description = "Classe DTO usada para enviar uma notificação para um ou mais dispositivos específicos")
 data class NotificationDTO(
-    @Schema(description = "Título que será exibido na notificação", required = true)
+    @field:Schema(description = "Título que será exibido na notificação", required = true)
     @field:NotBlank(message = "notificationDTO.title.notBlank")
     var title: String? = null,
 
-    @Schema(description = "Mensagem que será exibida na notificação", required = true)
+    @field:Schema(description = "Mensagem que será exibida na notificação", required = true)
     @field:NotBlank(message = "notificationDTO.message.notBlank")
     var message: String? = null,
 
-    @Schema(description = "Lista dos Ids dos Dispositivos que serão notificados", required = true)
+    @field:Schema(description = "Lista dos Ids dos Dispositivos que serão notificados", required = true)
     @field:NotEmpty(message = "notificationDTO.devicesIds.notEmpty")
     var devicesIds: List<String> = emptyList()
 )

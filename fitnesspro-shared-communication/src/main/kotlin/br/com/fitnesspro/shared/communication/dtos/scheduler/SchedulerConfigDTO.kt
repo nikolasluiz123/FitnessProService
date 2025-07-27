@@ -9,34 +9,34 @@ import java.time.LocalDateTime
 
 @Schema(description = "Classe DTO usada para manutenção de uma configuração dos agendamentos da pessoa")
 data class SchedulerConfigDTO(
-    @Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
+    @field:Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
 
-    @Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    @field:Schema(description = "Data de criação", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var creationDate: LocalDateTime? = null,
 
-    @Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    @field:Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
 
-    @Schema(description = "Valor booleano que representa se a notificação está ativada", required = true)
+    @field:Schema(description = "Valor booleano que representa se a notificação está ativada", required = true)
     @field:NotNull(message = "schedulerConfigDTO.notification.notNull")
     var notification: Boolean = false,
 
-    @Schema(description = "Tempo de antecedência da notificação em minutos", example = "30", required = true)
+    @field:Schema(description = "Tempo de antecedência da notificação em minutos", example = "30", required = true)
     @field:NotNull(message = "schedulerConfigDTO.notificationAntecedenceTime.notNull")
     @field:Min(value = 30, message = "schedulerConfigDTO.notificationAntecedenceTime.min")
     var notificationAntecedenceTime: Int = 30,
 
-    @Schema(description = "Densidade mínima de agendamento", example = "1", required = true)
+    @field:Schema(description = "Densidade mínima de agendamento", example = "1", required = true)
     @field:Min(value = 1, message = "schedulerConfigDTO.minScheduleDensity.min")
     var minScheduleDensity: Int = 1,
 
-    @Schema(description = "Densidade máxima de agendamento", example = "2", required = true)
+    @field:Schema(description = "Densidade máxima de agendamento", example = "2", required = true)
     @field:Min(value = 1, message = "schedulerConfigDTO.maxScheduleDensity.min")
     var maxScheduleDensity: Int = 2,
 
-    @Schema(description = "Identificador da pessoa", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
+    @field:Schema(description = "Identificador da pessoa", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = true)
     @field:NotNull(message = "schedulerConfigDTO.personId.notNull")
     var personId: String? = null
 ): AuditableDTO

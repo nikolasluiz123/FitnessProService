@@ -37,8 +37,7 @@ class ApplicationConfig(
 
     @Bean
     fun authenticationProvider(): AuthenticationProvider {
-        val authenticationProvider = DaoAuthenticationProvider()
-        authenticationProvider.setUserDetailsService(userDetailsService())
+        val authenticationProvider = DaoAuthenticationProvider(userDetailsService())
         authenticationProvider.setPasswordEncoder(passwordEncoder())
 
         return authenticationProvider
