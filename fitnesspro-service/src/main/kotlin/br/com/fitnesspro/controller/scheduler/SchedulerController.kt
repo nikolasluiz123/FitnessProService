@@ -66,14 +66,6 @@ class SchedulerController(
         )
     }
 
-    @PostMapping(EndPointsV1.SCHEDULER_CONFIG)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveSchedulerConfig(@RequestBody @Valid schedulerConfigDTO: SchedulerConfigDTO): ResponseEntity<PersistenceServiceResponse<SchedulerConfigDTO>> {
-        schedulerService.saveSchedulerConfig(schedulerConfigDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = schedulerConfigDTO))
-    }
-
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
