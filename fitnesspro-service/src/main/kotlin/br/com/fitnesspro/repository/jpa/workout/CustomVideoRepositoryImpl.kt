@@ -2,6 +2,8 @@ package br.com.fitnesspro.repository.jpa.workout
 
 import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.models.workout.VideoExercise
+import br.com.fitnesspro.models.workout.VideoExerciseExecution
+import br.com.fitnesspro.models.workout.VideoExercisePreDefinition
 import br.com.fitnesspro.repository.common.helper.Constants.QR_NL
 import br.com.fitnesspro.repository.common.query.Parameter
 import br.com.fitnesspro.repository.common.query.getResultList
@@ -30,17 +32,41 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${VideoExercise::class.java.name} videoExercise ")
-            add(" inner join videoExercise.exercise exercise ")
-            add(" inner join exercise.workoutGroup workoutGroup ")
-            add(" inner join workoutGroup.workout ")
-            add(" inner join videoExercise.video ")
+            add(" from ${Video::class.java.name} video ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where ( ")
-            add("           workout.professionalPerson.id = :pPersonId ")
-            add("           or workout.academyMemberPerson.id = :pPersonId ")
+            add("           exists ( ")
+            add("                       select 1 ")
+            add("                       from ${VideoExercise::class.java.name} videoExercise ")
+            add("                       inner join videoExercise.exercise e ")
+            add("                       inner join e.workoutGroup group ")
+            add("                       inner join group.workout workout ")
+            add("                       where workout.professionalPerson.id = :pPersonId ")
+            add("                       or workout.academyMemberPerson.id = :pPersonId ")
+            add("                       and video.id = videoExercise.video.id ")
+            add("                  ) ")
+            add("           or ")
+            add("           exists ( ")
+            add("                       select 1 ")
+            add("                       from ${VideoExerciseExecution::class.java.name} videoExecution ")
+            add("                       inner join videoExecution.exerciseExecution exerciseExec ")
+            add("                       inner join exerciseExec.exercise e ")
+            add("                       inner join e.workoutGroup group ")
+            add("                       inner join group.workout workout ")
+            add("                       where workout.professionalPerson.id = :pPersonId ")
+            add("                       or workout.academyMemberPerson.id = :pPersonId ")
+            add("                       and video.id = videoExecution.video.id ")
+            add("                  ) ")
+            add("           or ")
+            add("           exists ( ")
+            add("                       select 1 ")
+            add("                       from ${VideoExercisePreDefinition::class.java.name} videoPreDef ")
+            add("                       inner join videoPreDef.exercisePreDefinition exercisePreDef ")
+            add("                       where exercisePreDef.personalTrainerPerson.id = :pPersonId ")
+            add("                       and video.id = videoPreDef.video.id ")
+            add("                  ) ")
             add("       ) ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
