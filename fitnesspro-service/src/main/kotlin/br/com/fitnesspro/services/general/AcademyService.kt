@@ -2,11 +2,6 @@ package br.com.fitnesspro.services.general
 
 import br.com.fitnesspro.config.application.cache.ACADEMY_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.TIME
-import br.com.fitnesspro.core.extensions.format
-import br.com.fitnesspro.core.extensions.getFirstPartFullDisplayName
-import br.com.fitnesspro.exception.BusinessException
-import br.com.fitnesspro.models.general.PersonAcademyTime
 import br.com.fitnesspro.repository.auditable.general.IAcademyRepository
 import br.com.fitnesspro.repository.auditable.general.IPersonAcademyTimeRepository
 import br.com.fitnesspro.repository.jpa.general.academy.ICustomAcademyRepository
@@ -20,9 +15,7 @@ import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class AcademyService(
@@ -31,43 +24,7 @@ class AcademyService(
     private val academyRepository: IAcademyRepository,
     private val customAcademyRepository: ICustomAcademyRepository,
     private val academyServiceMapper: AcademyServiceMapper,
-    private val messageSource: MessageSource
 ) {
-
-    @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
-    fun savePersonAcademyTime(personAcademyTimeDTO: PersonAcademyTimeDTO) {
-        val personAcademyTime = academyServiceMapper.getPersonAcademyTime(personAcademyTimeDTO)
-
-        validatePersonAcademyTime(personAcademyTime)
-
-        personAcademyTimeRepository.save(personAcademyTime)
-    }
-
-    @Throws(BusinessException::class)
-    private fun validatePersonAcademyTime(personAcademyTime: PersonAcademyTime) {
-        val conflictPersonAcademyTime = customPersonAcademyTimeRepository.getConflictPersonAcademyTime(
-            personAcademyTime.id,
-            personAcademyTime.person?.id!!,
-            personAcademyTime.dayOfWeek!!,
-            personAcademyTime.timeStart!!,
-            personAcademyTime.timeEnd!!
-        )
-
-        if (conflictPersonAcademyTime != null) {
-            val message = messageSource.getMessage(
-                "academy.error.time.conflict",
-                arrayOf(
-                    conflictPersonAcademyTime.dayOfWeek!!.getFirstPartFullDisplayName(),
-                    conflictPersonAcademyTime.timeStart!!.format(TIME),
-                    conflictPersonAcademyTime.timeEnd!!.format(TIME)
-                ),
-                Locale.getDefault()
-            )
-
-            throw BusinessException(message)
-        }
-    }
-
     @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademy(academyDTO: AcademyDTO) {
         val academy = academyServiceMapper.getAcademy(academyDTO)

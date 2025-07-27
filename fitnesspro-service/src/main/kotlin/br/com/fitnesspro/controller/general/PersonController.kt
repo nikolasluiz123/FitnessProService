@@ -59,14 +59,6 @@ class PersonController(
         )
     }
 
-    @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun savePersonAcademyTime(@RequestBody @Valid personAcademyTimeDTO: PersonAcademyTimeDTO): ResponseEntity<PersistenceServiceResponse<PersonAcademyTimeDTO>> {
-        academyService.savePersonAcademyTime(personAcademyTimeDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = personAcademyTimeDTO))
-    }
-
     @PostMapping(EndPointsV1.PERSON_ACADEMY_TIME_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
