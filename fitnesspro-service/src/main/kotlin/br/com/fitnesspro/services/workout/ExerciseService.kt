@@ -1,6 +1,9 @@
 package br.com.fitnesspro.services.workout
 
-import br.com.fitnesspro.config.application.cache.*
+import br.com.fitnesspro.config.application.cache.EXERCISE_EXECUTION_IMPORT_CACHE_NAME
+import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
+import br.com.fitnesspro.config.application.cache.EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME
+import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.repository.auditable.workout.IExerciseExecutionRepository
 import br.com.fitnesspro.repository.auditable.workout.IExercisePreDefinitionRepository
 import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
@@ -26,29 +29,15 @@ class ExerciseService(
     private val customExerciseRepository: ICustomExerciseRepository,
     private val customExerciseExecutionRepository: ICustomExerciseExecutionRepository,
     private val customExercisePreDefinitionRepository: ICustomExercisePreDefinitionRepository,
-    private val workoutService: WorkoutService,
     private val videoService: VideoService,
     private val exerciseServiceMapper: ExerciseServiceMapper
 ) {
-    @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME, WORKOUT_GROUP_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveExercise(exerciseDTO: ExerciseDTO) {
-        workoutService.saveWorkoutGroup(exerciseDTO.workoutGroupDTO!!)
-
-        val exercise = exerciseServiceMapper.getExercise(exerciseDTO)
-        exerciseRepository.save(exercise)
-    }
 
     @Cacheable(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getExercisesImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ExerciseDTO> {
         return customExerciseRepository.getExercisesImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseDTO)
     }
 
-    /**
-     * Função que salva os [br.com.fitnesspro.models.workout.Exercise] vindos de uma exportação do móvel.
-     *
-     * O [ExerciseDTO.workoutGroupDTO] é totalmente ignorado nesse processamento, pois, [WorkoutService.saveWorkoutGroupBatch]
-     * já vai ter persistido o [br.com.fitnesspro.models.workout.WorkoutGroup] devido à ordem das execuções.
-     */
     @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
     fun saveExerciseBatch(exerciseDTOs: List<ExerciseDTO>) {
         val exercises = exerciseDTOs.map {

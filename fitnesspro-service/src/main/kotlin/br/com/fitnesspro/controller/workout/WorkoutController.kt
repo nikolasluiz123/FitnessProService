@@ -11,9 +11,7 @@ import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefini
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -30,23 +28,6 @@ import org.springframework.web.bind.annotation.*
 class WorkoutController(
     private val workoutService: WorkoutService
 ) {
-
-    @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkout(@RequestBody @Valid workoutDTO: WorkoutDTO): ResponseEntity<PersistenceServiceResponse<WorkoutDTO>> {
-        workoutService.saveWorkout(workoutDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = workoutDTO))
-    }
-
-    @PutMapping(EndPointsV1.WORKOUT_INACTIVATE)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun inactivateWorkout(@PathVariable("workoutId") workoutId: String): ResponseEntity<FitnessProServiceResponse> {
-        workoutService.inactivateWorkout(workoutId)
-        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
-    }
-
 
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
@@ -86,22 +67,6 @@ class WorkoutController(
                 success = true,
             )
         )
-    }
-
-    @PostMapping(EndPointsV1.WORKOUT_GROUP)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutGroup(@RequestBody @Valid workoutGroupDTO: WorkoutGroupDTO): ResponseEntity<PersistenceServiceResponse<WorkoutGroupDTO>> {
-        workoutService.saveWorkoutGroup(workoutGroupDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = workoutGroupDTO))
-    }
-
-    @PutMapping(EndPointsV1.WORKOUT_GROUP_INACTIVATE)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun inactivateWorkoutGroup(@PathVariable("workoutGroupId") workoutGroupId: String): ResponseEntity<FitnessProServiceResponse> {
-        workoutService.inactivateWorkoutGroup(workoutGroupId)
-        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)

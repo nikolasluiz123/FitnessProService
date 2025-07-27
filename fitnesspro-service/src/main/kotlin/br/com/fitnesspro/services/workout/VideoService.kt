@@ -57,15 +57,6 @@ class VideoService(
         videoExerciseRepository.saveAll(videos)
     }
 
-    @CacheEvict(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
-    fun createExerciseVideo(newVideoExerciseDTO: NewVideoExerciseDTO) {
-        val video = videoServiceMapper.getVideo(newVideoExerciseDTO.videoDTO!!)
-        videoRepository.save(video)
-
-        val videoExercise = videoServiceMapper.getVideoExercise(newVideoExerciseDTO)
-        videoExerciseRepository.save(videoExercise)
-    }
-
     @CacheEvict(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
     fun createExerciseExecutionVideos(videosDTO: List<NewVideoExerciseExecutionDTO>) {
         if (videosDTO.isNotEmpty()) {

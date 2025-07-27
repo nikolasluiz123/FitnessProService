@@ -31,14 +31,6 @@ class ExerciseController(
     private val videoService: VideoService
 ) {
 
-    @PostMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExercise(@RequestBody @Valid exerciseDTO: ExerciseDTO): ResponseEntity<PersistenceServiceResponse<ExerciseDTO>> {
-        exerciseService.saveExercise(exerciseDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = exerciseDTO))
-    }
-
     @PostMapping(EndPointsV1.EXERCISE_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")

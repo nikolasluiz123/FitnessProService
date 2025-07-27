@@ -5,7 +5,6 @@ import br.com.fitnesspro.config.request.EnumRequestAttributes
 import br.com.fitnesspro.services.workout.VideoService
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.NewVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -29,14 +28,6 @@ import org.springframework.web.bind.annotation.*
 class VideoController(
     private val videoService: VideoService
 ) {
-
-    @PostMapping(EndPointsV1.VIDEO_EXERCISE)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun createExerciseVideo(@RequestBody @Valid newVideoExerciseDTO: NewVideoExerciseDTO): ResponseEntity<PersistenceServiceResponse<NewVideoExerciseDTO>> {
-        videoService.createExerciseVideo(newVideoExerciseDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = newVideoExerciseDTO))
-    }
 
     @PostMapping(EndPointsV1.VIDEO_EXECUTION)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
