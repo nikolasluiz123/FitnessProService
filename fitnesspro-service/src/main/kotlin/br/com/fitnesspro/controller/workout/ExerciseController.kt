@@ -10,9 +10,7 @@ import br.com.fitnesspro.shared.communication.dtos.workout.*
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
 import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -189,22 +187,6 @@ class ExerciseController(
                 success = true
             )
         )
-    }
-
-    @PostMapping(EndPointsV1.EXERCISE_EXECUTION_NEW)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun newExerciseExecution(@RequestBody @Valid newExerciseExecutionDTO: NewExerciseExecutionDTO): ResponseEntity<FitnessProServiceResponse> {
-        exerciseService.newExerciseExecution(newExerciseExecutionDTO)
-        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
-    }
-
-    @PostMapping(EndPointsV1.EXERCISE_EXECUTION)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
-    @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExerciseExecution(@RequestBody @Valid exerciseExecutionDTO: ExerciseExecutionDTO): ResponseEntity<PersistenceServiceResponse<ExerciseExecutionDTO>> {
-        exerciseService.saveExerciseExecution(exerciseExecutionDTO)
-        return ResponseEntity.ok(PersistenceServiceResponse(code = HttpStatus.OK.value(), success = true, savedDTO = exerciseExecutionDTO))
     }
 
     @PostMapping(EndPointsV1.EXERCISE_PREDEFINITION_EXPORT)

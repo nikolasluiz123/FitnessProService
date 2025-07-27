@@ -3,7 +3,6 @@ package br.com.fitnesspro.services.workout
 import br.com.fitnesspro.config.application.cache.EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.EXERCISE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.config.application.cache.EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME
-import br.com.fitnesspro.config.application.cache.VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.repository.auditable.workout.IExerciseExecutionRepository
 import br.com.fitnesspro.repository.auditable.workout.IExercisePreDefinitionRepository
 import br.com.fitnesspro.repository.auditable.workout.IExerciseRepository
@@ -14,7 +13,6 @@ import br.com.fitnesspro.services.mappers.ExerciseServiceMapper
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.NewExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
 import org.springframework.cache.annotation.CacheEvict
@@ -29,7 +27,6 @@ class ExerciseService(
     private val customExerciseRepository: ICustomExerciseRepository,
     private val customExerciseExecutionRepository: ICustomExerciseExecutionRepository,
     private val customExercisePreDefinitionRepository: ICustomExercisePreDefinitionRepository,
-    private val videoService: VideoService,
     private val exerciseServiceMapper: ExerciseServiceMapper
 ) {
 
@@ -45,20 +42,6 @@ class ExerciseService(
         }
 
         exerciseRepository.saveAll(exercises)
-    }
-
-    @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME, VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
-    fun newExerciseExecution(newExerciseExecutionDTO: NewExerciseExecutionDTO) {
-        val exerciseExecution = exerciseServiceMapper.getExerciseExecution(newExerciseExecutionDTO.exerciseExecutionDTO!!)
-        exerciseExecutionRepository.save(exerciseExecution)
-
-        videoService.createExerciseExecutionVideos(newExerciseExecutionDTO.videosDTO)
-    }
-
-    @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveExerciseExecution(exerciseExecutionDTO: ExerciseExecutionDTO) {
-        val exerciseExecution = exerciseServiceMapper.getExerciseExecution(exerciseExecutionDTO)
-        exerciseExecutionRepository.save(exerciseExecution)
     }
 
     @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)

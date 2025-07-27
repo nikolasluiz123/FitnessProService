@@ -73,11 +73,6 @@ class VideoService(
         }
     }
 
-    @CacheEvict(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
-    fun createExecutionVideo(newVideoExecutionDTO: NewVideoExerciseExecutionDTO) {
-        createExerciseExecutionVideos(listOf(newVideoExecutionDTO))
-    }
-
     @Cacheable(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
     fun getVideoExercisesExecutionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<VideoExerciseExecutionDTO> {
         return customVideoExerciseExecutionRepository.getVideoExercisesExecutionImport(filter, pageInfos).map { video ->
