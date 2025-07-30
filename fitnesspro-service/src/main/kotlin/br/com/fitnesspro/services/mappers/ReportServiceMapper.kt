@@ -26,6 +26,7 @@ class ReportServiceMapper(
                     filePath = dto.filePath!!,
                     date = dto.date!!,
                     kbSize = dto.kbSize!!,
+                    active = dto.active
                 )
             }
 
@@ -36,6 +37,7 @@ class ReportServiceMapper(
                     filePath = dto.filePath!!,
                     date = dto.date!!,
                     kbSize = dto.kbSize!!,
+                    active = dto.active
                 )
             }
 
@@ -47,6 +49,7 @@ class ReportServiceMapper(
                     filePath = dto.filePath!!,
                     date = dto.date!!,
                     kbSize = dto.kbSize!!,
+                    active = dto.active
                 )
             }
         }
@@ -62,6 +65,7 @@ class ReportServiceMapper(
             filePath = model.filePath,
             date = model.date,
             kbSize = model.kbSize,
+            active = model.active
         )
     }
 
@@ -72,16 +76,18 @@ class ReportServiceMapper(
             dto.id == null -> {
                 SchedulerReport(
                     person = personRepository.findById(dto.personId!!).get(),
-                    report = getReport(dto.report!!),
-                    reportContext = dto.reportContext
+                    report = reportRepository.findById(dto.reportId!!).get(),
+                    reportContext = dto.reportContext,
+                    active = dto.active
                 )
             }
 
             schedulerReport?.isPresent == true -> {
                 schedulerReport.get().copy(
                     person = personRepository.findById(dto.personId!!).get(),
-                    report = getReport(dto.report!!),
-                    reportContext = dto.reportContext
+                    report = reportRepository.findById(dto.reportId!!).get(),
+                    reportContext = dto.reportContext,
+                    active = dto.active
                 )
             }
 
@@ -89,8 +95,9 @@ class ReportServiceMapper(
                 SchedulerReport(
                     id = dto.id!!,
                     person = personRepository.findById(dto.personId!!).get(),
-                    report = getReport(dto.report!!),
-                    reportContext = dto.reportContext
+                    report = reportRepository.findById(dto.reportId!!).get(),
+                    reportContext = dto.reportContext,
+                    active = dto.active
                 )
             }
         }
@@ -102,8 +109,9 @@ class ReportServiceMapper(
             creationDate = model.creationDate,
             updateDate = model.updateDate,
             personId = model.person?.id,
-            report = getReportDTO(reportRepository.findById(model.report?.id!!).get()),
-            reportContext = model.reportContext
+            reportId = model.report?.id!!,
+            reportContext = model.reportContext,
+            active = model.active
         )
     }
 }
