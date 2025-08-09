@@ -13,10 +13,6 @@
     <artifactId>fitnesspro-shared-communication</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <maven.plugin.version>3.1.4</maven.plugin.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

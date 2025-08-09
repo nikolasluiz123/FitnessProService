@@ -1,0 +1,65 @@
+package br.com.fitnesspro.common.service.mappers
+
+import br.com.fitnesspro.common.repository.auditable.report.IReportRepository
+import br.com.fitnesspro.models.general.Report
+import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
+import org.springframework.stereotype.Service
+
+@Service
+class ReportServiceMapper(
+    private val reportRepository: IReportRepository,
+) {
+    fun getReport(dto: ReportDTO): Report {
+        val report = dto.id?.let { reportRepository.findById(it) }
+
+        return when {
+            dto.id == null -> {
+                Report(
+                    name = dto.name!!,
+                    extension = dto.extension!!,
+                    filePath = dto.filePath!!,
+                    date = dto.date!!,
+                    kbSize = dto.kbSize!!,
+                    active = dto.active
+                )
+            }
+
+            report?.isPresent == true -> {
+                report.get().copy(
+                    name = dto.name!!,
+                    extension = dto.extension!!,
+                    filePath = dto.filePath!!,
+                    date = dto.date!!,
+                    kbSize = dto.kbSize!!,
+                    active = dto.active
+                )
+            }
+
+            else -> {
+                Report(
+                    id = dto.id!!,
+                    name = dto.name!!,
+                    extension = dto.extension!!,
+                    filePath = dto.filePath!!,
+                    date = dto.date!!,
+                    kbSize = dto.kbSize!!,
+                    active = dto.active
+                )
+            }
+        }
+    }
+
+    fun getReportDTO(model: Report): ReportDTO {
+        return ReportDTO(
+            id = model.id,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate,
+            name = model.name,
+            extension = model.extension,
+            filePath = model.filePath,
+            date = model.date,
+            kbSize = model.kbSize,
+            active = model.active
+        )
+    }
+}

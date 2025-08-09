@@ -1,5 +1,6 @@
 package br.com.fitnesspro.config.application.cache
 
+import br.com.fitnesspro.core.cache.cacheNames
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching

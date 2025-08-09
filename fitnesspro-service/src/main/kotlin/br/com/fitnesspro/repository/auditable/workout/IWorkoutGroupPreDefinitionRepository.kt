@@ -1,6 +1,0 @@
-package br.com.fitnesspro.repository.auditable.workout
-
-import br.com.fitnesspro.models.workout.WorkoutGroupPreDefinition
-import br.com.fitnesspro.repository.common.IAuditableFitnessProRepository
-
-interface IWorkoutGroupPreDefinitionRepository: IAuditableFitnessProRepository<WorkoutGroupPreDefinition>

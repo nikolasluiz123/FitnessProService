@@ -1,8 +1,9 @@
 package br.com.fitnesspro.config.application
 
+import br.com.fitnesspro.authentication.config.FitnessProPasswordEncoder
+import br.com.fitnesspro.authentication.repository.auditable.IUserRepository
 import br.com.fitnesspro.config.gson.SelectiveGsonHttpMessageConverter
-import br.com.fitnesspro.config.interceptors.LoggingInterceptor
-import br.com.fitnesspro.repository.auditable.general.IUserRepository
+import br.com.fitnesspro.log.config.interceptor.LoggingInterceptor
 import com.google.gson.Gson
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory
 import org.springframework.boot.web.server.WebServerFactoryCustomizer

@@ -5,7 +5,6 @@ object EndPointsV1 {
 
     const val PERSON = "person"
     const val PERSON_V1 = "$API_V1/$PERSON"
-    const val PERSON_ACADEMY_TIME = "/academy/time"
     const val PERSON_EXPORT = "/export"
     const val PERSON_EMAIL = "/email"
     const val PERSON_ACADEMY_TIME_EXPORT = "/academy/time/export"
@@ -32,17 +31,13 @@ object EndPointsV1 {
     const val SCHEDULER_RECURRENT = "/recurrent"
     const val SCHEDULER_EXPORT = "/export"
     const val SCHEDULER_IMPORT = "/import"
-    const val SCHEDULER_CONFIG = "/config"
     const val SCHEDULER_CONFIG_EXPORT = "/config/export"
     const val SCHEDULER_CONFIG_IMPORT = "/config/import"
 
     const val WORKOUT = "workout"
     const val WORKOUT_V1 = "$API_V1/$WORKOUT"
-    const val WORKOUT_INACTIVATE = "/inactivate/{workoutId}"
     const val WORKOUT_EXPORT = "/export"
     const val WORKOUT_IMPORT = "/import"
-    const val WORKOUT_GROUP = "/group"
-    const val WORKOUT_GROUP_INACTIVATE = "/group/inactivate/{workoutGroupId}"
     const val WORKOUT_GROUP_EXPORT = "/group/export"
     const val WORKOUT_GROUP_IMPORT = "/group/import"
     const val WORKOUT_GROUP_PREDEFINITION_EXPORT = "/group/predefinition/export"
@@ -88,8 +83,6 @@ object EndPointsV1 {
     const val EXERCISE_IMPORT = "/import"
     const val EXERCISE_VIDEO_IMPORT = "/video/import"
     const val EXERCISE_VIDEO_EXPORT = "/video/export"
-    const val EXERCISE_EXECUTION = "/execution"
-    const val EXERCISE_EXECUTION_NEW = "$EXERCISE_EXECUTION/new"
     const val EXERCISE_EXECUTION_IMPORT = "/execution/import"
     const val EXERCISE_EXECUTION_EXPORT = "/execution/export"
     const val EXERCISE_EXECUTION_VIDEO_IMPORT = "/execution/video/import"
@@ -101,8 +94,6 @@ object EndPointsV1 {
 
     const val VIDEO = "video"
     const val VIDEO_V1 = "$API_V1/$VIDEO"
-    const val VIDEO_EXERCISE = "/exercise"
-    const val VIDEO_EXECUTION = "/execution"
     const val VIDEO_EXPORT = "/export"
     const val VIDEO_IMPORT = "/import"
 
@@ -110,10 +101,10 @@ object EndPointsV1 {
     const val REPORT_V1 = "$API_V1/$REPORT"
     const val REPORT_IMPORT = "/import"
     const val REPORT_EXPORT = "/export"
-    const val SCHEDULER_REPORT = "/scheduler"
-    const val DELETE_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/{reportId}"
-    const val DELETE_ALL_SCHEDULER_REPORT = "${SCHEDULER_REPORT}/all"
-    const val SCHEDULER_REPORT_EXPORT = "$SCHEDULER_REPORT/export"
-    const val SCHEDULER_REPORT_IMPORT = "$SCHEDULER_REPORT/import"
+
+    const val SCHEDULER_REPORT: String = "scheduler/report"
+    const val SCHEDULER_REPORT_V1 = "$API_V1/$SCHEDULER_REPORT"
+    const val SCHEDULER_REPORT_IMPORT = "/import"
+    const val SCHEDULER_REPORT_EXPORT = "/export"
 
 }
