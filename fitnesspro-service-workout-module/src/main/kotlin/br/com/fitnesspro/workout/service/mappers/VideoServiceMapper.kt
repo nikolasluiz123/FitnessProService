@@ -11,7 +11,7 @@ import br.com.fitnesspro.workout.repository.auditable.IExerciseRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseRepository
-import br.com.fitnesspro.workout.repository.auditable.IVideoRepository
+import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
 import org.springframework.stereotype.Service
 import kotlin.io.extension
 

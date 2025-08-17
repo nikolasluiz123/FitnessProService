@@ -3,6 +3,7 @@ package br.com.fitnesspro.models.workout
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.base.AuditableModel
 import br.com.fitnesspro.models.base.IntegratedModel
+import br.com.fitnesspro.models.base.StorageModel
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -18,6 +19,9 @@ data class Video(
 
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
+
+    @Column(name = "storage_transmission_date")
+    override var storageTransmissionDate: LocalDateTime? = null,
 
     @Column(name = "creation_date", nullable = false)
     override var creationDate: LocalDateTime = dateTimeNow(),
@@ -48,4 +52,4 @@ data class Video(
 
     @Column(nullable = false)
     var height: Int? = null
-) : IntegratedModel, AuditableModel
+) : IntegratedModel, AuditableModel, StorageModel

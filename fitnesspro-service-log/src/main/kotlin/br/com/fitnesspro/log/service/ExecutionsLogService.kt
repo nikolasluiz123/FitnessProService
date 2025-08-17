@@ -21,6 +21,7 @@ import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
+import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType.*
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
@@ -54,7 +55,7 @@ class ExecutionsLogService(
 
         when {
             serviceTokenDTO?.user != null -> {
-                if (executionType in listOf(EnumExecutionType.IMPORTATION, EnumExecutionType.EXPORTATION)) {
+                if (executionType in listOf(IMPORTATION, EXPORTATION, STORAGE)) {
                     val notFinishedExecutionLog = customLogRepository.findNotFinishedExecutionLog(
                         userEmail = serviceTokenDTO.user?.email!!,
                         executionType = executionType,
@@ -125,12 +126,13 @@ class ExecutionsLogService(
 
     private fun getExecutionType(method: String?, requestURI: String): EnumExecutionType {
         return when {
-            requestURI.contains("import") -> EnumExecutionType.IMPORTATION
-            requestURI.contains("export") -> EnumExecutionType.EXPORTATION
-            method == "GET" -> EnumExecutionType.GET
-            method == "POST" -> EnumExecutionType.POST
-            method == "PUT" -> EnumExecutionType.PUT
-            method == "DELETE" -> EnumExecutionType.DELETE
+            requestURI.contains("import") -> IMPORTATION
+            requestURI.contains("export") -> EXPORTATION
+            requestURI.contains("storage") -> STORAGE
+            method == "GET" -> GET
+            method == "POST" -> POST
+            method == "PUT" -> PUT
+            method == "DELETE" -> DELETE
             else -> {
                 val message = messageSource.getMessage("execution.log.error.invalid.type", null, Locale.getDefault())
                 throw IllegalArgumentException(message)
@@ -155,7 +157,7 @@ class ExecutionsLogService(
         if (exception != null) {
             log.state = EnumExecutionState.ERROR
             logPackage.error = exception.stackTraceToString()
-        } else if (log.type in listOf(EnumExecutionType.IMPORTATION, EnumExecutionType.EXPORTATION)) {
+        } else if (log.type in listOf(IMPORTATION, EXPORTATION, STORAGE)) {
             log.state = EnumExecutionState.FINISHED
         }
 
@@ -214,7 +216,7 @@ class ExecutionsLogService(
 
     fun createScheduledTaskStartLog(endPoint: String): Pair<String, String> {
         val log = ExecutionLog(
-            type = EnumExecutionType.SCHEDULED_TASK,
+            type = SCHEDULED_TASK,
             endPoint = "/api/v1/scheduled/task/$endPoint",
             state = EnumExecutionState.RUNNING
         )

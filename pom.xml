@@ -24,6 +24,7 @@
         <caffeine.version>3.2.2</caffeine.version>
         <firebase.admin.version>9.5.0</firebase.admin.version>
         <maven.plugin.version>3.1.4</maven.plugin.version>
+        <google.cloud.version>2.55.0</google.cloud.version>
     </properties>
 
     <distributionManagement>

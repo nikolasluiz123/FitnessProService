@@ -12,7 +12,7 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseRepository
-import br.com.fitnesspro.workout.repository.auditable.IVideoRepository
+import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
 import br.com.fitnesspro.workout.repository.jpa.ICustomVideoExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.jpa.ICustomVideoExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.jpa.ICustomVideoExerciseRepository

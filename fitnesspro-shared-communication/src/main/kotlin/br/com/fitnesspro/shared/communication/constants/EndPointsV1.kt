@@ -107,4 +107,11 @@ object EndPointsV1 {
     const val SCHEDULER_REPORT_IMPORT = "/import"
     const val SCHEDULER_REPORT_EXPORT = "/export"
 
+    const val STORAGE = "storage"
+    const val STORAGE_V1 = "$API_V1/$STORAGE"
+    const val UPLOAD_REPORTS = "upload/report"
+    const val DELETE_REPORTS = "delete/report"
+    const val UPLOAD_VIDEOS = "upload/video"
+    const val DELETE_VIDEOS = "delete/video"
+
 }

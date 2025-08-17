@@ -67,6 +67,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>${google.cloud.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>br.com</groupId>
             <artifactId>fitnesspro-shared-communication</artifactId>
             <version>${project.version}</version>

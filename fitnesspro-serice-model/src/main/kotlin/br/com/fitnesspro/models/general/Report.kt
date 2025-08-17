@@ -3,6 +3,7 @@ package br.com.fitnesspro.models.general
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.base.AuditableModel
 import br.com.fitnesspro.models.base.IntegratedModel
+import br.com.fitnesspro.models.base.StorageModel
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -27,6 +28,9 @@ data class Report(
     @Column(name = "transmission_date", nullable = false)
     override var transmissionDate: LocalDateTime = dateTimeNow(),
 
+    @Column(name = "storage_transmission_date")
+    override var storageTransmissionDate: LocalDateTime? = null,
+
     @Column(nullable = false, length = 256)
     var name: String? = null,
 
@@ -40,5 +44,5 @@ data class Report(
     var date: LocalDateTime = LocalDateTime.now(),
 
     @Column(nullable = false)
-    var kbSize: Long? = null
-) : IntegratedModel, AuditableModel
+    var kbSize: Long? = null,
+) : IntegratedModel, AuditableModel, StorageModel
