@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Entity
 @Table(name = "report")
@@ -30,6 +31,15 @@ data class Report(
 
     @Column(name = "storage_transmission_date")
     override var storageTransmissionDate: LocalDateTime? = null,
+
+    @Column(name = "storage_url", columnDefinition = "TEXT")
+    override var storageUrl: String? = null,
+
+    @Column(name = "storage_url_expiration")
+    override var storageUrlExpiration: Long? = null,
+
+    @Column(name = "expiration_unit")
+    override var expirationUnit: TimeUnit? = null,
 
     @Column(nullable = false, length = 256)
     var name: String? = null,
