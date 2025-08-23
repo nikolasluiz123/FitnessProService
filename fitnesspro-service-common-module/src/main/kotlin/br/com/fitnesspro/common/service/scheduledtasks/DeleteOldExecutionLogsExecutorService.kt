@@ -25,8 +25,8 @@ class DeleteOldExecutionLogsExecutorService(
             customDeleteExecutionsLogRepository.getIdsExecutionLogPackageDelete(it)
         }.flatten()
 
-        executionLogsPackageRepository.deleteAllByIdInBatch(executionLogsPackages)
-        executionsLogRepository.deleteAllByIdInBatch(executionLogs)
+        executionLogsPackages.chunked(60000).forEach(executionLogsPackageRepository::deleteAllByIdInBatch)
+        executionLogs.chunked(60000).forEach(executionsLogRepository::deleteAllByIdInBatch)
 
         val additionalInformation = StringJoiner("\n").apply {
             add(" ------------------------------------ Logs Deletados ------------------------------------ ")
