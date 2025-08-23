@@ -2,7 +2,6 @@ package br.com.fitnesspro.common.service.storage
 
 import br.com.fitnesspro.common.cloud.credentials.CloudCredentials
 import br.com.fitnesspro.common.cloud.enums.EnumGCBucketNames
-import br.com.fitnesspro.common.service.storage.result.StorageUploadResult
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.base.StorageModel
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes
@@ -12,13 +11,8 @@ import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
 
 abstract class AbstractGCBucketService {
-
-    open fun getUrlExpirationTime(): Long = 1
-
-    open fun getUrlExpirationTimeUnit(): TimeUnit = TimeUnit.DAYS
 
     protected fun getStorageService(): Storage {
         return StorageOptions.newBuilder()
@@ -32,7 +26,7 @@ abstract class AbstractGCBucketService {
         fileName: String,
         contentType: EnumGCBucketContentTypes,
         fileStream: InputStream,
-    ): StorageUploadResult {
+    ): String {
         val storage = getStorageService()
 
         val blobInfo = BlobInfo.newBuilder(BlobId.of(bucketName.value, fileName))
@@ -41,25 +35,12 @@ abstract class AbstractGCBucketService {
 
         storage.create(blobInfo, fileStream.readBytes())
 
-        val uri = storage.signUrl(
-            blobInfo,
-            getUrlExpirationTime(),
-            getUrlExpirationTimeUnit(),
-            Storage.SignUrlOption.withV4Signature()
-        ).toURI()
-
-        return StorageUploadResult(
-            uri = uri,
-            expiration = getUrlExpirationTime(),
-            expirationUnit = getUrlExpirationTimeUnit()
-        )
+        return "gs://${bucketName.value}/$fileName"
     }
 
-    protected fun writeDefaultFieldsStorageModelAfterUpload(model: StorageModel, uploadResult: StorageUploadResult) {
+    protected fun writeDefaultFieldsStorageModelAfterUpload(model: StorageModel, storageUrl: String) {
         model.storageTransmissionDate = dateTimeNow()
-        model.storageUrl = uploadResult.uri.toString()
-        model.storageUrlExpiration = uploadResult.expiration
-        model.expirationUnit = uploadResult.expirationUnit
+        model.storageUrl = storageUrl
     }
 
     fun deleteFile(bucketName: EnumGCBucketNames, fileName: String): Boolean {

@@ -10,7 +10,6 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @Entity
 @Table(name = "video")
@@ -35,12 +34,6 @@ data class Video(
 
     @Column(name = "storage_url", columnDefinition = "TEXT")
     override var storageUrl: String? = null,
-
-    @Column(name = "storage_url_expiration")
-    override var storageUrlExpiration: Long? = null,
-
-    @Column(name = "expiration_unit")
-    override var expirationUnit: TimeUnit? = null,
 
     @Column(nullable = false, length = 8)
     var extension: String? = null,
