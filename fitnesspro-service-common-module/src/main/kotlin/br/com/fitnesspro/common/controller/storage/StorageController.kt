@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 
@@ -26,7 +23,7 @@ class StorageController(
 
     @PostMapping(EndPointsV1.UPLOAD_REPORTS, consumes = ["multipart/form-data"])
     fun uploadReports(
-        @RequestParam ids: List<String>,
+        @RequestPart ids: List<String>,
         @RequestParam files: List<MultipartFile>,
         request: HttpServletRequest
     ): ResponseEntity<StorageServiceResponse> {
@@ -47,7 +44,7 @@ class StorageController(
 
     @PostMapping(EndPointsV1.UPLOAD_VIDEOS, consumes = ["multipart/form-data"])
     fun uploadVideos(
-        @RequestParam ids: List<String>,
+        @RequestPart ids: List<String>,
         @RequestParam files: List<MultipartFile>,
         request: HttpServletRequest
     ): ResponseEntity<StorageServiceResponse> {

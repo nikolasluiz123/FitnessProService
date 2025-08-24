@@ -1,6 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.general
 
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
+import br.com.fitnesspro.shared.communication.dtos.common.StorageModelDTO
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.*
 import java.time.LocalDateTime
@@ -16,6 +17,12 @@ data class ReportDTO(
 
     @field:Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
+
+    @field:Schema(description = "Data em que o relatório foi transmitido para a storage", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    override var storageTransmissionDate: LocalDateTime? = null,
+
+    @field:Schema(description = "Url utilizada para baixar o relatório", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    override var storageUrl: String? = null,
 
     @field:Schema(description = "Nome do relatório", example = "Relatório de Exercicios", required = true)
     @field:NotNull(message = "reportDTO.name.notNull")
@@ -48,4 +55,4 @@ data class ReportDTO(
     @field:Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "reportDTO.active.notNull")
     var active: Boolean = true,
-): AuditableDTO
+): AuditableDTO, StorageModelDTO

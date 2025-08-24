@@ -1,6 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.workout
 
 import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
+import br.com.fitnesspro.shared.communication.dtos.common.StorageModelDTO
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.*
 import java.time.LocalDateTime
@@ -16,6 +17,12 @@ data class VideoDTO(
 
     @field:Schema(description = "Data de atualização", example = "2023-01-01T10:00:00", required = false, readOnly = true)
     override var updateDate: LocalDateTime? = null,
+
+    @field:Schema(description = "Data em que o vídeo foi transmitido para a storage", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    override var storageTransmissionDate: LocalDateTime? = null,
+
+    @field:Schema(description = "Url utilizada para baixar o vídeo", example = "2023-01-01T10:00:00", required = false, readOnly = true)
+    override var storageUrl: String? = null,
 
     @field:Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "videoDTO.active.notNull")
@@ -55,4 +62,4 @@ data class VideoDTO(
     @field:NotNull(message = "videoDTO.height.notNull")
     @field:Min(value = 1, message = "videoDTO.height.min")
     var height: Int? = null
-): AuditableDTO
+): AuditableDTO, StorageModelDTO

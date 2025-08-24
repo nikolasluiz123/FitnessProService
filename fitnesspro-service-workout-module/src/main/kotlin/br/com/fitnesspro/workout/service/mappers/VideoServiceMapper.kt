@@ -1,19 +1,13 @@
 package br.com.fitnesspro.workout.service.mappers
 
+import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
 import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.models.workout.VideoExerciseExecution
 import br.com.fitnesspro.models.workout.VideoExercisePreDefinition
 import br.com.fitnesspro.shared.communication.dtos.workout.*
-import br.com.fitnesspro.workout.repository.auditable.IExerciseExecutionRepository
-import br.com.fitnesspro.workout.repository.auditable.IExercisePreDefinitionRepository
-import br.com.fitnesspro.workout.repository.auditable.IExerciseRepository
-import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseExecutionRepository
-import br.com.fitnesspro.workout.repository.auditable.IVideoExercisePreDefinitionRepository
-import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseRepository
-import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
+import br.com.fitnesspro.workout.repository.auditable.*
 import org.springframework.stereotype.Service
-import kotlin.io.extension
 
 @Service
 class VideoServiceMapper(
@@ -38,7 +32,9 @@ class VideoServiceMapper(
             kbSize = model.kbSize,
             seconds = model.seconds,
             width = model.width,
-            height = model.height
+            height = model.height,
+            storageUrl = model.storageUrl,
+            storageTransmissionDate = model.storageTransmissionDate
         )
     }
 
@@ -55,7 +51,9 @@ class VideoServiceMapper(
                     kbSize = dto.kbSize!!,
                     seconds = dto.seconds!!,
                     width = dto.width!!,
-                    height = dto.height!!
+                    height = dto.height!!,
+                    storageUrl = dto.storageUrl,
+                    storageTransmissionDate = dto.storageTransmissionDate
                 )
             }
 
@@ -68,7 +66,9 @@ class VideoServiceMapper(
                     kbSize = dto.kbSize!!,
                     seconds = dto.seconds!!,
                     width = dto.width!!,
-                    height = dto.height!!
+                    height = dto.height!!,
+                    storageUrl = dto.storageUrl,
+                    storageTransmissionDate = dto.storageTransmissionDate
                 )
             }
 
@@ -82,7 +82,9 @@ class VideoServiceMapper(
                     kbSize = dto.kbSize!!,
                     seconds = dto.seconds,
                     width = dto.width!!,
-                    height = dto.height!!
+                    height = dto.height!!,
+                    storageUrl = dto.storageUrl,
+                    storageTransmissionDate = dto.storageTransmissionDate
                 )
             }
         }

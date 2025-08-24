@@ -1,7 +1,7 @@
 package br.com.fitnesspro.common.service.storage
 
 import br.com.fitnesspro.common.cloud.credentials.CloudCredentials
-import br.com.fitnesspro.common.cloud.enums.EnumGCBucketNames
+import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.base.StorageModel
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes

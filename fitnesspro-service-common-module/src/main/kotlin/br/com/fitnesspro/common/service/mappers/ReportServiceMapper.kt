@@ -20,7 +20,9 @@ class ReportServiceMapper(
                     filePath = dto.filePath!!,
                     date = dto.date!!,
                     kbSize = dto.kbSize!!,
-                    active = dto.active
+                    active = dto.active,
+                    storageUrl = dto.storageUrl,
+                    storageTransmissionDate = dto.storageTransmissionDate
                 )
             }
 
@@ -31,7 +33,9 @@ class ReportServiceMapper(
                     filePath = dto.filePath!!,
                     date = dto.date!!,
                     kbSize = dto.kbSize!!,
-                    active = dto.active
+                    active = dto.active,
+                    storageUrl = dto.storageUrl,
+                    storageTransmissionDate = dto.storageTransmissionDate
                 )
             }
 
@@ -43,7 +47,9 @@ class ReportServiceMapper(
                     filePath = dto.filePath!!,
                     date = dto.date!!,
                     kbSize = dto.kbSize!!,
-                    active = dto.active
+                    active = dto.active,
+                    storageUrl = dto.storageUrl,
+                    storageTransmissionDate = dto.storageTransmissionDate
                 )
             }
         }
@@ -59,7 +65,9 @@ class ReportServiceMapper(
             filePath = model.filePath,
             date = model.date,
             kbSize = model.kbSize,
-            active = model.active
+            active = model.active,
+            storageUrl = model.storageUrl,
+            storageTransmissionDate = model.storageTransmissionDate
         )
     }
 }
