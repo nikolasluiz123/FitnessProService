@@ -89,7 +89,7 @@
         <module>fitnesspro-service-scheduler-module</module>
         <module>fitnesspro-service-workout-module</module>
         <module>fitnesspro-service-scheduled-task</module>
-        <module>fitnesspro-serice-model</module>
+        <module>fitnesspro-service-model</module>
         <module>fitnesspro-service-log</module>
         <module>fitnesspro-service-jpa</module>
         <module>fitnesspro-service-authentication</module>
