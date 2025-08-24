@@ -1,16 +1,16 @@
 package br.com.fitnesspro.scheduler.service.scheduledtasks
 
-import br.com.fitnesspro.core.gson.defaultGSon
-import br.com.fitnesspro.common.service.firebase.FirebaseNotificationService
 import br.com.fitnesspro.authentication.service.DeviceService
+import br.com.fitnesspro.common.service.firebase.FirebaseNotificationService
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
 import br.com.fitnesspro.core.extensions.format
+import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.service.ExecutionsLogService
+import br.com.fitnesspro.scheduled.task.service.IScheduledTaskExecutorService
 import br.com.fitnesspro.scheduler.repository.jpa.ICustomSchedulerRepository
 import br.com.fitnesspro.scheduler.service.SchedulerService
 import br.com.fitnesspro.scheduler.to.TOSchedulerAntecedenceNotificationInfo
-import br.com.fitnesspro.scheduled.task.service.IScheduledTaskExecutorService
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.notification.SchedulerNotificationCustomData
 import com.google.gson.GsonBuilder
@@ -105,9 +105,9 @@ class SchedulerAntecedenceNotificationExecutorService(
 
     fun StringJoiner.addProcessLog(
         successDevicesIds: List<String>,
-        successDevices: List<DeviceDTO>,
+        successDevices: List<ValidatedDeviceDTO>,
         failDevicesIds: List<String>,
-        failDevices: List<DeviceDTO>,
+        failDevices: List<ValidatedDeviceDTO>,
         exceptions: List<Exception>,
     ) {
         val successMessageIds = successDevicesIds.joinToStringOrLabel("Nenhum dispositivo foi notificado")

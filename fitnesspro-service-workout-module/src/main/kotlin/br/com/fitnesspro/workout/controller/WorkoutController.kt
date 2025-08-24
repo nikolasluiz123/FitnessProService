@@ -1,16 +1,16 @@
 package br.com.fitnesspro.workout.controller
 
-import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedExportationServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedImportationServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
-import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.workout.service.WorkoutService
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -32,13 +32,13 @@ class WorkoutController(
     @PostMapping(EndPointsV1.WORKOUT_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<WorkoutDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveWorkoutBatch(@RequestBody @Valid workoutDTOList: List<ValidatedWorkoutDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         workoutService.saveWorkoutBatch(workoutDTOList)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -50,8 +50,8 @@ class WorkoutController(
     @GetMapping(EndPointsV1.WORKOUT_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importWorkout(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<WorkoutDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importWorkout(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedWorkoutDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -59,7 +59,7 @@ class WorkoutController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -72,13 +72,13 @@ class WorkoutController(
     @PostMapping(EndPointsV1.WORKOUT_GROUP_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveWorkoutGroupBatch(@RequestBody @Valid workoutGroupList: List<ValidatedWorkoutGroupDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         workoutService.saveWorkoutGroupBatch(workoutGroupList)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -90,8 +90,8 @@ class WorkoutController(
     @GetMapping(EndPointsV1.WORKOUT_GROUP_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importWorkoutGroup(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<WorkoutGroupDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importWorkoutGroup(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedWorkoutGroupDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -99,7 +99,7 @@ class WorkoutController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -112,8 +112,8 @@ class WorkoutController(
     @GetMapping(EndPointsV1.WORKOUT_GROUP_PREDEFINITION_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importWorkoutGroupPreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<WorkoutGroupPreDefinitionDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importWorkoutGroupPreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedWorkoutGroupPreDefinitionDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -121,7 +121,7 @@ class WorkoutController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -134,13 +134,13 @@ class WorkoutController(
     @PostMapping(EndPointsV1.WORKOUT_GROUP_PREDEFINITION_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveWorkoutGroupPreDefinitionBatch(@RequestBody @Valid workoutGroupList: List<WorkoutGroupPreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveWorkoutGroupPreDefinitionBatch(@RequestBody @Valid workoutGroupList: List<ValidatedWorkoutGroupPreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         workoutService.saveWorkoutGroupPreDefinitionBatch(workoutGroupList)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),

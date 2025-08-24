@@ -1,13 +1,13 @@
 package br.com.fitnesspro.common.controller.cache
 
 import br.com.fitnesspro.common.service.cache.CacheService
+import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheClearConfigDTO
+import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheDTO
+import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheEntryDTO
+import br.com.fitnesspro.service.communication.responses.ValidatedFitnessProServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedReadServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.cache.CacheClearConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.cache.CacheDTO
-import br.com.fitnesspro.shared.communication.dtos.cache.CacheEntryDTO
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
@@ -26,24 +26,36 @@ class CacheController(
     @GetMapping(EndPointsV1.CACHE_LIST)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getListCache(): ResponseEntity<ReadServiceResponse<CacheDTO>> {
+    fun getListCache(): ResponseEntity<ValidatedReadServiceResponse<ValidatedCacheDTO>> {
         val values = cacheService.getListCaches()
-        return ResponseEntity.ok(ReadServiceResponse(values = values, code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(
+            ValidatedReadServiceResponse(
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @GetMapping("${EndPointsV1.CACHE_ENTRIES}/{cacheName}")
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getListCacheEntries(@PathVariable cacheName: String): ResponseEntity<ReadServiceResponse<CacheEntryDTO>> {
+    fun getListCacheEntries(@PathVariable cacheName: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedCacheEntryDTO>> {
         val values = cacheService.getListCacheEntries(cacheName)
-        return ResponseEntity.ok(ReadServiceResponse(values = values, code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(
+            ValidatedReadServiceResponse(
+                values = values,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @PostMapping(EndPointsV1.CACHE_CLEAR)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun clearCache(@RequestBody config: CacheClearConfigDTO): ResponseEntity<FitnessProServiceResponse> {
+    fun clearCache(@RequestBody config: ValidatedCacheClearConfigDTO): ResponseEntity<ValidatedFitnessProServiceResponse> {
         cacheService.clearCache(config)
-        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(ValidatedFitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 }

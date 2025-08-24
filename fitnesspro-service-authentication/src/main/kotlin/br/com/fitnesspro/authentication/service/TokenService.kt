@@ -9,11 +9,11 @@ import br.com.fitnesspro.authentication.repository.jpa.IServiceTokenRepository
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.serviceauth.ServiceToken
-import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenGenerationDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedUserDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedApplicationDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenGenerationDTO
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
@@ -62,7 +62,7 @@ class TokenService(
         return Keys.hmacShaKeyFor(keyBytes)
     }
 
-    fun generateServiceToken(dto: ServiceTokenGenerationDTO): ServiceTokenDTO {
+    fun generateServiceToken(dto: ValidatedServiceTokenGenerationDTO): ValidatedServiceTokenDTO {
         when (dto.type!!) {
             EnumTokenType.USER_AUTHENTICATION_TOKEN -> {
                 validateEntityId(dto.userId, dto::userId.name, dto.type)
@@ -148,7 +148,7 @@ class TokenService(
         tokenRepository.save(serviceToken)
     }
 
-    fun invalidateAllUserTokens(userId: String): List<ServiceTokenDTO> {
+    fun invalidateAllUserTokens(userId: String): List<ValidatedServiceTokenDTO> {
         val tokens = customServiceTokenRepository.getListServiceTokenNotExpired(userId = userId)
         invalidateTokensList(tokens)
 
@@ -168,13 +168,13 @@ class TokenService(
         tokenRepository.saveAll(tokens)
     }
 
-    private fun saveServiceToken(serviceTokenDTO: ServiceTokenDTO) {
+    private fun saveServiceToken(serviceTokenDTO: ValidatedServiceTokenDTO) {
         val token = tokenServiceMapper.getTokenService(serviceTokenDTO)
         tokenRepository.save(token)
         serviceTokenDTO.id = token.id
     }
 
-    fun getValidatedServiceToken(jwtToken: String): ServiceTokenDTO {
+    fun getValidatedServiceToken(jwtToken: String): ValidatedServiceTokenDTO {
         val dto = getServiceTokenDTO(jwtToken) ?: throw NotFoundTokenException(
             messageSource.getMessage("core.service.error.token.not.found", null, Locale.getDefault())
         )
@@ -188,19 +188,19 @@ class TokenService(
         return dto
     }
 
-    fun isTokenExpired(dto: ServiceTokenDTO): Boolean {
+    fun isTokenExpired(dto: ValidatedServiceTokenDTO): Boolean {
         return dto.expirationDate != null && dateTimeNow().isAfter(dto.expirationDate)
     }
 
-    fun getServiceTokenDTO(jwtToken: String): ServiceTokenDTO? {
+    fun getServiceTokenDTO(jwtToken: String): ValidatedServiceTokenDTO? {
         return customServiceTokenRepository.findValidServiceToken(jwtToken)?.toServiceTokenDTO()
     }
 
-    fun findServiceTokenDTOById(tokenId: String): ServiceTokenDTO? {
+    fun findServiceTokenDTOById(tokenId: String): ValidatedServiceTokenDTO? {
         return tokenRepository.findById(tokenId).getOrNull()?.toServiceTokenDTO()
     }
 
-    fun getListServiceToken(filter: ServiceTokenFilter, pageInfos: CommonPageInfos): List<ServiceTokenDTO> {
+    fun getListServiceToken(filter: ServiceTokenFilter, pageInfos: CommonPageInfos): List<ValidatedServiceTokenDTO> {
         return customServiceTokenRepository.getListServiceToken(filter, pageInfos).map { it.toServiceTokenDTO() }
     }
 
@@ -208,7 +208,7 @@ class TokenService(
         return customServiceTokenRepository.getCountListServiceToken(filter)
     }
 
-    fun getServiceTokenFromRequest(request: HttpServletRequest): ServiceTokenDTO? {
+    fun getServiceTokenFromRequest(request: HttpServletRequest): ValidatedServiceTokenDTO? {
         val jwtToken = getJWTTokenFromRequest(request) ?: return null
         return getServiceTokenDTO(jwtToken)
     }
@@ -225,8 +225,8 @@ class TokenService(
         return getRequestAuthorization(request)?.substring(7)
     }
 
-    private fun ServiceToken.toServiceTokenDTO(): ServiceTokenDTO {
-        return ServiceTokenDTO(
+    private fun ServiceToken.toServiceTokenDTO(): ValidatedServiceTokenDTO {
+        return ValidatedServiceTokenDTO(
             id = id,
             jwtToken = jwtToken,
             creationDate = creationDate,
@@ -238,9 +238,9 @@ class TokenService(
         )
     }
 
-    private fun getDeviceDTOFromServiceToken(serviceToken: ServiceToken): DeviceDTO? {
+    private fun getDeviceDTOFromServiceToken(serviceToken: ServiceToken): ValidatedDeviceDTO? {
         return serviceToken.device?.run {
-            DeviceDTO(
+            ValidatedDeviceDTO(
                 id = id,
                 model = model,
                 brand = brand,
@@ -248,7 +248,7 @@ class TokenService(
                 creationDate = creationDate,
                 updateDate = updateDate,
                 active = active,
-                application = ApplicationDTO(
+                application = ValidatedApplicationDTO(
                     id = application?.id,
                     name = application?.name,
                     active = application?.active ?: false
@@ -257,9 +257,9 @@ class TokenService(
         }
     }
 
-    private fun getUserDTOFromServiceToken(serviceToken: ServiceToken): UserDTO? {
+    private fun getUserDTOFromServiceToken(serviceToken: ServiceToken): ValidatedUserDTO? {
         return serviceToken.user?.run {
-            UserDTO(
+            ValidatedUserDTO(
                 id = id,
                 creationDate = creationDate,
                 updateDate = updateDate,
@@ -271,9 +271,9 @@ class TokenService(
         }
     }
 
-    private fun getApplicationDTOFromServiceToken(serviceToken: ServiceToken): ApplicationDTO? {
+    private fun getApplicationDTOFromServiceToken(serviceToken: ServiceToken): ValidatedApplicationDTO? {
         return serviceToken.application?.run {
-            ApplicationDTO(
+            ValidatedApplicationDTO(
                 id = id,
                 name = name
             )

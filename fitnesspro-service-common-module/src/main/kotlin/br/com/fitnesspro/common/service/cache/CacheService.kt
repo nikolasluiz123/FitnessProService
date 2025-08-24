@@ -1,9 +1,9 @@
 package br.com.fitnesspro.common.service.cache
 
 import br.com.fitnesspro.core.exceptions.BusinessException
-import br.com.fitnesspro.shared.communication.dtos.cache.CacheClearConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.cache.CacheDTO
-import br.com.fitnesspro.shared.communication.dtos.cache.CacheEntryDTO
+import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheClearConfigDTO
+import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheDTO
+import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheEntryDTO
 import com.github.benmanes.caffeine.cache.Cache
 import org.springframework.cache.CacheManager
 import org.springframework.cache.caffeine.CaffeineCache
@@ -17,17 +17,17 @@ class CacheService(
     private val messageSource: MessageSource
 ) {
 
-    fun getListCaches(): List<CacheDTO> {
+    fun getListCaches(): List<ValidatedCacheDTO> {
         return cacheManager.cacheNames.mapNotNull {
-            CacheDTO(cacheName = it)
+            ValidatedCacheDTO(cacheName = it)
         }
     }
 
-    fun getListCacheEntries(cacheName: String): List<CacheEntryDTO> {
+    fun getListCacheEntries(cacheName: String): List<ValidatedCacheEntryDTO> {
         val cache = cacheManager.getCache(cacheName) as? CaffeineCache
         val nativeCache = cache?.nativeCache as? Cache<Any, Any>
 
-        return nativeCache?.asMap()?.entries?.map { CacheEntryDTO(it.key.toString()) } ?: emptyList()
+        return nativeCache?.asMap()?.entries?.map { ValidatedCacheEntryDTO(it.key.toString()) } ?: emptyList()
     }
 
     fun clearCacheWithName(name: String) {
@@ -44,7 +44,7 @@ class CacheService(
         }
     }
 
-    fun clearCache(config: CacheClearConfigDTO) {
+    fun clearCache(config: ValidatedCacheClearConfigDTO) {
         when {
             config.clearAll -> {
                 clearAllCaches()

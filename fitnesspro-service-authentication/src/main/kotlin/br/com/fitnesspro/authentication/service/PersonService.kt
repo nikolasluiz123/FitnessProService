@@ -11,9 +11,9 @@ import br.com.fitnesspro.core.cache.PERSON_USER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
-import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedUserDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.helper.HashHelper
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -40,7 +40,7 @@ class PersonService(
 ) {
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
-    fun savePerson(personDTO: PersonDTO) {
+    fun savePerson(personDTO: ValidatedPersonDTO) {
         val person = personServiceMapper.getPerson(personDTO)
         preparePersonSave(personDTO, person)
 
@@ -57,14 +57,14 @@ class PersonService(
         }
 
         if (personDTO.createDefaultSchedulerConfig) {
-            schedulerConfigService.saveSchedulerConfig(SchedulerConfigDTO(personId = person.id))
+            schedulerConfigService.saveSchedulerConfig(ValidatedSchedulerConfigDTO(personId = person.id))
         }
 
         personDTO.id = person.id
         personDTO.user?.id = person.user?.id
     }
 
-    private fun preparePersonSave(personDTO: PersonDTO, person: Person) {
+    private fun preparePersonSave(personDTO: ValidatedPersonDTO, person: Person) {
         if (personDTO.active) {
             validateUser(person.user!!)
 
@@ -90,7 +90,7 @@ class PersonService(
     }
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
-    fun savePersonList(personDTOList: List<PersonDTO>) {
+    fun savePersonList(personDTOList: List<ValidatedPersonDTO>) {
         val persons = personDTOList.map { personDTO ->
             val person = personServiceMapper.getPerson(personDTO)
 
@@ -117,16 +117,16 @@ class PersonService(
     }
 
     @Cacheable(cacheNames = [PERSON_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonDTO> {
+    fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedPersonDTO> {
         return customPersonRepository.getPersonsImport(filter, pageInfos).map(personServiceMapper::getPersonDTO)
     }
 
     @Cacheable(cacheNames = [PERSON_USER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<UserDTO> {
+    fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedUserDTO> {
         return customPersonRepository.getUsersImport(filter, pageInfos).map(userServiceMapper::getUserDTO)
     }
 
-    fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<PersonDTO> {
+    fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<ValidatedPersonDTO> {
         return customPersonRepository.getListPersons(filter, pageInfos)
     }
 
@@ -134,7 +134,7 @@ class PersonService(
         return customPersonRepository.getCountListPersons(filter)
     }
 
-    fun getPersonByEmail(email: String, password: String?): PersonDTO? {
+    fun getPersonByEmail(email: String, password: String?): ValidatedPersonDTO? {
         return customPersonRepository.findByEmail(email, password)?.let(personServiceMapper::getPersonDTO)
     }
 }

@@ -1,14 +1,14 @@
 package br.com.fitnesspro.workout.controller
 
-import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoDTO
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedExportationServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedImportationServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.workout.VideoDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
-import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.workout.service.VideoService
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -30,8 +30,8 @@ class VideoController(
     @GetMapping(EndPointsV1.VIDEO_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importVideos(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<VideoDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importVideos(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedVideoDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -39,7 +39,7 @@ class VideoController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -52,13 +52,13 @@ class VideoController(
     @PostMapping(EndPointsV1.VIDEO_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveVideosBatch(@RequestBody @Valid videoDTOs: List<VideoDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveVideosBatch(@RequestBody @Valid videoDTOs: List<ValidatedVideoDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         videoService.saveVideoBatch(videoDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),

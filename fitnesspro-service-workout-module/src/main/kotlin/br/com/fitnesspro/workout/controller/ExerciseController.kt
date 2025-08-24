@@ -1,14 +1,14 @@
 package br.com.fitnesspro.workout.controller
 
-import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.dtos.workout.*
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedExportationServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedImportationServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.workout.*
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
-import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import br.com.fitnesspro.workout.service.ExerciseService
 import br.com.fitnesspro.workout.service.VideoService
 import com.google.gson.GsonBuilder
@@ -32,13 +32,13 @@ class ExerciseController(
     @PostMapping(EndPointsV1.EXERCISE_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExerciseBatch(@RequestBody @Valid exerciseDTOs: List<ExerciseDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveExerciseBatch(@RequestBody @Valid exerciseDTOs: List<ValidatedExerciseDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         exerciseService.saveExerciseBatch(exerciseDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -50,13 +50,13 @@ class ExerciseController(
     @PostMapping(EndPointsV1.EXERCISE_EXECUTION_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExerciseExecutionBatch(@RequestBody @Valid exerciseDTOs: List<ExerciseExecutionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveExerciseExecutionBatch(@RequestBody @Valid exerciseDTOs: List<ValidatedExerciseExecutionDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         exerciseService.saveExerciseExecutionBatch(exerciseDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -68,8 +68,8 @@ class ExerciseController(
     @GetMapping(EndPointsV1.EXERCISE_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importExercise(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ExerciseDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importExercise(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedExerciseDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -77,7 +77,7 @@ class ExerciseController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -90,8 +90,8 @@ class ExerciseController(
     @GetMapping(EndPointsV1.EXERCISE_EXECUTION_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importExerciseExecution(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ExerciseExecutionDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importExerciseExecution(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedExerciseExecutionDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val importFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -99,7 +99,7 @@ class ExerciseController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -112,8 +112,8 @@ class ExerciseController(
     @GetMapping(EndPointsV1.EXERCISE_VIDEO_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importVideoExercise(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<VideoExerciseDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importVideoExercise(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedVideoExerciseDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -121,7 +121,7 @@ class ExerciseController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -134,8 +134,8 @@ class ExerciseController(
     @GetMapping(EndPointsV1.EXERCISE_EXECUTION_VIDEO_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importVideoExerciseExecution(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<VideoExerciseExecutionDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importVideoExerciseExecution(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedVideoExerciseExecutionDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -143,7 +143,7 @@ class ExerciseController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -156,13 +156,13 @@ class ExerciseController(
     @PostMapping(EndPointsV1.EXERCISE_VIDEO_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExerciseVideosBatch(@RequestBody @Valid exerciseVideoDTOs: List<VideoExerciseDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveExerciseVideosBatch(@RequestBody @Valid exerciseVideoDTOs: List<ValidatedVideoExerciseDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         videoService.saveExerciseVideoBatch(exerciseVideoDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -174,13 +174,13 @@ class ExerciseController(
     @PostMapping(EndPointsV1.EXERCISE_EXECUTION_VIDEO_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExerciseExecutionVideosBatch(@RequestBody @Valid videoDTOs: List<VideoExerciseExecutionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveExerciseExecutionVideosBatch(@RequestBody @Valid videoDTOs: List<ValidatedVideoExerciseExecutionDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         videoService.saveExerciseExecutionVideoBatch(videoDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -192,13 +192,13 @@ class ExerciseController(
     @PostMapping(EndPointsV1.EXERCISE_PREDEFINITION_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExercisePreDefinitionBatch(@RequestBody @Valid exerciseDTOs: List<ExercisePreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveExercisePreDefinitionBatch(@RequestBody @Valid exerciseDTOs: List<ValidatedExercisePreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         exerciseService.saveExercisePreDefinitionBatch(exerciseDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -210,13 +210,13 @@ class ExerciseController(
     @PostMapping(EndPointsV1.EXERCISE_PREDEFINITION_VIDEO_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveExercisePreDefinitionVideosBatch(@RequestBody @Valid exerciseVideoDTOs: List<VideoExercisePreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveExercisePreDefinitionVideosBatch(@RequestBody @Valid exerciseVideoDTOs: List<ValidatedVideoExercisePreDefinitionDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         videoService.saveExercisePreDefinitionVideosBatch(exerciseVideoDTOs)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -228,8 +228,8 @@ class ExerciseController(
     @GetMapping(EndPointsV1.EXERCISE_PREDEFINITION_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importExercisePreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ExercisePreDefinitionDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importExercisePreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedExercisePreDefinitionDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val importFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -237,7 +237,7 @@ class ExerciseController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -250,8 +250,8 @@ class ExerciseController(
     @GetMapping(EndPointsV1.EXERCISE_PREDEFINITION_VIDEO_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importVideoExercisePreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<VideoExercisePreDefinitionDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importVideoExercisePreDefinition(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedVideoExercisePreDefinitionDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, WorkoutModuleImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -259,7 +259,7 @@ class ExerciseController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,

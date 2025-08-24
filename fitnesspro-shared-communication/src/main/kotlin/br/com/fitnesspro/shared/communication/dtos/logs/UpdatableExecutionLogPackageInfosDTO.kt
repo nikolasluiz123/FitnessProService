@@ -1,25 +1,13 @@
 package br.com.fitnesspro.shared.communication.dtos.logs
 
-import io.swagger.v3.oas.annotations.media.Schema
+import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogPackageInfosDTO
 import java.time.LocalDateTime
 
-@Schema(description = "Classe DTO usada para atualização de um pacote de log de execução")
 data class UpdatableExecutionLogPackageInfosDTO(
-    @field:Schema(description = "Quantidade de itens inseridos. Utilizado na importação de dados.", required = false)
-    var insertedItemsCount: Int? = null,
-
-    @field:Schema(description = "Quantidade de itens atualizados. Utilizado na importação de dados.", required = false)
-    var updatedItemsCount: Int? = null,
-
-    @field:Schema(description = "Quantidade de itens enviados na exportação.", required = false)
-    var allItemsCount: Int? = null,
-
-    @field:Schema(description = "Momento que o client começou a executar a operação.", required = false)
-    var clientExecutionStart: LocalDateTime? = null,
-
-    @field:Schema(description = "Momento que o client terminou de executar a operação.", required = false)
-    var clientExecutionEnd: LocalDateTime? = null,
-
-    @field:Schema(description = "Stack de erro.", required = false)
-    var error: String? = null
-)
+    override var insertedItemsCount: Int? = null,
+    override var updatedItemsCount: Int? = null,
+    override var allItemsCount: Int? = null,
+    override var clientExecutionStart: LocalDateTime? = null,
+    override var clientExecutionEnd: LocalDateTime? = null,
+    override var error: String? = null
+) : IUpdatableExecutionLogPackageInfosDTO

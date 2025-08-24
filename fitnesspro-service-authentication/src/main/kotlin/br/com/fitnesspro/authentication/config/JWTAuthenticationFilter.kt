@@ -3,11 +3,11 @@ package br.com.fitnesspro.authentication.config
 import br.com.fitnesspro.authentication.config.customdetails.ApplicationUserDetails
 import br.com.fitnesspro.authentication.config.customdetails.DeviceUserDetails
 import br.com.fitnesspro.authentication.service.TokenService
+import br.com.fitnesspro.service.communication.responses.ValidatedAuthenticationServiceResponse
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType.*
 import br.com.fitnesspro.shared.communication.exception.ExpiredTokenException
 import br.com.fitnesspro.shared.communication.exception.NotFoundTokenException
-import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -87,14 +87,14 @@ class JWTAuthenticationFilter(
         SecurityContextHolder.getContext().authentication = authenticationToken
     }
 
-    private fun writeHTTPResponse(response: HttpServletResponse, errorResponse: AuthenticationServiceResponse) {
+    private fun writeHTTPResponse(response: HttpServletResponse, errorResponse: ValidatedAuthenticationServiceResponse) {
         response.status = HttpStatus.UNAUTHORIZED.value()
         response.contentType = "application/json"
         response.writer.write(objectMapper.writeValueAsString(errorResponse))
     }
 
-    private fun getAuthResponse(ex: Exception, type: EnumErrorType): AuthenticationServiceResponse {
-        return AuthenticationServiceResponse(
+    private fun getAuthResponse(ex: Exception, type: EnumErrorType): ValidatedAuthenticationServiceResponse {
+        return ValidatedAuthenticationServiceResponse(
             code = HttpStatus.UNAUTHORIZED.value(),
             success = false,
             error = ex.message,

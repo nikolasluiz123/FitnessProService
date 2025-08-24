@@ -3,7 +3,7 @@ package br.com.fitnesspro.scheduled.task.manager
 import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.scheduled.task.handler.IScheduledTaskHandler
 import br.com.fitnesspro.scheduled.task.service.ScheduledTaskService
-import br.com.fitnesspro.shared.communication.dtos.scheduledtask.ScheduledTaskDTO
+import br.com.fitnesspro.service.communication.dtos.scheduledtask.ValidatedScheduledTaskDTO
 import com.google.gson.GsonBuilder
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.TaskScheduler
@@ -40,7 +40,7 @@ class ScheduledTaskManager(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun scheduleTask(task: ScheduledTaskDTO) {
+    fun scheduleTask(task: ValidatedScheduledTaskDTO) {
         val handler = handlers[task.handlerBeanName]
         val typedHandler = handler as IScheduledTaskHandler<Any>
         val config = if (task.configJson != null && handler.configClass() != null) {

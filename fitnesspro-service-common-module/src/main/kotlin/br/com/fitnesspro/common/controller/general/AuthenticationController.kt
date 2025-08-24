@@ -1,10 +1,10 @@
 package br.com.fitnesspro.common.controller.general
 
 import br.com.fitnesspro.authentication.service.UserService
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedAuthenticationDTO
+import br.com.fitnesspro.service.communication.responses.ValidatedAuthenticationServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
-import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -25,14 +25,14 @@ class AuthenticationController(
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGIN)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun login(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
-        return ResponseEntity.ok(userService.login(authenticationDTO))
+    fun login(@RequestBody @Valid validatedAuthenticationDTO: ValidatedAuthenticationDTO): ResponseEntity<ValidatedAuthenticationServiceResponse> {
+        return ResponseEntity.ok(userService.login(validatedAuthenticationDTO))
     }
 
     @PostMapping(EndPointsV1.AUTHENTICATION_LOGOUT)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun logout(@RequestBody @Valid authenticationDTO: AuthenticationDTO): ResponseEntity<AuthenticationServiceResponse> {
-        return ResponseEntity.ok(userService.logout(authenticationDTO))
+    fun logout(@RequestBody @Valid validatedAuthenticationDTO: ValidatedAuthenticationDTO): ResponseEntity<ValidatedAuthenticationServiceResponse> {
+        return ResponseEntity.ok(userService.logout(validatedAuthenticationDTO))
     }
 }

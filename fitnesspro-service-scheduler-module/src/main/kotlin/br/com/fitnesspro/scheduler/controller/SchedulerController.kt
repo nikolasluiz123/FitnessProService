@@ -1,20 +1,20 @@
 package br.com.fitnesspro.scheduler.controller
 
-import br.com.fitnesspro.log.enums.EnumRequestAttributes
 import br.com.fitnesspro.authentication.service.SchedulerConfigService
-import br.com.fitnesspro.core.gson.defaultGSon
+import br.com.fitnesspro.log.enums.EnumRequestAttributes
 import br.com.fitnesspro.scheduler.service.SchedulerService
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedRecurrentSchedulerDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerDTO
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedExportationServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedFitnessProServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedImportationServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedPersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentSchedulerDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
-import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.FitnessProServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -36,10 +36,10 @@ class SchedulerController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveScheduler(@RequestBody @Valid schedulerDTO: SchedulerDTO): ResponseEntity<PersistenceServiceResponse<SchedulerDTO>> {
+    fun saveScheduler(@RequestBody @Valid schedulerDTO: ValidatedSchedulerDTO): ResponseEntity<ValidatedPersistenceServiceResponse<ValidatedSchedulerDTO>> {
         schedulerService.saveScheduler(schedulerDTO)
         return ResponseEntity.ok(
-            PersistenceServiceResponse(
+            ValidatedPersistenceServiceResponse(
                 code = HttpStatus.OK.value(),
                 success = true,
                 savedDTO = schedulerDTO
@@ -50,21 +50,21 @@ class SchedulerController(
     @PostMapping(EndPointsV1.SCHEDULER_RECURRENT)
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveRecurrentScheduler(@RequestBody @Valid recurrentSchedulerDTO: RecurrentSchedulerDTO): ResponseEntity<FitnessProServiceResponse> {
+    fun saveRecurrentScheduler(@RequestBody @Valid recurrentSchedulerDTO: ValidatedRecurrentSchedulerDTO): ResponseEntity<ValidatedFitnessProServiceResponse> {
         schedulerService.saveRecurrentScheduler(recurrentSchedulerDTO)
-        return ResponseEntity.ok(FitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(ValidatedFitnessProServiceResponse(code = HttpStatus.OK.value(), success = true))
     }
 
     @PostMapping(EndPointsV1.SCHEDULER_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<SchedulerDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveSchedulerBatch(@RequestBody @Valid schedulerDTOList: List<ValidatedSchedulerDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         schedulerService.saveSchedulerBatch(schedulerDTOList)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -76,13 +76,13 @@ class SchedulerController(
     @PostMapping(EndPointsV1.SCHEDULER_CONFIG_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<SchedulerConfigDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
+    fun saveSchedulerConfigBatch(@RequestBody @Valid schedulerConfigDTOList: List<ValidatedSchedulerConfigDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
         schedulerConfigService.saveSchedulerConfigBatch(schedulerConfigDTOList)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -94,8 +94,8 @@ class SchedulerController(
     @GetMapping(EndPointsV1.SCHEDULER_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importScheduler(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<SchedulerDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importScheduler(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedSchedulerDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -103,7 +103,7 @@ class SchedulerController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,
@@ -116,8 +116,8 @@ class SchedulerController(
     @GetMapping(EndPointsV1.SCHEDULER_CONFIG_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importSchedulerConfig(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<SchedulerConfigDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importSchedulerConfig(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedSchedulerConfigDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val commonImportFilter = defaultGSon.fromJson(filter, CommonImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -125,7 +125,7 @@ class SchedulerController(
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,

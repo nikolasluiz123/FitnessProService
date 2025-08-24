@@ -3,8 +3,8 @@ package br.com.fitnesspro.common.controller.storage
 import br.com.fitnesspro.common.service.storage.ReportGCBucketService
 import br.com.fitnesspro.common.service.storage.VideoGCBucketService
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.responses.ValidatedStorageServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
-import br.com.fitnesspro.shared.communication.responses.StorageServiceResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
@@ -26,14 +26,14 @@ class StorageController(
         @RequestPart ids: List<String>,
         @RequestParam files: List<MultipartFile>,
         request: HttpServletRequest
-    ): ResponseEntity<StorageServiceResponse> {
+    ): ResponseEntity<ValidatedStorageServiceResponse> {
         reportGCBucketService.uploadReport(ids, files)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
 
         return ResponseEntity.ok(
-            StorageServiceResponse(
+            ValidatedStorageServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -47,14 +47,14 @@ class StorageController(
         @RequestPart ids: List<String>,
         @RequestParam files: List<MultipartFile>,
         request: HttpServletRequest
-    ): ResponseEntity<StorageServiceResponse> {
+    ): ResponseEntity<ValidatedStorageServiceResponse> {
         videoGCBucketService.uploadReport(ids, files)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
 
         return ResponseEntity.ok(
-            StorageServiceResponse(
+            ValidatedStorageServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),

@@ -6,7 +6,7 @@ import br.com.fitnesspro.scheduled.task.manager.ScheduledTaskSavedEvent
 import br.com.fitnesspro.scheduled.task.repository.auditable.IScheduledTaskRepository
 import br.com.fitnesspro.scheduled.task.repository.jpa.ICustomScheduledTaskRepository
 import br.com.fitnesspro.scheduled.task.service.mappers.ScheduledTaskServiceMapper
-import br.com.fitnesspro.shared.communication.dtos.scheduledtask.ScheduledTaskDTO
+import br.com.fitnesspro.service.communication.dtos.scheduledtask.ValidatedScheduledTaskDTO
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ class ScheduledTaskService(
     private val messageSource: MessageSource
 ) {
 
-    fun saveScheduledTask(dto: ScheduledTaskDTO) {
+    fun saveScheduledTask(dto: ValidatedScheduledTaskDTO) {
         validateTask(dto)
 
         val model = scheduledTaskServiceMapper.getScheduledTask(dto)
@@ -31,7 +31,7 @@ class ScheduledTaskService(
         eventPublisher.publishEvent(ScheduledTaskSavedEvent(taskId = model.id, new = dto.id == null))
     }
 
-    private fun validateTask(dto: ScheduledTaskDTO) {
+    private fun validateTask(dto: ValidatedScheduledTaskDTO) {
         val anotherTask = scheduledTaskRepository.findByHandlerBeanName(dto.handlerBeanName!!)
         val existsTaskWithEqualsBeanName = anotherTask?.handlerBeanName == dto.handlerBeanName && dto.id != anotherTask?.id
 
@@ -48,12 +48,12 @@ class ScheduledTaskService(
         }
     }
 
-    fun getListScheduledTask(): List<ScheduledTaskDTO> {
-        return customScheduledTaskRepository.getListScheduledTask().map(scheduledTaskServiceMapper::getScheduledTaskDTO)
+    fun getListScheduledTask(): List<ValidatedScheduledTaskDTO> {
+        return customScheduledTaskRepository.getListScheduledTask().map(scheduledTaskServiceMapper::getValidatedScheduledTaskDTO)
     }
 
-    fun getScheduledTaskById(id: String): ScheduledTaskDTO? {
-        return scheduledTaskRepository.findById(id).getOrNull()?.let(scheduledTaskServiceMapper::getScheduledTaskDTO)
+    fun getScheduledTaskById(id: String): ValidatedScheduledTaskDTO? {
+        return scheduledTaskRepository.findById(id).getOrNull()?.let(scheduledTaskServiceMapper::getValidatedScheduledTaskDTO)
     }
 
 }

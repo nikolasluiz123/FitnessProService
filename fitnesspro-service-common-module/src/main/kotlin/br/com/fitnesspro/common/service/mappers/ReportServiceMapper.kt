@@ -2,14 +2,14 @@ package br.com.fitnesspro.common.service.mappers
 
 import br.com.fitnesspro.common.repository.auditable.report.IReportRepository
 import br.com.fitnesspro.models.general.Report
-import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedReportDTO
 import org.springframework.stereotype.Service
 
 @Service
 class ReportServiceMapper(
     private val reportRepository: IReportRepository,
 ) {
-    fun getReport(dto: ReportDTO): Report {
+    fun getReport(dto: ValidatedReportDTO): Report {
         val report = dto.id?.let { reportRepository.findById(it) }
 
         return when {
@@ -55,8 +55,8 @@ class ReportServiceMapper(
         }
     }
 
-    fun getReportDTO(model: Report): ReportDTO {
-        return ReportDTO(
+    fun getValidatedReportDTO(model: Report): ValidatedReportDTO {
+        return ValidatedReportDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,

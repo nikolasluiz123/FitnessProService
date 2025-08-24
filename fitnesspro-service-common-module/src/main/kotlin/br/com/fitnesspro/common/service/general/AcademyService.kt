@@ -7,8 +7,8 @@ import br.com.fitnesspro.common.repository.jpa.general.academy.ICustomAcademyRep
 import br.com.fitnesspro.common.service.mappers.AcademyServiceMapper
 import br.com.fitnesspro.core.cache.ACADEMY_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
-import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedAcademyDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
@@ -26,37 +26,37 @@ class AcademyService(
     private val academyServiceMapper: AcademyServiceMapper,
 ) {
     @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveAcademy(academyDTO: AcademyDTO) {
-        val academy = academyServiceMapper.getAcademy(academyDTO)
+    fun saveAcademy(validatedAcademyDTO: ValidatedAcademyDTO) {
+        val academy = academyServiceMapper.getAcademy(validatedAcademyDTO)
         academyRepository.save(academy)
 
-        academyDTO.id = academy.id
+        validatedAcademyDTO.id = academy.id
     }
 
     @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveAcademyBatch(academyDTOList: List<AcademyDTO>) {
-        val academyList = academyDTOList.map(academyServiceMapper::getAcademy)
+    fun saveAcademyBatch(validatedAcademyDTOList: List<ValidatedAcademyDTO>) {
+        val academyList = validatedAcademyDTOList.map(academyServiceMapper::getAcademy)
         academyRepository.saveAll(academyList)
     }
 
     @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
-    fun savePersonAcademyTimeBatch(personAcademyTimeDTOList: List<PersonAcademyTimeDTO>) {
-        val personAcademyTimeList = personAcademyTimeDTOList.map(academyServiceMapper::getPersonAcademyTime)
+    fun savePersonAcademyTimeBatch(validatedPersonAcademyTimeDTOList: List<ValidatedPersonAcademyTimeDTO>) {
+        val personAcademyTimeList = validatedPersonAcademyTimeDTOList.map(academyServiceMapper::getPersonAcademyTime)
         personAcademyTimeRepository.saveAll(personAcademyTimeList)
     }
 
     @Cacheable(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<PersonAcademyTimeDTO> {
-        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map(academyServiceMapper::getPersonAcademyTimeDTO)
+    fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedPersonAcademyTimeDTO> {
+        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map(academyServiceMapper::getValidatedPersonAcademyTimeDTO)
     }
 
     @Cacheable(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<AcademyDTO> {
-        return customAcademyRepository.getAcademiesImport(filter, pageInfos).map(academyServiceMapper::getAcademyDTO)
+    fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedAcademyDTO> {
+        return customAcademyRepository.getAcademiesImport(filter, pageInfos).map(academyServiceMapper::getValidatedAcademyDTO)
     }
 
-    fun getListAcademy(filter: AcademyFilter, pageInfos: CommonPageInfos): List<AcademyDTO> {
-        return customAcademyRepository.getListAcademy(filter, pageInfos).map(academyServiceMapper::getAcademyDTO)
+    fun getListAcademy(filter: AcademyFilter, pageInfos: CommonPageInfos): List<ValidatedAcademyDTO> {
+        return customAcademyRepository.getListAcademy(filter, pageInfos).map(academyServiceMapper::getValidatedAcademyDTO)
     }
 
     fun getCountListAcademy(filter: AcademyFilter): Int {

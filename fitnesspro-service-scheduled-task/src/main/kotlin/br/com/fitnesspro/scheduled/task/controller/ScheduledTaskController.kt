@@ -1,11 +1,11 @@
 package br.com.fitnesspro.scheduled.task.controller
 
 import br.com.fitnesspro.scheduled.task.service.ScheduledTaskService
+import br.com.fitnesspro.service.communication.dtos.scheduledtask.ValidatedScheduledTaskDTO
+import br.com.fitnesspro.service.communication.responses.ValidatedPersistenceServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedReadServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.scheduledtask.ScheduledTaskDTO
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -24,13 +24,13 @@ class ScheduledTaskController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveScheduledTask(@RequestBody @Valid scheduledTaskDTO: ScheduledTaskDTO): ResponseEntity<PersistenceServiceResponse<ScheduledTaskDTO>> {
-        scheduledTaskService.saveScheduledTask(scheduledTaskDTO)
+    fun saveScheduledTask(@RequestBody @Valid validatedScheduledTaskDTO: ValidatedScheduledTaskDTO): ResponseEntity<ValidatedPersistenceServiceResponse<ValidatedScheduledTaskDTO>> {
+        scheduledTaskService.saveScheduledTask(validatedScheduledTaskDTO)
         return ResponseEntity.ok(
-            PersistenceServiceResponse(
+            ValidatedPersistenceServiceResponse(
                 code = HttpStatus.OK.value(),
                 success = true,
-                savedDTO = scheduledTaskDTO
+                savedDTO = validatedScheduledTaskDTO
             )
         )
     }
@@ -38,9 +38,15 @@ class ScheduledTaskController(
     @GetMapping
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getListScheduledTask(): ResponseEntity<ReadServiceResponse<ScheduledTaskDTO>> {
+    fun getListScheduledTask(): ResponseEntity<ValidatedReadServiceResponse<ValidatedScheduledTaskDTO>> {
         val result = scheduledTaskService.getListScheduledTask()
-        return ResponseEntity.ok(ReadServiceResponse(values = result, code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(
+            ValidatedReadServiceResponse(
+                values = result,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
 }

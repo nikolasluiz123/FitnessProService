@@ -1,15 +1,15 @@
 package br.com.fitnesspro.common.controller.general
 
 import br.com.fitnesspro.common.service.general.ReportService
-import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedReportDTO
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedExportationServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedImportationServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.general.ReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
-import br.com.fitnesspro.shared.communication.responses.ExportationServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ImportationServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -30,14 +30,14 @@ class ReportController(
     @PostMapping(EndPointsV1.REPORT_EXPORT)
     @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveReportBatch(@RequestBody @Valid reportDTOList: List<ReportDTO>, request: HttpServletRequest): ResponseEntity<ExportationServiceResponse> {
-        reportService.saveReportBatch(reportDTOList)
+    fun saveReportBatch(@RequestBody @Valid validatedReportDTOList: List<ValidatedReportDTO>, request: HttpServletRequest): ResponseEntity<ValidatedExportationServiceResponse> {
+        reportService.saveReportBatch(validatedReportDTOList)
 
         val logId = request.getAttribute(EnumRequestAttributes.LOG_ID.name) as String
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
 
         return ResponseEntity.ok(
-            ExportationServiceResponse(
+            ValidatedExportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 code = HttpStatus.OK.value(),
@@ -49,8 +49,8 @@ class ReportController(
     @GetMapping(EndPointsV1.REPORT_IMPORT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun importReports(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ImportationServiceResponse<ReportDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun importReports(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedReportDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val importFilter = defaultGSon.fromJson(filter, ReportImportFilter::class.java)
         val importPageInfos = defaultGSon.fromJson(pageInfos, ImportPageInfos::class.java)
 
@@ -59,7 +59,7 @@ class ReportController(
         val logPackageId = request.getAttribute(EnumRequestAttributes.LOG_PACKAGE_ID.name) as String
 
         return ResponseEntity.ok(
-            ImportationServiceResponse(
+            ValidatedImportationServiceResponse(
                 executionLogId = logId,
                 executionLogPackageId = logPackageId,
                 values = values,

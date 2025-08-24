@@ -3,7 +3,8 @@ package br.com.fitnesspro.authentication.service
 import br.com.fitnesspro.authentication.repository.auditable.IDeviceRepository
 import br.com.fitnesspro.authentication.repository.jpa.ICustomDeviceRepository
 import br.com.fitnesspro.authentication.service.mappers.DeviceServiceMapper
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IDeviceDTO
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.DeviceFilter
 import org.springframework.stereotype.Service
@@ -16,7 +17,7 @@ class DeviceService(
     private val deviceServiceMapper: DeviceServiceMapper
 ) {
 
-    fun saveDevice(deviceDTO: DeviceDTO, applicationJWT: String) {
+    fun saveDevice(deviceDTO: IDeviceDTO, applicationJWT: String) {
         val applicationDTO = tokenService.getServiceTokenDTO(applicationJWT)?.application
         deviceDTO.application = applicationDTO
 
@@ -36,7 +37,7 @@ class DeviceService(
         deviceRepository.save(device)
     }
 
-    fun getListDevice(filter: DeviceFilter, pageInfos: PageInfos): List<DeviceDTO> {
+    fun getListDevice(filter: DeviceFilter, pageInfos: PageInfos): List<ValidatedDeviceDTO> {
         return customDeviceRepository.getListDevice(filter, pageInfos).map(deviceServiceMapper::getDeviceDTO)
     }
 
@@ -44,7 +45,7 @@ class DeviceService(
         return customDeviceRepository.getCountListDevice(filter)
     }
 
-    fun getDevicesWithFirebaseMessagingTokens(tokens: List<String>): List<DeviceDTO> {
+    fun getDevicesWithFirebaseMessagingTokens(tokens: List<String>): List<ValidatedDeviceDTO> {
         return deviceRepository.findByFirebaseMessagingTokenIn(tokens).map(deviceServiceMapper::getDeviceDTO)
     }
 
@@ -54,7 +55,7 @@ class DeviceService(
         }
     }
 
-    fun getDeviceDTOWithIds(ids: List<String>): List<DeviceDTO> {
+    fun getDeviceDTOWithIds(ids: List<String>): List<ValidatedDeviceDTO> {
         return deviceRepository.findByIdIn(ids).map(deviceServiceMapper::getDeviceDTO)
     }
 
@@ -70,7 +71,7 @@ class DeviceService(
         }
     }
 
-    fun getDeviceFromPerson(personId: String): DeviceDTO? {
+    fun getDeviceFromPerson(personId: String): ValidatedDeviceDTO? {
         return deviceRepository.findByPersonIdAndActiveIsTrue(personId)?.let(deviceServiceMapper::getDeviceDTO)
     }
 

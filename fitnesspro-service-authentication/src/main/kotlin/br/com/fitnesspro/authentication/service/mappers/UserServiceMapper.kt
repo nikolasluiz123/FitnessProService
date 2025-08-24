@@ -2,7 +2,8 @@ package br.com.fitnesspro.authentication.service.mappers
 
 import br.com.fitnesspro.authentication.repository.auditable.IUserRepository
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedUserDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IUserDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,8 +11,8 @@ class UserServiceMapper(
     private val userRepository: IUserRepository,
 ) {
 
-    fun getUserDTO(model: User): UserDTO {
-        return UserDTO(
+    fun getUserDTO(model: User): ValidatedUserDTO {
+        return ValidatedUserDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,
@@ -22,7 +23,7 @@ class UserServiceMapper(
         )
     }
 
-    fun getUser(dto: UserDTO): User {
+    fun getUser(dto: IUserDTO): User {
         val user = dto.id?.let { userRepository.findById(it) }
 
         return when {

@@ -4,9 +4,10 @@ import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.models.workout.Workout
 import br.com.fitnesspro.models.workout.WorkoutGroup
 import br.com.fitnesspro.models.workout.WorkoutGroupPreDefinition
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.WorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupDTO
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutRepository
@@ -20,7 +21,7 @@ class WorkoutServiceMapper(
     private val personRepository: IPersonRepository
 ) {
 
-    fun getWorkout(dto: WorkoutDTO): Workout {
+    fun getWorkout(dto: ValidatedWorkoutDTO): Workout {
         val workout = dto.id?.let { workoutRepository.findById(it) }
 
         return when {
@@ -57,7 +58,7 @@ class WorkoutServiceMapper(
         }
     }
 
-    fun getWorkoutGroup(dto: WorkoutGroupDTO): WorkoutGroup {
+    fun getWorkoutGroup(dto: IWorkoutGroupDTO): WorkoutGroup {
         val workoutGroup = dto.id?.let { workoutGroupRepository.findById(it) }
 
         return when {
@@ -94,8 +95,8 @@ class WorkoutServiceMapper(
         }
     }
 
-    fun getWorkoutGroupDTO(workoutGroup: WorkoutGroup): WorkoutGroupDTO {
-        return WorkoutGroupDTO(
+    fun getWorkoutGroupDTO(workoutGroup: WorkoutGroup): ValidatedWorkoutGroupDTO {
+        return ValidatedWorkoutGroupDTO(
             id = workoutGroup.id,
             creationDate = workoutGroup.creationDate,
             updateDate = workoutGroup.updateDate,
@@ -107,8 +108,8 @@ class WorkoutServiceMapper(
         )
     }
 
-    fun getWorkoutDTO(workout: Workout): WorkoutDTO {
-        return WorkoutDTO(
+    fun getWorkoutDTO(workout: Workout): ValidatedWorkoutDTO {
+        return ValidatedWorkoutDTO(
             id = workout.id,
             creationDate = workout.creationDate,
             updateDate = workout.updateDate,
@@ -120,7 +121,7 @@ class WorkoutServiceMapper(
         )
     }
 
-    fun getWorkoutGroupPreDefinition(dto: WorkoutGroupPreDefinitionDTO): WorkoutGroupPreDefinition {
+    fun getWorkoutGroupPreDefinition(dto: ValidatedWorkoutGroupPreDefinitionDTO): WorkoutGroupPreDefinition {
         val workoutGroupPreDefinition = dto.id?.let { workoutGroupPreDefinitionRepository.findById(it) }
 
         return when {
@@ -150,8 +151,8 @@ class WorkoutServiceMapper(
         }
     }
 
-    fun getWorkoutGroupPreDefinitionDTO(model: WorkoutGroupPreDefinition): WorkoutGroupPreDefinitionDTO {
-        return WorkoutGroupPreDefinitionDTO(
+    fun getWorkoutGroupPreDefinitionDTO(model: WorkoutGroupPreDefinition): ValidatedWorkoutGroupPreDefinitionDTO {
+        return ValidatedWorkoutGroupPreDefinitionDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,

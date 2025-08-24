@@ -1,14 +1,14 @@
 package br.com.fitnesspro.authentication.controller
 
 import br.com.fitnesspro.authentication.service.DeviceService
-import br.com.fitnesspro.core.gson.defaultGSon
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceDTO
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedReadServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedSingleValueServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.DeviceFilter
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
-import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import com.google.gson.GsonBuilder
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -30,24 +30,36 @@ class DeviceController(
     @GetMapping
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getListDevice(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ReadServiceResponse<DeviceDTO>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun getListDevice(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedDeviceDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val queryFilter = defaultGSon.fromJson(filter, DeviceFilter::class.java)
         val commonPageInfos = defaultGSon.fromJson(pageInfos, CommonPageInfos::class.java)
 
         val logs = deviceService.getListDevice(queryFilter, commonPageInfos)
-        return ResponseEntity.ok(ReadServiceResponse(values = logs, code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(
+            ValidatedReadServiceResponse(
+                values = logs,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
     @GetMapping(EndPointsV1.DEVICE_COUNT)
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getCountListDevice(@RequestParam filter: String): ResponseEntity<SingleValueServiceResponse<Int>> {
-        val defaultGSon = GsonBuilder().defaultGSon()
+    fun getCountListDevice(@RequestParam filter: String): ResponseEntity<ValidatedSingleValueServiceResponse<Int>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
         val queryFilter = defaultGSon.fromJson(filter, DeviceFilter::class.java)
 
         val count = deviceService.getCountListDevice(queryFilter)
-        return ResponseEntity.ok(SingleValueServiceResponse(value = count, code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(
+            ValidatedSingleValueServiceResponse(
+                value = count,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
 }

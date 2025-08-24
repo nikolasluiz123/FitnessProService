@@ -1,4 +1,4 @@
-package br.com.fitnesspro.config.gson // Ou onde preferir
+package br.com.fitnesspro.config.gson
 
 import com.google.gson.Gson
 import org.springframework.http.converter.json.GsonHttpMessageConverter

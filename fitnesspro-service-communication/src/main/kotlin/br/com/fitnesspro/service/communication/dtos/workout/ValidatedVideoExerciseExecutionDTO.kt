@@ -1,13 +1,13 @@
-package br.com.fitnesspro.shared.communication.dtos.workout
+package br.com.fitnesspro.service.communication.dtos.workout
 
-import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseExecutionDTO
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
-@Schema(description = "DTO para criação de um vídeo da execução de um exercício")
-data class NewVideoExerciseExecutionDTO(
+@Schema(description = "DTO para associação do vídeo com o a execução do exercício")
+data class ValidatedVideoExerciseExecutionDTO(
     @field:Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
@@ -19,14 +19,14 @@ data class NewVideoExerciseExecutionDTO(
     override var updateDate: LocalDateTime? = null,
 
     @field:Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
-    @field:NotNull(message = "videoExerciseExecutionDTO.active.notNull")
-    var active: Boolean = true,
+    @field:NotNull(message = "videoExerciseDTO.active.notNull")
+    override var active: Boolean = true,
 
-    @field:Schema(description = "Identificador da execução do exercício", required = true)
-    @field:NotNull(message = "videoExerciseExecutionDTO.exerciseExecutionId.notNull")
-    var exerciseExecutionId: String? = null,
+    @field:Schema(description = "Identificador do exercício", required = true)
+    @field:NotNull(message = "videoExerciseDTO.exerciseId.notNull")
+    override var exerciseExecutionId: String? = null,
 
-    @field:Schema(description = "DTO para representação do vídeo", required = true)
-    @field:NotNull(message = "newVideoExerciseExecutionDTO.video.notNull")
-    var videoDTO: VideoDTO? = null
-): AuditableDTO
+    @field:Schema(description = "Identificador do vídeo", required = true)
+    @field:NotNull(message = "videoExerciseExecutionDTO.videoId.notNull")
+    override var videoId: String? = null
+): IVideoExerciseExecutionDTO

@@ -1,14 +1,14 @@
 package br.com.fitnesspro.scheduled.task.service.mappers
 
 import br.com.fitnesspro.models.scheduledtask.ScheduledTask
-import br.com.fitnesspro.shared.communication.dtos.scheduledtask.ScheduledTaskDTO
+import br.com.fitnesspro.service.communication.dtos.scheduledtask.ValidatedScheduledTaskDTO
 import org.springframework.stereotype.Service
 
 @Service
 class ScheduledTaskServiceMapper {
 
-    fun getScheduledTaskDTO(model: ScheduledTask): ScheduledTaskDTO {
-        return ScheduledTaskDTO(
+    fun getValidatedScheduledTaskDTO(model: ScheduledTask): ValidatedScheduledTaskDTO {
+        return ValidatedScheduledTaskDTO(
             id = model.id,
             name = model.name,
             intervalMillis = model.intervalMillis,
@@ -19,8 +19,8 @@ class ScheduledTaskServiceMapper {
         )
     }
 
-    fun getScheduledTask(dto: ScheduledTaskDTO): ScheduledTask {
-        val model = br.com.fitnesspro.models.scheduledtask.ScheduledTask(
+    fun getScheduledTask(dto: ValidatedScheduledTaskDTO): ScheduledTask {
+        val model = ScheduledTask(
             name = dto.name!!,
             intervalMillis = dto.intervalMillis!!,
             lastExecutionTime = dto.lastExecutionTime,

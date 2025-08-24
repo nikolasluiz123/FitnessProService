@@ -79,7 +79,7 @@
 
         <dependency>
             <groupId>br.com</groupId>
-            <artifactId>fitnesspro-shared-communication</artifactId>
+            <artifactId>fitnesspro-service-communication</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

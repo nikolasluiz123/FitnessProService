@@ -4,7 +4,7 @@ import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.common.repository.auditable.report.IReportRepository
 import br.com.fitnesspro.models.general.SchedulerReport
 import br.com.fitnesspro.scheduler.repository.auditable.ISchedulerReportRepository
-import br.com.fitnesspro.shared.communication.dtos.general.SchedulerReportDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedSchedulerReportDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,7 +13,7 @@ class SchedulerReportServiceMapper(
     private val schedulerReportRepository: ISchedulerReportRepository,
     private val personRepository: IPersonRepository,
 ) {
-    fun getSchedulerReport(dto: SchedulerReportDTO): SchedulerReport {
+    fun getSchedulerReport(dto: ValidatedSchedulerReportDTO): SchedulerReport {
         val schedulerReport = dto.id?.let { schedulerReportRepository.findById(it) }
 
         return when {
@@ -47,8 +47,8 @@ class SchedulerReportServiceMapper(
         }
     }
 
-    fun getSchedulerReportDTO(model: SchedulerReport): SchedulerReportDTO {
-        return SchedulerReportDTO(
+    fun getValidatedSchedulerReportDTO(model: SchedulerReport): ValidatedSchedulerReportDTO {
+        return ValidatedSchedulerReportDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,

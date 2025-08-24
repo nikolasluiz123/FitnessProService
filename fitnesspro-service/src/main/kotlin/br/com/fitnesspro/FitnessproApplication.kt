@@ -8,6 +8,6 @@ import java.util.*
 class FitnessproApplication
 
 fun main(args: Array<String>) {
-	TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	runApplication<FitnessproApplication>(*args)
+	TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+    runApplication<FitnessproApplication>(*args)
 }

@@ -7,7 +7,7 @@ import br.com.fitnesspro.models.general.User
 import br.com.fitnesspro.models.serviceauth.Application
 import br.com.fitnesspro.models.serviceauth.Device
 import br.com.fitnesspro.models.serviceauth.ServiceToken
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenDTO
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -23,7 +23,7 @@ class TokenServiceMapper(
     private val applicationServiceMapper: ApplicationServiceMapper
 ) {
 
-    fun getTokenService(dto: ServiceTokenDTO): ServiceToken {
+    fun getTokenService(dto: ValidatedServiceTokenDTO): ServiceToken {
         return ServiceToken(
             jwtToken = dto.jwtToken,
             creationDate = dto.creationDate,
@@ -43,8 +43,8 @@ class TokenServiceMapper(
         user: User? = null,
         device: Device? = null,
         application: Application? = null
-    ) : ServiceTokenDTO {
-        return ServiceTokenDTO(
+    ) : ValidatedServiceTokenDTO {
+        return ValidatedServiceTokenDTO(
             jwtToken = jwt,
             creationDate = creationDate,
             expirationDate = expirationDate,

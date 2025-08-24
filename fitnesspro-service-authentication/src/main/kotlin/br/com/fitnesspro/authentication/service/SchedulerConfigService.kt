@@ -6,7 +6,7 @@ import br.com.fitnesspro.authentication.service.mappers.SchedulerConfigServiceMa
 import br.com.fitnesspro.core.cache.SCHEDULER_CONFIG_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
@@ -24,12 +24,12 @@ class SchedulerConfigService(
 ) {
 
     @Cacheable(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfigDTO> {
-        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map(schedulerConfigServiceMapper::getSchedulerConfigDTO)
+    fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedSchedulerConfigDTO> {
+        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map(schedulerConfigServiceMapper::getValidatedSchedulerConfigDTO)
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveSchedulerConfig(schedulerConfigDTO: SchedulerConfigDTO) {
+    fun saveSchedulerConfig(schedulerConfigDTO: ValidatedSchedulerConfigDTO) {
         val config = schedulerConfigServiceMapper.getSchedulerConfig(schedulerConfigDTO)
 
         validateDensityRange(config)
@@ -51,7 +51,7 @@ class SchedulerConfigService(
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveSchedulerConfigBatch(schedulerConfigDTOList: List<SchedulerConfigDTO>) {
+    fun saveSchedulerConfigBatch(schedulerConfigDTOList: List<ValidatedSchedulerConfigDTO>) {
         val configs = schedulerConfigDTOList.map {
             val config = schedulerConfigServiceMapper.getSchedulerConfig(it)
             validateDensityRange(config)

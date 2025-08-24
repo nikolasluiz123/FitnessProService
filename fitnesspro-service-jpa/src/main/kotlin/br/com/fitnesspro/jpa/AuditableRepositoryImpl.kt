@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManager
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 
-open class AuditableRepositoryImpl<T : AuditableModel>(
+class AuditableRepositoryImpl<T : AuditableModel>(
     entityInformation: JpaEntityInformation<T, *>,
     entityManager: EntityManager
 ) : SimpleJpaRepository<T, String>(entityInformation, entityManager) {

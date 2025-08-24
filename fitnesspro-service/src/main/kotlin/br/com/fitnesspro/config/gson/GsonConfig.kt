@@ -1,6 +1,6 @@
 package br.com.fitnesspro.config.gson
 
-import br.com.fitnesspro.core.gson.defaultGSon
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.springframework.context.annotation.Bean
@@ -11,6 +11,6 @@ class GsonConfig {
 
     @Bean
     fun gson(): Gson {
-        return GsonBuilder().defaultGSon()
+        return GsonBuilder().defaultServiceGSon()
     }
 }

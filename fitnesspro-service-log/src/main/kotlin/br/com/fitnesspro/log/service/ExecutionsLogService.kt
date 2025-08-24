@@ -12,13 +12,13 @@ import br.com.fitnesspro.log.repository.jpa.IExecutionsLogRepository
 import br.com.fitnesspro.log.service.mappers.LogsServiceMapper
 import br.com.fitnesspro.models.logs.ExecutionLog
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
-import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogPackageDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogInfosDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.UpdatableExecutionLogPackageInfosDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogPackageDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogInfosDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IUserDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IApplicationDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IDeviceDTO
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType.*
@@ -98,9 +98,9 @@ class ExecutionsLogService(
     private fun createExecutionLog(
         request: HttpServletRequest,
         handler: HandlerMethod,
-        userDTO: UserDTO? = null,
-        deviceDTO: DeviceDTO? = null,
-        applicationDTO: ApplicationDTO? = null
+        userDTO: IUserDTO? = null,
+        deviceDTO: IDeviceDTO? = null,
+        applicationDTO: IApplicationDTO? = null
     ) {
         val log = ExecutionLog(
             type = getExecutionType(request.method, request.requestURI),
@@ -165,23 +165,23 @@ class ExecutionsLogService(
         logPackageRepository.save(logPackage)
     }
 
-    fun getListExecutionLog(filter: ExecutionLogsFilter, pageInfos: PageInfos): List<ExecutionLogDTO> {
-        return customLogRepository.getListExecutionLog(filter, pageInfos).map(logsServiceMapper::getExecutionLogDTO)
+    fun getListExecutionLog(filter: ExecutionLogsFilter, pageInfos: PageInfos): List<ValidatedExecutionLogDTO> {
+        return customLogRepository.getListExecutionLog(filter, pageInfos).map(logsServiceMapper::getValidatedExecutionLogDTO)
     }
 
     fun getCountListExecutionLog(filter: ExecutionLogsFilter): Int {
         return customLogRepository.getCountListExecutionLog(filter)
     }
 
-    fun getListExecutionLogPackage(filter: ExecutionLogsPackageFilter, pageInfos: PageInfos): List<ExecutionLogPackageDTO> {
-        return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map(logsServiceMapper::getExecutionLogPackageDTO)
+    fun getListExecutionLogPackage(filter: ExecutionLogsPackageFilter, pageInfos: PageInfos): List<ValidatedExecutionLogPackageDTO> {
+        return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map(logsServiceMapper::getValidatedExecutionLogPackageDTO)
     }
 
     fun getCountListExecutionLogPackage(filter: ExecutionLogsPackageFilter): Int {
         return customLogRepository.getCountListExecutionLogPackage(filter)
     }
 
-    fun updateExecutionLog(id: String, dto: UpdatableExecutionLogInfosDTO) {
+    fun updateExecutionLog(id: String, dto: ValidatedUpdatableExecutionLogInfosDTO) {
         val log = logRepository.findById(id).orElseThrow {
             val message = messageSource.getMessage("execution.log.error.not.found", arrayOf(id), Locale.getDefault())
             throw EntityNotFoundException(message)
@@ -196,7 +196,7 @@ class ExecutionsLogService(
         logRepository.save(log)
     }
 
-    fun updateExecutionLogPackage(id: String, dto: UpdatableExecutionLogPackageInfosDTO) {
+    fun updateExecutionLogPackage(id: String, dto: ValidatedUpdatableExecutionLogPackageInfosDTO) {
         val logPackage = logPackageRepository.findById(id).orElseThrow {
             val message = messageSource.getMessage("execution.log.package.error.not.found", arrayOf(id), Locale.getDefault())
             throw EntityNotFoundException(message)

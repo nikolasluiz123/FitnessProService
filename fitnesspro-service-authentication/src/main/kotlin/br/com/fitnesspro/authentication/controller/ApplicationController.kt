@@ -1,11 +1,11 @@
 package br.com.fitnesspro.authentication.controller
 
 import br.com.fitnesspro.authentication.service.ApplicationService
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedApplicationDTO
+import br.com.fitnesspro.service.communication.responses.ValidatedPersistenceServiceResponse
+import br.com.fitnesspro.service.communication.responses.ValidatedReadServiceResponse
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
-import br.com.fitnesspro.shared.communication.responses.ReadServiceResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -24,10 +24,10 @@ class ApplicationController(
     @PostMapping
     @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun saveApplication(@RequestBody @Valid applicationDTO: ApplicationDTO): ResponseEntity<PersistenceServiceResponse<ApplicationDTO>> {
+    fun saveApplication(@RequestBody @Valid applicationDTO: ValidatedApplicationDTO): ResponseEntity<ValidatedPersistenceServiceResponse<ValidatedApplicationDTO>> {
         applicationService.saveApplication(applicationDTO)
         return ResponseEntity.ok(
-            PersistenceServiceResponse(
+            ValidatedPersistenceServiceResponse(
                 code = HttpStatus.OK.value(),
                 success = true,
                 savedDTO = applicationDTO
@@ -38,9 +38,15 @@ class ApplicationController(
     @GetMapping
     @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
     @SecurityRequirement(name = "Bearer Authentication")
-    fun getListApplications(): ResponseEntity<ReadServiceResponse<ApplicationDTO>> {
+    fun getListApplications(): ResponseEntity<ValidatedReadServiceResponse<ValidatedApplicationDTO>> {
         val result = applicationService.getListApplications()
-        return ResponseEntity.ok(ReadServiceResponse(values = result, code = HttpStatus.OK.value(), success = true))
+        return ResponseEntity.ok(
+            ValidatedReadServiceResponse(
+                values = result,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
     }
 
 

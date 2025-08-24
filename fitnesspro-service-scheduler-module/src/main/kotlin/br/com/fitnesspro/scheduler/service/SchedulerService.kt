@@ -1,12 +1,12 @@
 package br.com.fitnesspro.scheduler.service
 
-import br.com.fitnesspro.core.cache.SCHEDULER_IMPORT_CACHE_NAME
-import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
+import br.com.fitnesspro.authentication.service.DeviceService
 import br.com.fitnesspro.common.repository.jpa.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.common.service.firebase.FirebaseNotificationService
-import br.com.fitnesspro.authentication.service.DeviceService
+import br.com.fitnesspro.core.cache.SCHEDULER_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.enums.EnumDateTimePatterns
+import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.core.extensions.dateNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.core.extensions.timeNow
@@ -16,8 +16,8 @@ import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.repository.auditable.ISchedulerRepository
 import br.com.fitnesspro.scheduler.repository.jpa.ICustomSchedulerRepository
 import br.com.fitnesspro.scheduler.service.mappers.SchedulerServiceMapper
-import br.com.fitnesspro.shared.communication.dtos.scheduler.RecurrentSchedulerDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedRecurrentSchedulerDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
@@ -52,7 +52,7 @@ class SchedulerService(
     private val messageSource: MessageSource
 ) {
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveScheduler(schedulerDTO: SchedulerDTO) {
+    fun saveScheduler(schedulerDTO: ValidatedSchedulerDTO) {
         validateScheduler(schedulerDTO)
 
         when (schedulerDTO.type!!) {
@@ -76,7 +76,7 @@ class SchedulerService(
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveRecurrentScheduler(recurrentSchedulerDTO: RecurrentSchedulerDTO) {
+    fun saveRecurrentScheduler(recurrentSchedulerDTO: ValidatedRecurrentSchedulerDTO) {
         val schedules = recurrentSchedulerDTO.schedules.map(schedulerServiceMapper::getScheduler)
         validateConflictRecurrent(schedules)
         schedulerRepository.saveAll(schedules)
@@ -88,7 +88,7 @@ class SchedulerService(
         workoutGroupRepository.saveAll(workoutGrupos)
 
         val firstScheduler = schedules.first()
-        val notificationSchedulerDTO = SchedulerDTO(
+        val notificationSchedulerDTO = ValidatedSchedulerDTO(
             id = firstScheduler.id,
             professionalPersonId = firstScheduler.professionalPerson?.id,
             academyMemberPersonId = firstScheduler.academyMemberPerson?.id,
@@ -100,8 +100,8 @@ class SchedulerService(
     }
 
     private fun sendNotification(
-        schedulerDTO: SchedulerDTO,
-        oldSchedulerDTO: SchedulerDTO? = null,
+        schedulerDTO: ValidatedSchedulerDTO,
+        oldSchedulerDTO: ValidatedSchedulerDTO? = null,
         scheduledDates: List<LocalDate> = emptyList()
     ) {
         if (oldSchedulerDTO != null) {
@@ -136,7 +136,7 @@ class SchedulerService(
         }
     }
 
-    private fun notifyMemberSchedulerConfirmed(schedulerDTO: SchedulerDTO) {
+    private fun notifyMemberSchedulerConfirmed(schedulerDTO: ValidatedSchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
         val date = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.DAY_MONTH, ZoneId.of(zoneId))
         val start = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.TIME, ZoneId.of(zoneId))
@@ -158,7 +158,7 @@ class SchedulerService(
         )
     }
 
-    private fun notifyMemberSchedulerCancelled(schedulerDTO: SchedulerDTO) {
+    private fun notifyMemberSchedulerCancelled(schedulerDTO: ValidatedSchedulerDTO) {
         val cancellationPerson = personRepository.findById(schedulerDTO.cancellationPersonId!!).get()
         val personIdToNotify = if (cancellationPerson.id == schedulerDTO.professionalPersonId) {
             schedulerDTO.academyMemberPersonId
@@ -191,7 +191,7 @@ class SchedulerService(
         return person.name?.split(" ")?.firstOrNull()
     }
 
-    private fun notifyMemberSchedulerTimeChanged(schedulerDTO: SchedulerDTO) {
+    private fun notifyMemberSchedulerTimeChanged(schedulerDTO: ValidatedSchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
         val date = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.DAY_MONTH, ZoneId.of(zoneId))
 
@@ -210,7 +210,7 @@ class SchedulerService(
         )
     }
 
-    private fun notifyProfessionalNewSuggestionScheduler(schedulerDTO: SchedulerDTO) {
+    private fun notifyProfessionalNewSuggestionScheduler(schedulerDTO: ValidatedSchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.professionalPersonId!!)?.zoneId!!
         val date = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.DAY_MONTH, ZoneId.of(zoneId))
         val start = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.TIME, ZoneId.of(zoneId))
@@ -232,13 +232,13 @@ class SchedulerService(
         )
     }
 
-    private fun getMemberFirstName(schedulerDTO: SchedulerDTO): String? {
+    private fun getMemberFirstName(schedulerDTO: ValidatedSchedulerDTO): String? {
         val person = personRepository.findById(schedulerDTO.academyMemberPersonId!!).get()
 
         return getPersonFirstName(person)
     }
 
-    private fun notifyMemberNewUniqueScheduler(schedulerDTO: SchedulerDTO) {
+    private fun notifyMemberNewUniqueScheduler(schedulerDTO: ValidatedSchedulerDTO) {
         val zoneId = deviceService.getDeviceFromPerson(schedulerDTO.academyMemberPersonId!!)?.zoneId!!
         val date = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.DAY_MONTH, ZoneId.of(zoneId))
         val start = schedulerDTO.dateTimeStart?.format(EnumDateTimePatterns.TIME, ZoneId.of(zoneId))
@@ -260,7 +260,7 @@ class SchedulerService(
         )
     }
 
-    private fun notifyMemberNewRecurrentScheduler(schedulerDTO: SchedulerDTO, scheduledDates: List<LocalDate>) {
+    private fun notifyMemberNewRecurrentScheduler(schedulerDTO: ValidatedSchedulerDTO, scheduledDates: List<LocalDate>) {
         val professionalName = getProfessionalFirstName(schedulerDTO)
 
         val dateCount = scheduledDates.size.toString()
@@ -282,13 +282,13 @@ class SchedulerService(
         )
     }
 
-    private fun getProfessionalFirstName(schedulerDTO: SchedulerDTO): String? {
+    private fun getProfessionalFirstName(schedulerDTO: ValidatedSchedulerDTO): String? {
         val person = personRepository.findById(schedulerDTO.professionalPersonId!!).get()
         return getPersonFirstName(person)
     }
 
     @Throws(BusinessException::class)
-    private fun validateScheduler(dto: SchedulerDTO) {
+    private fun validateScheduler(dto: ValidatedSchedulerDTO) {
         val scheduler = schedulerServiceMapper.getScheduler(dto)
 
         when (dto.type!!) {
@@ -437,7 +437,7 @@ class SchedulerService(
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveSchedulerBatch(schedulerDTOList: List<SchedulerDTO>) {
+    fun saveSchedulerBatch(schedulerDTOList: List<ValidatedSchedulerDTO>) {
         if (schedulerDTOList.any { it.type == EnumSchedulerType.RECURRENT }) {
             throw BusinessException(
                 messageSource.getMessage(
@@ -457,7 +457,7 @@ class SchedulerService(
     }
 
     @Cacheable(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerDTO> {
+    fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedSchedulerDTO> {
         return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map(schedulerServiceMapper::getSchedulerDTO)
     }
 

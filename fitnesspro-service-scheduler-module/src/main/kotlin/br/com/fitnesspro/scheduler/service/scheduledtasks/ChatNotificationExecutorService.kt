@@ -1,12 +1,12 @@
 package br.com.fitnesspro.scheduler.service.scheduledtasks
 
-import br.com.fitnesspro.core.gson.defaultGSon
-import br.com.fitnesspro.common.service.firebase.FirebaseNotificationService
 import br.com.fitnesspro.authentication.service.DeviceService
+import br.com.fitnesspro.common.service.firebase.FirebaseNotificationService
+import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.service.ExecutionsLogService
-import br.com.fitnesspro.scheduler.repository.jpa.firebase.FirebaseChatRepository
 import br.com.fitnesspro.scheduled.task.service.IScheduledTaskExecutorService
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import br.com.fitnesspro.scheduler.repository.jpa.firebase.FirebaseChatRepository
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import com.google.gson.GsonBuilder
 import org.springframework.stereotype.Service
@@ -66,9 +66,9 @@ class ChatNotificationExecutorService(
 
     fun StringJoiner.addProcessLog(
         successDevicesIds: List<String>,
-        successDevices: List<DeviceDTO>,
+        successDevices: List<ValidatedDeviceDTO>,
         failDevicesIds: List<String>,
-        failDevices: List<DeviceDTO>,
+        failDevices: List<ValidatedDeviceDTO>,
         exceptions: List<Exception>,
     ) {
         val successMessageIds = successDevicesIds.joinToStringOrLabel("Nenhum dispositivo foi notificado")

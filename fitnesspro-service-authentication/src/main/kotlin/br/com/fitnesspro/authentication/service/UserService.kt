@@ -4,13 +4,13 @@ import br.com.fitnesspro.authentication.repository.auditable.IUserRepository
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.core.exceptions.UserNotFoundException
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.shared.communication.dtos.general.AuthenticationDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenDTO
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ServiceTokenGenerationDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedAuthenticationDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenGenerationDTO
+import br.com.fitnesspro.service.communication.responses.ValidatedAuthenticationServiceResponse
 import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumTokenType
 import br.com.fitnesspro.shared.communication.helper.HashHelper
-import br.com.fitnesspro.shared.communication.responses.AuthenticationServiceResponse
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -23,7 +23,7 @@ class UserService(
     private val deviceService: DeviceService,
     private val messageSource: MessageSource
 ) {
-    fun login(authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
+    fun login(authenticationDTO: ValidatedAuthenticationDTO): ValidatedAuthenticationServiceResponse {
         return try {
             hashPasswordIfNeed(authenticationDTO)
             val user = getValidatedUser(authenticationDTO)
@@ -38,7 +38,7 @@ class UserService(
                 getDeviceToken(deviceDTO.id!!)
             }
 
-            AuthenticationServiceResponse(
+            ValidatedAuthenticationServiceResponse(
                 tokens = listOfNotNull(userToken, deviceToken),
                 code = HttpStatus.OK.value(),
                 success = true
@@ -46,7 +46,7 @@ class UserService(
         } catch (_: UserNotFoundException) {
             val message = messageSource.getMessage("auth.error.invalid.credentials", null, Locale.getDefault())
 
-            AuthenticationServiceResponse(
+            ValidatedAuthenticationServiceResponse(
                 code = HttpStatus.NOT_FOUND.value(),
                 success = false,
                 error = message
@@ -54,7 +54,7 @@ class UserService(
         }
     }
 
-    private fun getValidatedUser(authenticationDTO: AuthenticationDTO): User {
+    private fun getValidatedUser(authenticationDTO: ValidatedAuthenticationDTO): User {
         val user = userRepository.findByEmailAndPassword(authenticationDTO.email!!, authenticationDTO.password!!)
 
         if (user == null) {
@@ -70,14 +70,14 @@ class UserService(
         return user
     }
 
-    private fun hashPasswordIfNeed(authenticationDTO: AuthenticationDTO) {
+    private fun hashPasswordIfNeed(authenticationDTO: ValidatedAuthenticationDTO) {
         if (!HashHelper.isHashed(authenticationDTO.password!!)) {
             authenticationDTO.password = HashHelper.applyHash(authenticationDTO.password!!)
         }
     }
 
-    private fun getUserToken(user: User): ServiceTokenDTO {
-        val serviceTokenGenerationDTO = ServiceTokenGenerationDTO(
+    private fun getUserToken(user: User): ValidatedServiceTokenDTO {
+        val serviceTokenGenerationDTO = ValidatedServiceTokenGenerationDTO(
             type = EnumTokenType.USER_AUTHENTICATION_TOKEN,
             userId = user.id
         )
@@ -85,8 +85,8 @@ class UserService(
         return tokenService.generateServiceToken(serviceTokenGenerationDTO)
     }
 
-    private fun getDeviceToken(deviceId: String): ServiceTokenDTO {
-        val serviceTokenGenerationDTO = ServiceTokenGenerationDTO(
+    private fun getDeviceToken(deviceId: String): ValidatedServiceTokenDTO {
+        val serviceTokenGenerationDTO = ValidatedServiceTokenGenerationDTO(
             type = EnumTokenType.DEVICE_TOKEN,
             deviceId = deviceId
         )
@@ -94,11 +94,11 @@ class UserService(
         return tokenService.generateServiceToken(serviceTokenGenerationDTO)
     }
 
-    fun logout(authenticationDTO: AuthenticationDTO): AuthenticationServiceResponse {
+    fun logout(authenticationDTO: ValidatedAuthenticationDTO): ValidatedAuthenticationServiceResponse {
         val userId = userRepository.findByEmail(authenticationDTO.email!!)?.id!!
         val userTokens = tokenService.invalidateAllUserTokens(userId)
 
-        return AuthenticationServiceResponse(
+        return ValidatedAuthenticationServiceResponse(
             tokens = userTokens,
             code = HttpStatus.OK.value(),
             success = true

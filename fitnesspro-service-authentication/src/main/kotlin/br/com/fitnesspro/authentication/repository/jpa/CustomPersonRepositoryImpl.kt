@@ -7,8 +7,8 @@ import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
-import br.com.fitnesspro.shared.communication.dtos.general.PersonDTO
-import br.com.fitnesspro.shared.communication.dtos.general.UserDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedUserDTO
 import br.com.fitnesspro.shared.communication.enums.general.EnumUserType
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -140,7 +140,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         }
     }
 
-    override fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<PersonDTO> {
+    override fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<ValidatedPersonDTO> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -191,7 +191,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         query.setParameters(params)
 
         return query.getResultList(Tuple::class.java).map {
-            PersonDTO(
+            ValidatedPersonDTO(
                 id = it.getString("id"),
                 creationDate = it.getLocalDateTimeFromTimeStamp("creationDate"),
                 updateDate = it.getLocalDateTimeFromTimeStamp("updateDate"),
@@ -200,7 +200,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
                 birthDate = it.getLocalDateFromDate("birthDate"),
                 phone = it.getString("phone"),
                 createDefaultSchedulerConfig = false,
-                user = UserDTO(
+                user = ValidatedUserDTO(
                     id = it.getString("userId"),
                     creationDate = it.getLocalDateTimeFromTimeStamp("userCreationDate"),
                     updateDate = it.getLocalDateTimeFromTimeStamp("userUpdateDate"),

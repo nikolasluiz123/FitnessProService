@@ -5,8 +5,8 @@ import br.com.fitnesspro.common.repository.auditable.general.IPersonAcademyTimeR
 import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.models.general.Academy
 import br.com.fitnesspro.models.general.PersonAcademyTime
-import br.com.fitnesspro.shared.communication.dtos.general.AcademyDTO
-import br.com.fitnesspro.shared.communication.dtos.general.PersonAcademyTimeDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedAcademyDTO
+import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonAcademyTimeDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,7 +15,7 @@ class AcademyServiceMapper(
     private val academyRepository: IAcademyRepository,
     private val personAcademyTimeRepository: IPersonAcademyTimeRepository,
 ) {
-    fun getAcademy(dto: AcademyDTO): Academy {
+    fun getAcademy(dto: ValidatedAcademyDTO): Academy {
         return if (dto.id != null) {
             academyRepository.findById(dto.id!!).get().copy(
                 name = dto.name,
@@ -33,8 +33,8 @@ class AcademyServiceMapper(
         }
     }
 
-    fun getAcademyDTO(model: Academy): AcademyDTO {
-        return AcademyDTO(
+    fun getValidatedAcademyDTO(model: Academy): ValidatedAcademyDTO {
+        return ValidatedAcademyDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,
@@ -45,7 +45,7 @@ class AcademyServiceMapper(
         )
     }
 
-    fun getPersonAcademyTime(dto: PersonAcademyTimeDTO): PersonAcademyTime {
+    fun getPersonAcademyTime(dto: ValidatedPersonAcademyTimeDTO): PersonAcademyTime {
         val personAcademyTime = dto.id?.let { personAcademyTimeRepository.findById(it) }
 
         return when {
@@ -85,8 +85,8 @@ class AcademyServiceMapper(
         }
     }
 
-    fun getPersonAcademyTimeDTO(model: PersonAcademyTime): PersonAcademyTimeDTO {
-        return PersonAcademyTimeDTO(
+    fun getValidatedPersonAcademyTimeDTO(model: PersonAcademyTime): ValidatedPersonAcademyTimeDTO {
+        return ValidatedPersonAcademyTimeDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,

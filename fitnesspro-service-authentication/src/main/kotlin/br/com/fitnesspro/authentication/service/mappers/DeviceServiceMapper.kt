@@ -3,7 +3,8 @@ package br.com.fitnesspro.authentication.service.mappers
 import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.authentication.repository.jpa.IApplicationRepository
 import br.com.fitnesspro.models.serviceauth.Device
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.DeviceDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceDTO
+import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IDeviceDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,8 +15,8 @@ class DeviceServiceMapper(
     private val personRepository: IPersonRepository
 ) {
 
-    fun getDeviceDTO(deviceModel: Device): DeviceDTO {
-        return DeviceDTO(
+    fun getDeviceDTO(deviceModel: Device): ValidatedDeviceDTO {
+        return ValidatedDeviceDTO(
             id = deviceModel.id,
             model = deviceModel.model,
             brand = deviceModel.brand,
@@ -30,7 +31,7 @@ class DeviceServiceMapper(
         )
     }
 
-    fun getDevice(dto: DeviceDTO): Device {
+    fun getDevice(dto: IDeviceDTO): Device {
         return Device(
             id = dto.id!!,
             model = dto.model!!,

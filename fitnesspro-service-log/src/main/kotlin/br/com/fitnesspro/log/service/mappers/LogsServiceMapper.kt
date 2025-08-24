@@ -2,15 +2,15 @@ package br.com.fitnesspro.log.service.mappers
 
 import br.com.fitnesspro.models.logs.ExecutionLog
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
-import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.ExecutionLogPackageDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogPackageDTO
 import org.springframework.stereotype.Service
 
 @Service
 class LogsServiceMapper {
 
-    fun getExecutionLogDTO(model: ExecutionLog): ExecutionLogDTO {
-        return ExecutionLogDTO(
+    fun getValidatedExecutionLogDTO(model: ExecutionLog): ValidatedExecutionLogDTO {
+        return ValidatedExecutionLogDTO(
             id = model.id,
             type = model.type,
             state = model.state,
@@ -25,8 +25,8 @@ class LogsServiceMapper {
         )
     }
 
-    fun getExecutionLogPackageDTO(model: ExecutionLogPackage): ExecutionLogPackageDTO {
-        return ExecutionLogPackageDTO(
+    fun getValidatedExecutionLogPackageDTO(model: ExecutionLogPackage): ValidatedExecutionLogPackageDTO {
+        return ValidatedExecutionLogPackageDTO(
             id = model.id,
             executionLogId = model.executionLog.id,
             clientExecutionStart = model.clientExecutionStart,

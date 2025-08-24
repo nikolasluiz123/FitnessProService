@@ -4,9 +4,9 @@ import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.models.workout.Exercise
 import br.com.fitnesspro.models.workout.ExerciseExecution
 import br.com.fitnesspro.models.workout.ExercisePreDefinition
-import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.ExerciseExecutionDTO
-import br.com.fitnesspro.shared.communication.dtos.workout.ExercisePreDefinitionDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseExecutionDTO
+import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExercisePreDefinitionDTO
 import br.com.fitnesspro.workout.repository.auditable.IExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.auditable.IExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IExerciseRepository
@@ -24,7 +24,7 @@ class ExerciseServiceMapper(
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
-    fun getExercise(dto: ExerciseDTO): Exercise {
+    fun getExercise(dto: ValidatedExerciseDTO): Exercise {
         val exercise = dto.id?.let { exerciseRepository.findById(it) }
 
         return when {
@@ -73,8 +73,8 @@ class ExerciseServiceMapper(
         }
     }
 
-    fun getExerciseDTO(model: Exercise): ExerciseDTO {
-        return ExerciseDTO(
+    fun getExerciseDTO(model: Exercise): ValidatedExerciseDTO {
+        return ValidatedExerciseDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,
@@ -90,7 +90,7 @@ class ExerciseServiceMapper(
         )
     }
 
-    fun getExerciseExecution(dto: ExerciseExecutionDTO): ExerciseExecution {
+    fun getExerciseExecution(dto: ValidatedExerciseExecutionDTO): ExerciseExecution {
         val exerciseExecution = dto.id?.let { exerciseExecutionRepository.findById(it) }
 
         return when {
@@ -136,8 +136,8 @@ class ExerciseServiceMapper(
         }
     }
 
-    fun getExerciseExecutionDTO(model: ExerciseExecution): ExerciseExecutionDTO {
-        return ExerciseExecutionDTO(
+    fun getExerciseExecutionDTO(model: ExerciseExecution): ValidatedExerciseExecutionDTO {
+        return ValidatedExerciseExecutionDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,
@@ -153,7 +153,7 @@ class ExerciseServiceMapper(
     }
 
 
-    fun getExercisePreDefinition(dto: ExercisePreDefinitionDTO): ExercisePreDefinition {
+    fun getExercisePreDefinition(dto: ValidatedExercisePreDefinitionDTO): ExercisePreDefinition {
         val exercisePreDefinition = dto.id?.let { exercisePreDefinitionRepository.findById(it) }
 
         return when {
@@ -200,8 +200,8 @@ class ExerciseServiceMapper(
         }
     }
 
-    fun getExercisePreDefinitionDTO(model: ExercisePreDefinition): ExercisePreDefinitionDTO {
-        return ExercisePreDefinitionDTO(
+    fun getExercisePreDefinitionDTO(model: ExercisePreDefinition): ValidatedExercisePreDefinitionDTO {
+        return ValidatedExercisePreDefinitionDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,

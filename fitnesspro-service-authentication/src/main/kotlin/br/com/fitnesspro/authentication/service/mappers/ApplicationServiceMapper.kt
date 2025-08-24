@@ -2,7 +2,7 @@ package br.com.fitnesspro.authentication.service.mappers
 
 import br.com.fitnesspro.authentication.repository.jpa.IApplicationRepository
 import br.com.fitnesspro.models.serviceauth.Application
-import br.com.fitnesspro.shared.communication.dtos.serviceauth.ApplicationDTO
+import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedApplicationDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,7 +10,7 @@ class ApplicationServiceMapper(
     private val applicationRepository: IApplicationRepository
 ) {
 
-    fun getApplication(dto: ApplicationDTO): Application {
+    fun getApplication(dto: ValidatedApplicationDTO): Application {
         val model = dto.id?.let { applicationRepository.findById(it) }
 
         return when {
@@ -38,8 +38,8 @@ class ApplicationServiceMapper(
         }
     }
 
-    fun getApplicationDTO(model: Application): ApplicationDTO {
-        return ApplicationDTO(
+    fun getApplicationDTO(model: Application): ValidatedApplicationDTO {
+        return ValidatedApplicationDTO(
             id = model.id,
             name = model.name,
             active = model.active

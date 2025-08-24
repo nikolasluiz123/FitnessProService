@@ -43,11 +43,11 @@
 				<version>${project.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>fitnesspro-shared-communication</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>br.com</groupId>
+                <artifactId>fitnesspro-service-communication</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -93,5 +93,6 @@
         <module>fitnesspro-service-log</module>
         <module>fitnesspro-service-jpa</module>
         <module>fitnesspro-service-authentication</module>
+        <module>fitnesspro-service-communication</module>
     </modules>
 </project>

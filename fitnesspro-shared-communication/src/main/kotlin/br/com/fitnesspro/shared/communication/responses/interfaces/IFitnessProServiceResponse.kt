@@ -1,4 +1,4 @@
-package br.com.fitnesspro.shared.communication.responses
+package br.com.fitnesspro.shared.communication.responses.interfaces
 
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
 import java.io.Serializable

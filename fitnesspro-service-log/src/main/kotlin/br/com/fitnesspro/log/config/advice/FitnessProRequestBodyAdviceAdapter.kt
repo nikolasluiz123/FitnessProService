@@ -1,7 +1,7 @@
 package br.com.fitnesspro.log.config.advice
 
-import br.com.fitnesspro.core.gson.defaultGSon
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
 import com.google.gson.GsonBuilder
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpInputMessage
@@ -31,7 +31,7 @@ class FitnessProRequestBodyAdviceAdapter : RequestBodyAdviceAdapter() {
         targetType: Type,
         converterType: Class<out HttpMessageConverter<*>>
     ): Any {
-        val gson = GsonBuilder().defaultGSon()
+        val gson = GsonBuilder().defaultServiceGSon()
         val jsonData = gson.toJson(body)
         val requestAttributes = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes
         requestAttributes.request.setAttribute(EnumRequestAttributes.REQUEST_BODY_DATA.name, jsonData)

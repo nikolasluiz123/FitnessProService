@@ -1,10 +1,10 @@
 package br.com.fitnesspro.common.service.firebase
 
-import br.com.fitnesspro.core.exceptions.FirebaseNotificationException
-import br.com.fitnesspro.common.notification.NotificationResult
 import br.com.fitnesspro.authentication.service.DeviceService
-import br.com.fitnesspro.shared.communication.dtos.notification.GlobalNotificationDTO
-import br.com.fitnesspro.shared.communication.dtos.notification.NotificationDTO
+import br.com.fitnesspro.common.notification.NotificationResult
+import br.com.fitnesspro.core.exceptions.FirebaseNotificationException
+import br.com.fitnesspro.service.communication.dtos.notification.ValidatedGlobalNotificationDTO
+import br.com.fitnesspro.service.communication.dtos.notification.ValidatedNotificationDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.notification.FitnessProNotificationData
 import com.google.firebase.messaging.FirebaseMessaging
@@ -20,15 +20,15 @@ class FirebaseNotificationService(
     private val deviceService: DeviceService,
     private val messageSource: MessageSource
 ) {
-    fun sendExternalNotification(notificationDTO: NotificationDTO) {
+    fun sendExternalNotification(validatedNotificationDTO: ValidatedNotificationDTO) {
         val notification = FitnessProNotificationData(
-            title = notificationDTO.title!!,
-            message = notificationDTO.message!!,
+            title = validatedNotificationDTO.title!!,
+            message = validatedNotificationDTO.message!!,
             channel = EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL,
             customJSONData = null
         )
 
-        val devicesTokens = deviceService.getFirebaseMessagingTokenFromDevicesWithIds(notificationDTO.devicesIds)
+        val devicesTokens = deviceService.getFirebaseMessagingTokenFromDevicesWithIds(validatedNotificationDTO.devicesIds)
         val results = verifyStrategyAndSendNotification(devicesTokens, notification)
 
         throwsExceptionIfFail(results)
@@ -60,10 +60,10 @@ class FirebaseNotificationService(
         return verifyStrategyAndSendNotification(devicesTokens, notification)
     }
 
-    fun sendNotificationToAllDevices(notificationDTO: GlobalNotificationDTO) {
+    fun sendNotificationToAllDevices(validatedNotificationDTO: ValidatedGlobalNotificationDTO) {
         val notification = FitnessProNotificationData(
-            title = notificationDTO.title!!,
-            message = notificationDTO.message!!,
+            title = validatedNotificationDTO.title!!,
+            message = validatedNotificationDTO.message!!,
             channel = EnumNotificationChannel.GENERIC_COMMUNICATION_CHANNEL,
             customJSONData = null
         )

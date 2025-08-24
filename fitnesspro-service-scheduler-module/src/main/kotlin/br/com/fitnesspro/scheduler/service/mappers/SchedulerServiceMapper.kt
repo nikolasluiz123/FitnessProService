@@ -5,8 +5,8 @@ import br.com.fitnesspro.authentication.repository.auditable.ISchedulerConfigRep
 import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.scheduler.repository.auditable.ISchedulerRepository
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerConfigDTO
-import br.com.fitnesspro.shared.communication.dtos.scheduler.SchedulerDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
+import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,7 +15,7 @@ class SchedulerServiceMapper(
     private val schedulerRepository: ISchedulerRepository,
     private val schedulerConfigRepository: ISchedulerConfigRepository,
 ) {
-    fun getScheduler(dto: SchedulerDTO): Scheduler {
+    fun getScheduler(dto: ValidatedSchedulerDTO): Scheduler {
         val scheduler = dto.id?.let { schedulerRepository.findById(it) }
 
         return when {
@@ -67,7 +67,7 @@ class SchedulerServiceMapper(
         }
     }
 
-    fun getSchedulerConfig(dto: SchedulerConfigDTO): SchedulerConfig {
+    fun getSchedulerConfig(dto: ValidatedSchedulerConfigDTO): SchedulerConfig {
         val schedulerConfig = dto.id?.let { schedulerConfigRepository.findById(it) }
 
         return when {
@@ -104,8 +104,8 @@ class SchedulerServiceMapper(
         }
     }
 
-    fun getSchedulerConfigDTO(model: SchedulerConfig): SchedulerConfigDTO {
-        return SchedulerConfigDTO(
+    fun getSchedulerConfigDTO(model: SchedulerConfig): ValidatedSchedulerConfigDTO {
+        return ValidatedSchedulerConfigDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,
@@ -117,8 +117,8 @@ class SchedulerServiceMapper(
         )
     }
 
-    fun getSchedulerDTO(model: Scheduler): SchedulerDTO {
-        return SchedulerDTO(
+    fun getSchedulerDTO(model: Scheduler): ValidatedSchedulerDTO {
+        return ValidatedSchedulerDTO(
             id = model.id,
             creationDate = model.creationDate,
             updateDate = model.updateDate,

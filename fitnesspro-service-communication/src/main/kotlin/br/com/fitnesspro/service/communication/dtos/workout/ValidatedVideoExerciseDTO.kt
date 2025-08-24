@@ -1,13 +1,13 @@
-package br.com.fitnesspro.shared.communication.dtos.workout
+package br.com.fitnesspro.service.communication.dtos.workout
 
-import br.com.fitnesspro.shared.communication.dtos.common.AuditableDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseDTO
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
-@Schema(description = "DTO para criação de um vídeo de um exercício")
-data class NewVideoExerciseDTO(
+@Schema(description = "DTO para associação do vídeo com o exercício")
+data class ValidatedVideoExerciseDTO(
     @field:Schema(description = "Identificador", example = "e874d31c-0e29-4e9b-b48e-7d70d91b6a16", required = false)
     @field:Size(min = 1, max = 255, message = "baseDTO.id.size")
     override var id: String? = null,
@@ -20,13 +20,13 @@ data class NewVideoExerciseDTO(
 
     @field:Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "videoExerciseDTO.active.notNull")
-    var active: Boolean = true,
+    override var active: Boolean = true,
 
     @field:Schema(description = "Identificador do exercício", required = true)
     @field:NotNull(message = "videoExerciseDTO.exerciseId.notNull")
-    var exerciseId: String? = null,
+    override var exerciseId: String? = null,
 
-    @field:Schema(description = "DTO para representação do vídeo", required = true)
-    @field:NotNull(message = "newVideoExerciseDTO.video.notNull")
-    var videoDTO: VideoDTO? = null
-): AuditableDTO
+    @field:Schema(description = "Identificador do vídeo", required = true)
+    @field:NotNull(message = "videoExerciseDTO.videoId.notNull")
+    override var videoId: String? = null
+): IVideoExerciseDTO

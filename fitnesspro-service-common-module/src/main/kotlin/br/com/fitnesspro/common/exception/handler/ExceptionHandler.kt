@@ -2,8 +2,8 @@ package br.com.fitnesspro.common.exception.handler
 
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
+import br.com.fitnesspro.service.communication.responses.ValidatedPersistenceServiceResponse
 import br.com.fitnesspro.shared.communication.dtos.common.BaseDTO
-import br.com.fitnesspro.shared.communication.responses.PersistenceServiceResponse
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.hibernate.TransactionException
@@ -21,12 +21,12 @@ class ExceptionHandler {
     fun handlerServiceTimeout(
         exception: TransactionException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse<BaseDTO> {
+    ): ValidatedPersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
-        return PersistenceServiceResponse(
+        return ValidatedPersistenceServiceResponse(
             code = HttpStatus.REQUEST_TIMEOUT.value(),
             error = "A requisição excedeu o tempo e a conexão com o serviço foi desfeita."
         )
@@ -37,12 +37,12 @@ class ExceptionHandler {
     fun handlerEntityNotFound(
         exception: EntityNotFoundException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse<BaseDTO> {
+    ): ValidatedPersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
-        return PersistenceServiceResponse(
+        return ValidatedPersistenceServiceResponse(
             code = HttpStatus.NOT_FOUND.value(),
             error = exception.message
         )
@@ -53,14 +53,14 @@ class ExceptionHandler {
     fun handlerFieldValidationExceptions(
         exception: MethodArgumentNotValidException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse<BaseDTO> {
+    ): ValidatedPersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
         val errors = exception.bindingResult.fieldErrors.mapNotNull { it.defaultMessage }
 
-        return PersistenceServiceResponse(
+        return ValidatedPersistenceServiceResponse(
             code = HttpStatus.BAD_REQUEST.value(),
             error = errors.joinToString(separator = ", ")
         )
@@ -71,12 +71,12 @@ class ExceptionHandler {
     fun handlerValidationExceptions(
         exception: BusinessException,
         request: HttpServletRequest
-    ): PersistenceServiceResponse<BaseDTO> {
+    ): ValidatedPersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
-        return PersistenceServiceResponse(
+        return ValidatedPersistenceServiceResponse(
             code = HttpStatus.BAD_REQUEST.value(),
             error = exception.message
         )
@@ -87,12 +87,12 @@ class ExceptionHandler {
     fun handlerExceptions(
         exception: Exception,
         request: HttpServletRequest
-    ): PersistenceServiceResponse<BaseDTO> {
+    ): ValidatedPersistenceServiceResponse<BaseDTO> {
         exception.printStackTrace()
 
         request.setAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name, exception)
 
-        return PersistenceServiceResponse(
+        return ValidatedPersistenceServiceResponse(
             code = HttpStatus.INTERNAL_SERVER_ERROR.value(),
             error = exception.message ?: "Ocorreu um erro não tratado."
         )
