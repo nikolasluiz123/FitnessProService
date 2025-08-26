@@ -1,8 +1,8 @@
 package br.com.fitnesspro.common.service.storage
 
-import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import br.com.fitnesspro.common.repository.auditable.report.IReportRepository
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes
+import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
@@ -27,6 +27,22 @@ class ReportGCBucketService(
 
         val reports = reportRepository.findAllById(reportIds).onEachIndexed { index, report ->
             writeDefaultFieldsStorageModelAfterUpload(report, storageUrls[index])
+        }
+
+        reportRepository.saveAll(reports)
+    }
+
+    fun deleteReport(reportIds: List<String>) {
+        val reports = reportRepository.findAllById(reportIds)
+
+        reports.forEach {
+            deleteFile(
+                bucketName = EnumGCBucketNames.REPORT,
+                fileName = it.filePath!!.substringAfterLast("/")
+            )
+
+            it.storageUrl = null
+            it.storageTransmissionDate = null
         }
 
         reportRepository.saveAll(reports)

@@ -1,6 +1,7 @@
 package br.com.fitnesspro.workout.service
 
 import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
+import br.com.fitnesspro.common.service.storage.VideoGCBucketService
 import br.com.fitnesspro.core.cache.VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.VIDEO_EXERCISE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME
@@ -22,7 +23,6 @@ import br.com.fitnesspro.workout.service.mappers.VideoServiceMapper
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
-import kotlin.collections.map
 
 @Service
 class VideoService(
@@ -35,6 +35,7 @@ class VideoService(
     private val customVideoExerciseExecutionRepository: ICustomVideoExerciseExecutionRepository,
     private val customVideoExercisePreDefinitionRepository: ICustomVideoExercisePreDefinitionRepository,
     private val videoServiceMapper: VideoServiceMapper,
+    private val videoGCBucketService: VideoGCBucketService
 ) {
 
     @Cacheable(cacheNames = [VIDEO_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
@@ -46,6 +47,14 @@ class VideoService(
     fun saveVideoBatch(videoDTOs: List<ValidatedVideoDTO>) {
         val videos = videoDTOs.map { videoServiceMapper.getVideo(it) }
         videoRepository.saveAll(videos)
+
+        val inactiveVideos = videos
+            .filter { !it.active }
+            .map { it.id }
+
+        if (inactiveVideos.isNotEmpty()) {
+            videoGCBucketService.deleteVideo(inactiveVideos)
+        }
     }
 
     @Cacheable(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")

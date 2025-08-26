@@ -1,8 +1,8 @@
 package br.com.fitnesspro.common.service.storage
 
-import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
 import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketContentTypes
+import br.com.fitnesspro.shared.communication.enums.storage.EnumGCBucketNames
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
@@ -27,6 +27,22 @@ class VideoGCBucketService(
 
         val videos = videoRepository.findAllById(videoIds).onEachIndexed { index, video ->
             writeDefaultFieldsStorageModelAfterUpload(video, storageUrls[index])
+        }
+
+        videoRepository.saveAll(videos)
+    }
+
+    fun deleteVideo(videoIds: List<String>) {
+        val videos = videoRepository.findAllById(videoIds)
+
+        videos.forEach {
+            deleteFile(
+                bucketName = EnumGCBucketNames.VIDEO,
+                fileName = it.filePath!!.substringAfterLast("/")
+            )
+
+            it.storageUrl = null
+            it.storageTransmissionDate = null
         }
 
         videoRepository.saveAll(videos)

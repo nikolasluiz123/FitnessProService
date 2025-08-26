@@ -1,9 +1,10 @@
 package br.com.fitnesspro.common.service.general
 
-import br.com.fitnesspro.core.cache.REPORT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.common.repository.auditable.report.IReportRepository
 import br.com.fitnesspro.common.repository.jpa.report.ICustomReportRepository
 import br.com.fitnesspro.common.service.mappers.ReportServiceMapper
+import br.com.fitnesspro.common.service.storage.ReportGCBucketService
+import br.com.fitnesspro.core.cache.REPORT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
@@ -16,6 +17,7 @@ class ReportService(
     private val reportRepository: IReportRepository,
     private val customReportRepository: ICustomReportRepository,
     private val reportServiceMapper: ReportServiceMapper,
+    private val reportGCBucketService: ReportGCBucketService,
 ) {
     @CacheEvict(cacheNames = [REPORT_IMPORT_CACHE_NAME], allEntries = true)
     fun saveReportBatch(validatedReportDTOList: List<ValidatedReportDTO>) {
@@ -24,6 +26,14 @@ class ReportService(
         }
 
         reportRepository.saveAll(reports)
+
+        val inactiveReports = reports
+            .filter { !it.active }
+            .map { it.id }
+
+        if (inactiveReports.isNotEmpty()) {
+            reportGCBucketService.deleteReport(inactiveReports)
+        }
     }
 
     @Cacheable(cacheNames = [REPORT_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
