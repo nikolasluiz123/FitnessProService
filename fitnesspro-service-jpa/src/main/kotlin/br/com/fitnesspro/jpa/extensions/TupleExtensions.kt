@@ -4,10 +4,7 @@ import jakarta.persistence.Tuple
 import java.lang.Short
 import java.sql.Date
 import java.sql.Timestamp
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
+import java.time.*
 import kotlin.Boolean
 import kotlin.Enum
 import kotlin.Int
@@ -31,8 +28,8 @@ fun Tuple.getLocalDateFromDate(alias: String): LocalDate? {
 }
 
 fun Tuple.getOffsetDateTime(alias: String): OffsetDateTime? {
-    val timeStamp = this.get(alias, Timestamp::class.java)
-    return timeStamp?.toInstant()?.atOffset(ZoneOffset.UTC)
+    val instant = this.get(alias, Instant::class.java)
+    return instant?.atOffset(ZoneOffset.UTC)
 }
 
 fun Tuple.getShortAsInt(alias: String): Int? = get(alias, Short::class.java)?.toInt()
