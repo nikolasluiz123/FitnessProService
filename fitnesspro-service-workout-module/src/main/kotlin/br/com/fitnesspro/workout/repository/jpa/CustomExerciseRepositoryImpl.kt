@@ -6,7 +6,7 @@ import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.workout.Exercise
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -18,7 +18,7 @@ class CustomExerciseRepositoryImpl: ICustomExerciseRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
     override fun getExercisesImport(
-        filter: WorkoutModuleImportFilter,
+        filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos
     ): List<Exercise> {
         val params = mutableListOf<Parameter>()

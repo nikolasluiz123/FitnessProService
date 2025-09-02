@@ -6,9 +6,9 @@ import br.com.fitnesspro.shared.communication.responses.interfaces.ILoggableResp
 class ImportationServiceResponse<DTO>(
     override var executionLogId: String,
     override var executionLogPackageId: String,
-    values: List<DTO> = emptyList(),
+    value: DTO? = null,
     code: Int = 0,
     success: Boolean = false,
     error: String? = null,
     errorType: EnumErrorType? = null
-): ReadServiceResponse<DTO>(values, code, success, error, errorType), ILoggableResponse
+): SingleValueServiceResponse<DTO>(value, code, success, error, errorType), ILoggableResponse

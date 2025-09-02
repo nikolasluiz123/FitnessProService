@@ -1,6 +1,6 @@
 package br.com.fitnesspro.authentication.service
 
-import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonDTO
 import com.google.firebase.auth.AuthErrorCode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class FirebaseAuthenticationService {
 
-    fun saveUser(personDTO: ValidatedPersonDTO, personExists: Boolean) {
+    fun saveUser(personDTO: IPersonDTO, personExists: Boolean) {
         if (personDTO.id == null || !personExists) {
             createUser(personDTO)
         } else {
@@ -18,7 +18,7 @@ class FirebaseAuthenticationService {
         }
     }
 
-    fun deleteUser(personDTO: ValidatedPersonDTO) {
+    fun deleteUser(personDTO: IPersonDTO) {
         val firebaseAuth = FirebaseAuth.getInstance()
         val user = try {
             firebaseAuth.getUserByEmail(personDTO.user?.email!!)
@@ -33,7 +33,7 @@ class FirebaseAuthenticationService {
         user?.uid?.let(firebaseAuth::deleteUser)
     }
 
-    private fun createUser(personDTO: ValidatedPersonDTO) {
+    private fun createUser(personDTO: IPersonDTO) {
         val request = UserRecord.CreateRequest()
             .setEmail(personDTO.user?.email!!)
             .setPassword(personDTO.user?.password!!)
@@ -42,7 +42,7 @@ class FirebaseAuthenticationService {
         FirebaseAuth.getInstance().createUser(request)
     }
 
-    private fun updateUser(personDTO: ValidatedPersonDTO) {
+    private fun updateUser(personDTO: IPersonDTO) {
         val firebaseAuth = FirebaseAuth.getInstance()
         val user = firebaseAuth.getUserByEmail(personDTO.user?.email!!)
 

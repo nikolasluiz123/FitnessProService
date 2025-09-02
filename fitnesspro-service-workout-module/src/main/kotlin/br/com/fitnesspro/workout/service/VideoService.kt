@@ -10,8 +10,12 @@ import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExerciseDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExerciseExecutionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExercisePreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExercisePreDefinitionDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IVideoExerciseRepository
@@ -39,12 +43,12 @@ class VideoService(
 ) {
 
     @Cacheable(cacheNames = [VIDEO_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getVideosImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ValidatedVideoDTO> {
+    fun getVideosImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoDTO> {
         return customVideoRepository.getVideosImport(filter, pageInfos).map(videoServiceMapper::getVideoDTO)
     }
 
     @CacheEvict(cacheNames = [VIDEO_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveVideoBatch(videoDTOs: List<ValidatedVideoDTO>) {
+    fun saveVideoBatch(videoDTOs: List<IVideoDTO>) {
         val videos = videoDTOs.map { videoServiceMapper.getVideo(it) }
         videoRepository.saveAll(videos)
 
@@ -58,37 +62,37 @@ class VideoService(
     }
 
     @Cacheable(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getVideoExercisesImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExerciseDTO> {
+    fun getVideoExercisesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExerciseDTO> {
         return customVideoExerciseRepository.getVideoExercisesImport(filter, pageInfos).map(videoServiceMapper::getVideoExerciseDTO)
     }
 
     @CacheEvict(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveExerciseVideoBatch(exerciseVideoDTOs: List<ValidatedVideoExerciseDTO>) {
+    fun saveExerciseVideoBatch(exerciseVideoDTOs: List<IVideoExerciseDTO>) {
         val videos = exerciseVideoDTOs.map(videoServiceMapper::getVideoExercise)
         videoExerciseRepository.saveAll(videos)
     }
 
     @Cacheable(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getVideoExercisesExecutionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExerciseExecutionDTO> {
+    fun getVideoExercisesExecutionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExerciseExecutionDTO> {
         return customVideoExerciseExecutionRepository.getVideoExercisesExecutionImport(filter, pageInfos).map { video ->
             videoServiceMapper.getVideoExerciseExecutionDTO(video)
         }
     }
 
     @CacheEvict(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveExerciseExecutionVideoBatch(videoDTOs: List<ValidatedVideoExerciseExecutionDTO>) {
+    fun saveExerciseExecutionVideoBatch(videoDTOs: List<IVideoExerciseExecutionDTO>) {
         val videos = videoDTOs.map(videoServiceMapper::getVideoExerciseExecution)
         videoExerciseExecutionRepository.saveAll(videos)
     }
 
     @CacheEvict(cacheNames = [VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveExercisePreDefinitionVideosBatch(exerciseVideoDTOs: List<ValidatedVideoExercisePreDefinitionDTO>) {
+    fun saveExercisePreDefinitionVideosBatch(exerciseVideoDTOs: List<IVideoExercisePreDefinitionDTO>) {
         val videos = exerciseVideoDTOs.map(videoServiceMapper::getVideoExercisePreDefinition)
         videoExercisePreDefinitionRepository.saveAll(videos)
     }
 
     @Cacheable(cacheNames = [VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
-    fun getVideoExercisesPreDefinitionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExercisePreDefinitionDTO> {
+    fun getVideoExercisesPreDefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExercisePreDefinitionDTO> {
         return customVideoExercisePreDefinitionRepository.getVideoExercisesPreDefinitionImport(filter, pageInfos).map { video ->
             videoServiceMapper.getVideoExercisePreDefinitionDTO(video)
         }

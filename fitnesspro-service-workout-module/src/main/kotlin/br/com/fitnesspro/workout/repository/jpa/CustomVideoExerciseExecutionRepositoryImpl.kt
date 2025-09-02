@@ -6,7 +6,7 @@ import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.workout.VideoExerciseExecution
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -19,7 +19,7 @@ class CustomVideoExerciseExecutionRepositoryImpl: ICustomVideoExerciseExecutionR
     private lateinit var entityManager: EntityManager
 
     override fun getVideoExercisesExecutionImport(
-        filter: WorkoutModuleImportFilter,
+        filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos
     ): List<VideoExerciseExecution> {
         val params = mutableListOf<Parameter>()

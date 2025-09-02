@@ -3,7 +3,7 @@ package br.com.fitnesspro.shared.communication.responses
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
 import br.com.fitnesspro.shared.communication.responses.interfaces.ISingleValueServiceResponse
 
-class SingleValueServiceResponse<T>(
+open class SingleValueServiceResponse<T>(
     override var value: T? = null,
     override var code: Int = 0,
     override var success: Boolean = false,

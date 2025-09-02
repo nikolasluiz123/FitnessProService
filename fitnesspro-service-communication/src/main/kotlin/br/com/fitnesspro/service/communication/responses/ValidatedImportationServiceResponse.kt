@@ -1,6 +1,7 @@
 package br.com.fitnesspro.service.communication.responses
 
 import br.com.fitnesspro.shared.communication.enums.serviceauth.EnumErrorType
+import br.com.fitnesspro.shared.communication.responses.SingleValueServiceResponse
 import br.com.fitnesspro.shared.communication.responses.interfaces.ILoggableResponse
 import io.swagger.v3.oas.annotations.media.Schema
 
@@ -12,9 +13,9 @@ class ValidatedImportationServiceResponse<DTO>(
     @field:Schema(description = "Identificador do log pacote executado da importação", required = false)
     override var executionLogPackageId: String,
 
-    values: List<DTO> = emptyList(),
+    value: DTO,
     code: Int = 0,
     success: Boolean = false,
     error: String? = null,
     errorType: EnumErrorType? = null
-): ValidatedReadServiceResponse<DTO>(values, code, success, error, errorType), ILoggableResponse
+): SingleValueServiceResponse<DTO>(value, code, success, error, errorType), ILoggableResponse

@@ -9,7 +9,7 @@ import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.models.workout.VideoExerciseExecution
 import br.com.fitnesspro.models.workout.VideoExercisePreDefinition
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -22,7 +22,7 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
     private lateinit var entityManager: EntityManager
 
     override fun getVideosImport(
-        filter: WorkoutModuleImportFilter,
+        filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos
     ): List<Video> {
         val params = mutableListOf<Parameter>()

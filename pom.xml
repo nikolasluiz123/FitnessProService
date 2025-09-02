@@ -63,7 +63,7 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>fitnesspro-service-common-module</artifactId>
+                <artifactId>fitnesspro-service-general-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -85,7 +85,7 @@
         <module>fitnesspro-core</module>
         <module>fitnesspro-shared-communication</module>
         <module>fitnesspro-service</module>
-        <module>fitnesspro-service-common-module</module>
+        <module>fitnesspro-service-general-module</module>
         <module>fitnesspro-service-scheduler-module</module>
         <module>fitnesspro-service-workout-module</module>
         <module>fitnesspro-service-scheduled-task</module>

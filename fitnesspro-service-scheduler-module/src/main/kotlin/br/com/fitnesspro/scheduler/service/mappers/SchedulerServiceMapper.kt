@@ -7,6 +7,7 @@ import br.com.fitnesspro.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.scheduler.repository.auditable.ISchedulerRepository
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,7 +16,7 @@ class SchedulerServiceMapper(
     private val schedulerRepository: ISchedulerRepository,
     private val schedulerConfigRepository: ISchedulerConfigRepository,
 ) {
-    fun getScheduler(dto: ValidatedSchedulerDTO): Scheduler {
+    fun getScheduler(dto: ISchedulerDTO): Scheduler {
         val scheduler = dto.id?.let { schedulerRepository.findById(it) }
 
         return when {

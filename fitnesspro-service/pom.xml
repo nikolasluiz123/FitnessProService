@@ -81,7 +81,7 @@
 
         <dependency>
             <groupId>br.com</groupId>
-            <artifactId>fitnesspro-service-common-module</artifactId>
+            <artifactId>fitnesspro-service-general-module</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -6,7 +6,7 @@ import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.workout.VideoExercisePreDefinition
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -19,7 +19,7 @@ class CustomVideoExercisePreDefinitionRepositoryImpl: ICustomVideoExercisePreDef
     private lateinit var entityManager: EntityManager
 
     override fun getVideoExercisesPreDefinitionImport(
-        filter: WorkoutModuleImportFilter,
+        filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos
     ): List<VideoExercisePreDefinition> {
         val params = mutableListOf<Parameter>()

@@ -18,6 +18,7 @@ import br.com.fitnesspro.scheduler.repository.jpa.ICustomSchedulerRepository
 import br.com.fitnesspro.scheduler.service.mappers.SchedulerServiceMapper
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedRecurrentSchedulerDTO
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerDTO
 import br.com.fitnesspro.shared.communication.enums.notification.EnumNotificationChannel
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerSituation
 import br.com.fitnesspro.shared.communication.enums.scheduler.EnumSchedulerType
@@ -288,7 +289,7 @@ class SchedulerService(
     }
 
     @Throws(BusinessException::class)
-    private fun validateScheduler(dto: ValidatedSchedulerDTO) {
+    private fun validateScheduler(dto: ISchedulerDTO) {
         val scheduler = schedulerServiceMapper.getScheduler(dto)
 
         when (dto.type!!) {
@@ -437,8 +438,8 @@ class SchedulerService(
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveSchedulerBatch(schedulerDTOList: List<ValidatedSchedulerDTO>) {
-        if (schedulerDTOList.any { it.type == EnumSchedulerType.RECURRENT }) {
+    fun saveSchedulerBatch(list: List<ISchedulerDTO>) {
+        if (list.any { it.type == EnumSchedulerType.RECURRENT }) {
             throw BusinessException(
                 messageSource.getMessage(
                     "scheduler.error.recurrent.batch",
@@ -448,7 +449,7 @@ class SchedulerService(
             )
         }
 
-        val schedules = schedulerDTOList.map { schedulerDTO ->
+        val schedules = list.map { schedulerDTO ->
             validateScheduler(schedulerDTO)
             schedulerServiceMapper.getScheduler(schedulerDTO)
         }

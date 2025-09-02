@@ -7,12 +7,14 @@ import br.com.fitnesspro.models.workout.ExercisePreDefinition
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseExecutionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExercisePreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExercisePreDefinitionDTO
 import br.com.fitnesspro.workout.repository.auditable.IExerciseExecutionRepository
 import br.com.fitnesspro.workout.repository.auditable.IExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IExerciseRepository
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutGroupPreDefinitionRepository
 import org.springframework.stereotype.Service
-import kotlin.text.set
 
 @Service
 class ExerciseServiceMapper(
@@ -24,7 +26,7 @@ class ExerciseServiceMapper(
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
-    fun getExercise(dto: ValidatedExerciseDTO): Exercise {
+    fun getExercise(dto: IExerciseDTO): Exercise {
         val exercise = dto.id?.let { exerciseRepository.findById(it) }
 
         return when {
@@ -90,7 +92,7 @@ class ExerciseServiceMapper(
         )
     }
 
-    fun getExerciseExecution(dto: ValidatedExerciseExecutionDTO): ExerciseExecution {
+    fun getExerciseExecution(dto: IExerciseExecutionDTO): ExerciseExecution {
         val exerciseExecution = dto.id?.let { exerciseExecutionRepository.findById(it) }
 
         return when {
@@ -153,7 +155,7 @@ class ExerciseServiceMapper(
     }
 
 
-    fun getExercisePreDefinition(dto: ValidatedExercisePreDefinitionDTO): ExercisePreDefinition {
+    fun getExercisePreDefinition(dto: IExercisePreDefinitionDTO): ExercisePreDefinition {
         val exercisePreDefinition = dto.id?.let { exercisePreDefinitionRepository.findById(it) }
 
         return when {

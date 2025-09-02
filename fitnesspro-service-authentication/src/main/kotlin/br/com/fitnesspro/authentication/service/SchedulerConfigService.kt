@@ -7,6 +7,7 @@ import br.com.fitnesspro.core.cache.SCHEDULER_CONFIG_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
 import org.springframework.cache.annotation.CacheEvict
@@ -51,8 +52,8 @@ class SchedulerConfigService(
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
-    fun saveSchedulerConfigBatch(schedulerConfigDTOList: List<ValidatedSchedulerConfigDTO>) {
-        val configs = schedulerConfigDTOList.map {
+    fun saveSchedulerConfigBatch(list: List<ISchedulerConfigDTO>) {
+        val configs = list.map {
             val config = schedulerConfigServiceMapper.getSchedulerConfig(it)
             validateDensityRange(config)
 

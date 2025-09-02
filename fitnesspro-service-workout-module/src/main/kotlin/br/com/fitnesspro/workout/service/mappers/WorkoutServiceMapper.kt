@@ -7,7 +7,9 @@ import br.com.fitnesspro.models.workout.WorkoutGroupPreDefinition
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupPreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IWorkoutGroupPreDefinitionDTO
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutGroupPreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutGroupRepository
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutRepository
@@ -21,7 +23,7 @@ class WorkoutServiceMapper(
     private val personRepository: IPersonRepository
 ) {
 
-    fun getWorkout(dto: ValidatedWorkoutDTO): Workout {
+    fun getWorkout(dto: IWorkoutDTO): Workout {
         val workout = dto.id?.let { workoutRepository.findById(it) }
 
         return when {
@@ -121,7 +123,7 @@ class WorkoutServiceMapper(
         )
     }
 
-    fun getWorkoutGroupPreDefinition(dto: ValidatedWorkoutGroupPreDefinitionDTO): WorkoutGroupPreDefinition {
+    fun getWorkoutGroupPreDefinition(dto: IWorkoutGroupPreDefinitionDTO): WorkoutGroupPreDefinition {
         val workoutGroupPreDefinition = dto.id?.let { workoutGroupPreDefinitionRepository.findById(it) }
 
         return when {

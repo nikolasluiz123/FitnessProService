@@ -3,6 +3,7 @@ package br.com.fitnesspro.authentication.service.mappers
 import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonDTO
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,7 +24,7 @@ class PersonServiceMapper(
         )
     }
 
-    fun getPerson(dto: ValidatedPersonDTO): Person {
+    fun getPerson(dto: IPersonDTO): Person {
         val person = dto.id?.let { personRepository.findById(it) }
 
         return when {

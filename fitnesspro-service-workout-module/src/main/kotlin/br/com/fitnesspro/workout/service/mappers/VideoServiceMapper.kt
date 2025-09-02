@@ -9,6 +9,10 @@ import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExerciseDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExerciseExecutionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExercisePreDefinitionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseExecutionDTO
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExercisePreDefinitionDTO
 import br.com.fitnesspro.workout.repository.auditable.*
 import org.springframework.stereotype.Service
 
@@ -41,7 +45,7 @@ class VideoServiceMapper(
         )
     }
 
-    fun getVideo(dto: ValidatedVideoDTO): Video {
+    fun getVideo(dto: IVideoDTO): Video {
         val video = dto.id?.let { videoRepository.findById(it) }
 
         return when {
@@ -104,7 +108,7 @@ class VideoServiceMapper(
         )
     }
 
-    fun getVideoExercise(dto: ValidatedVideoExerciseDTO): VideoExercise {
+    fun getVideoExercise(dto: IVideoExerciseDTO): VideoExercise {
         val video = dto.id?.let { videoExerciseRepository.findById(it) }
 
         return when {
@@ -133,7 +137,7 @@ class VideoServiceMapper(
         }
     }
 
-    fun getVideoExerciseExecution(dto: ValidatedVideoExerciseExecutionDTO): VideoExerciseExecution {
+    fun getVideoExerciseExecution(dto: IVideoExerciseExecutionDTO): VideoExerciseExecution {
         val video = dto.id?.let { videoExerciseExecutionRepository.findById(it) }
 
         return when {
@@ -173,7 +177,7 @@ class VideoServiceMapper(
         )
     }
 
-    fun getVideoExercisePreDefinition(dto: ValidatedVideoExercisePreDefinitionDTO): VideoExercisePreDefinition {
+    fun getVideoExercisePreDefinition(dto: IVideoExercisePreDefinitionDTO): VideoExercisePreDefinition {
         val video = dto.id?.let { videoExercisePreDefinitionRepository.findById(it) }
 
         return when {

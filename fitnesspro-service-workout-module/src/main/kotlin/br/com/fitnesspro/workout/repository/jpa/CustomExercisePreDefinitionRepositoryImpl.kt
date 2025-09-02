@@ -6,7 +6,7 @@ import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.workout.ExercisePreDefinition
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
@@ -18,7 +18,7 @@ class CustomExercisePreDefinitionRepositoryImpl: ICustomExercisePreDefinitionRep
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getExercisesPreDefinitionImport(filter: WorkoutModuleImportFilter, pageInfos: ImportPageInfos): List<ExercisePreDefinition> {
+    override fun getExercisesPreDefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ExercisePreDefinition> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {

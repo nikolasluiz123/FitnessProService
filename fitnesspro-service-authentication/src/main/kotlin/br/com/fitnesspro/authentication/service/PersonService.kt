@@ -14,6 +14,7 @@ import br.com.fitnesspro.models.general.User
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonDTO
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedUserDTO
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonDTO
 import br.com.fitnesspro.shared.communication.helper.HashHelper
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -90,8 +91,8 @@ class PersonService(
     }
 
     @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME, PERSON_USER_IMPORT_CACHE_NAME], allEntries = true)
-    fun savePersonList(personDTOList: List<ValidatedPersonDTO>) {
-        val persons = personDTOList.map { personDTO ->
+    fun savePersonBatch(list: List<IPersonDTO>) {
+        val persons = list.map { personDTO ->
             val person = personServiceMapper.getPerson(personDTO)
 
             validateUser(person.user!!)
