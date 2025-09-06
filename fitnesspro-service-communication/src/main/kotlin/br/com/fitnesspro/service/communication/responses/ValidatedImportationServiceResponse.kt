@@ -13,7 +13,7 @@ class ValidatedImportationServiceResponse<DTO>(
     @field:Schema(description = "Identificador do log pacote executado da importação", required = false)
     override var executionLogPackageId: String,
 
-    value: DTO,
+    value: DTO? = null,
     code: Int = 0,
     success: Boolean = false,
     error: String? = null,
