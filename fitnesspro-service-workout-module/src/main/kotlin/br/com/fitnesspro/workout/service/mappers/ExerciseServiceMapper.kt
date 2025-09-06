@@ -1,12 +1,15 @@
 package br.com.fitnesspro.workout.service.mappers
 
 import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
+import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.workout.Exercise
 import br.com.fitnesspro.models.workout.ExerciseExecution
 import br.com.fitnesspro.models.workout.ExercisePreDefinition
+import br.com.fitnesspro.models.workout.WorkoutGroupPreDefinition
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseExecutionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExercisePreDefinitionDTO
+import br.com.fitnesspro.service.communication.extensions.getOrThrowDefaultException
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExercisePreDefinitionDTO
@@ -14,6 +17,7 @@ import br.com.fitnesspro.workout.repository.auditable.IExerciseExecutionReposito
 import br.com.fitnesspro.workout.repository.auditable.IExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.auditable.IExerciseRepository
 import br.com.fitnesspro.workout.repository.auditable.IWorkoutGroupPreDefinitionRepository
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,7 +27,8 @@ class ExerciseServiceMapper(
     private val exercisePreDefinitionRepository: IExercisePreDefinitionRepository,
     private val workoutGroupPreDefinitionRepository: IWorkoutGroupPreDefinitionRepository,
     private val personRepository: IPersonRepository,
-    private val workoutServiceMapper: WorkoutServiceMapper
+    private val workoutServiceMapper: WorkoutServiceMapper,
+    private val messageSource: MessageSource
 ) {
 
     fun getExercise(dto: IExerciseDTO): Exercise {
@@ -105,7 +110,7 @@ class ExerciseServiceMapper(
                     rest = dto.rest,
                     weight = dto.weight,
                     date = dto.date!!,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get()
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class)
                 )
             }
 
@@ -118,7 +123,7 @@ class ExerciseServiceMapper(
                     rest = dto.rest,
                     weight = dto.weight,
                     date = dto.date!!,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get()
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class)
                 )
             }
 
@@ -132,7 +137,7 @@ class ExerciseServiceMapper(
                     rest = dto.rest,
                     weight = dto.weight,
                     date = dto.date!!,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class),
                 )
             }
         }
@@ -168,8 +173,10 @@ class ExerciseServiceMapper(
                     rest = dto.rest,
                     name = dto.name,
                     exerciseOrder = dto.exerciseOrder,
-                    personalTrainerPerson = personRepository.findById(dto.personalTrainerPersonId!!).get(),
-                    workoutGroupPreDefinition = dto.workoutGroupPreDefinitionId?.let { workoutGroupPreDefinitionRepository.findById(it).get() }
+                    personalTrainerPerson = personRepository.findById(dto.personalTrainerPersonId!!).getOrThrowDefaultException(messageSource, Person::class),
+                    workoutGroupPreDefinition = dto.workoutGroupPreDefinitionId?.let {
+                        workoutGroupPreDefinitionRepository.findById(it).getOrThrowDefaultException(messageSource, WorkoutGroupPreDefinition::class)
+                    }
                 )
             }
 
@@ -195,8 +202,10 @@ class ExerciseServiceMapper(
                     rest = dto.rest,
                     name = dto.name,
                     exerciseOrder = dto.exerciseOrder,
-                    personalTrainerPerson = personRepository.findById(dto.personalTrainerPersonId!!).get(),
-                    workoutGroupPreDefinition = dto.workoutGroupPreDefinitionId?.let { workoutGroupPreDefinitionRepository.findById(it).get() }
+                    personalTrainerPerson = personRepository.findById(dto.personalTrainerPersonId!!).getOrThrowDefaultException(messageSource, Person::class),
+                    workoutGroupPreDefinition = dto.workoutGroupPreDefinitionId?.let {
+                        workoutGroupPreDefinitionRepository.findById(it).getOrThrowDefaultException(messageSource, WorkoutGroupPreDefinition::class)
+                    }
                 )
             }
         }

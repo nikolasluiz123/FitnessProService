@@ -1,6 +1,9 @@
 package br.com.fitnesspro.workout.service.mappers
 
 import br.com.fitnesspro.common.repository.auditable.video.IVideoRepository
+import br.com.fitnesspro.models.workout.Exercise
+import br.com.fitnesspro.models.workout.ExerciseExecution
+import br.com.fitnesspro.models.workout.ExercisePreDefinition
 import br.com.fitnesspro.models.workout.Video
 import br.com.fitnesspro.models.workout.VideoExercise
 import br.com.fitnesspro.models.workout.VideoExerciseExecution
@@ -9,11 +12,13 @@ import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExerciseDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExerciseExecutionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedVideoExercisePreDefinitionDTO
+import br.com.fitnesspro.service.communication.extensions.getOrThrowDefaultException
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExerciseExecutionDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IVideoExercisePreDefinitionDTO
 import br.com.fitnesspro.workout.repository.auditable.*
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,7 +29,8 @@ class VideoServiceMapper(
     private val videoExercisePreDefinitionRepository: IVideoExercisePreDefinitionRepository,
     private val exerciseRepository: IExerciseRepository,
     private val exerciseExecutionRepository: IExerciseExecutionRepository,
-    private val exercisePreDefinitionRepository: IExercisePreDefinitionRepository
+    private val exercisePreDefinitionRepository: IExercisePreDefinitionRepository,
+    private val messageSource: MessageSource
 ) {
 
     fun getVideoDTO(model: Video): ValidatedVideoDTO {
@@ -115,8 +121,8 @@ class VideoServiceMapper(
             dto.id == null -> {
                 VideoExercise(
                     active = dto.active,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class),
+                    video = videoRepository.findById(dto.videoId!!).getOrThrowDefaultException(messageSource, Video::class)
                 )
             }
 
@@ -130,8 +136,8 @@ class VideoServiceMapper(
                 VideoExercise(
                     id = dto.id!!,
                     active = dto.active,
-                    exercise = exerciseRepository.findById(dto.exerciseId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
+                    exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class),
+                    video = videoRepository.findById(dto.videoId!!).getOrThrowDefaultException(messageSource, Video::class)
                 )
             }
         }
@@ -144,8 +150,8 @@ class VideoServiceMapper(
             dto.id == null -> {
                 VideoExerciseExecution(
                     active = dto.active,
-                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
+                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).getOrThrowDefaultException(messageSource, ExerciseExecution::class),
+                    video = videoRepository.findById(dto.videoId!!).getOrThrowDefaultException(messageSource, Video::class)
                 )
             }
 
@@ -159,8 +165,8 @@ class VideoServiceMapper(
                 VideoExerciseExecution(
                     id = dto.id!!,
                     active = dto.active,
-                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
+                    exerciseExecution = exerciseExecutionRepository.findById(dto.exerciseExecutionId!!).getOrThrowDefaultException(messageSource, ExerciseExecution::class),
+                    video = videoRepository.findById(dto.videoId!!).getOrThrowDefaultException(messageSource, Video::class)
                 )
             }
         }
@@ -184,8 +190,8 @@ class VideoServiceMapper(
             dto.id == null -> {
                 VideoExercisePreDefinition(
                     active = dto.active,
-                    exercisePreDefinition = exercisePreDefinitionRepository.findById(dto.exercisePreDefinitionId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
+                    exercisePreDefinition = exercisePreDefinitionRepository.findById(dto.exercisePreDefinitionId!!).getOrThrowDefaultException(messageSource, ExercisePreDefinition::class),
+                    video = videoRepository.findById(dto.videoId!!).getOrThrowDefaultException(messageSource, Video::class)
                 )
             }
 
@@ -199,8 +205,8 @@ class VideoServiceMapper(
                 VideoExercisePreDefinition(
                     id = dto.id!!,
                     active = dto.active,
-                    exercisePreDefinition = exercisePreDefinitionRepository.findById(dto.exercisePreDefinitionId!!).get(),
-                    video = videoRepository.findById(dto.videoId!!).get()
+                    exercisePreDefinition = exercisePreDefinitionRepository.findById(dto.exercisePreDefinitionId!!).getOrThrowDefaultException(messageSource, ExercisePreDefinition::class),
+                    video = videoRepository.findById(dto.videoId!!).getOrThrowDefaultException(messageSource, Video::class)
                 )
             }
         }

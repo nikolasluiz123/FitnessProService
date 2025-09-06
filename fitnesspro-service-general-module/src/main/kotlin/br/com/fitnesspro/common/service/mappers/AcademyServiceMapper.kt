@@ -4,11 +4,14 @@ import br.com.fitnesspro.authentication.repository.auditable.IPersonRepository
 import br.com.fitnesspro.common.repository.auditable.general.IAcademyRepository
 import br.com.fitnesspro.common.repository.auditable.general.IPersonAcademyTimeRepository
 import br.com.fitnesspro.models.general.Academy
+import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.PersonAcademyTime
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedAcademyDTO
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonAcademyTimeDTO
+import br.com.fitnesspro.service.communication.extensions.getOrThrowDefaultException
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IAcademyDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonAcademyTimeDTO
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,10 +19,11 @@ class AcademyServiceMapper(
     private val personRepository: IPersonRepository,
     private val academyRepository: IAcademyRepository,
     private val personAcademyTimeRepository: IPersonAcademyTimeRepository,
+    private val messageSource: MessageSource
 ) {
     fun getAcademy(dto: IAcademyDTO): Academy {
         return if (dto.id != null) {
-            academyRepository.findById(dto.id!!).get().copy(
+            academyRepository.findById(dto.id!!).getOrThrowDefaultException(messageSource, Academy::class).copy(
                 name = dto.name,
                 phone = dto.phone,
                 address = dto.address,
@@ -53,8 +57,8 @@ class AcademyServiceMapper(
         return when {
             dto.id == null -> {
                 PersonAcademyTime(
-                    person = personRepository.findById(dto.personId!!).get(),
-                    academy = academyRepository.findById(dto.academyId!!).get(),
+                    person = personRepository.findById(dto.personId!!).getOrThrowDefaultException(messageSource, Person::class),
+                    academy = academyRepository.findById(dto.academyId!!).getOrThrowDefaultException(messageSource, Academy::class),
                     timeStart = dto.timeStart,
                     timeEnd = dto.timeEnd,
                     dayOfWeek = dto.dayOfWeek,
@@ -64,8 +68,8 @@ class AcademyServiceMapper(
 
             personAcademyTime?.isPresent == true -> {
                 personAcademyTime.get().copy(
-                    person = personRepository.findById(dto.personId!!).get(),
-                    academy = academyRepository.findById(dto.academyId!!).get(),
+                    person = personRepository.findById(dto.personId!!).getOrThrowDefaultException(messageSource, Person::class),
+                    academy = academyRepository.findById(dto.academyId!!).getOrThrowDefaultException(messageSource, Academy::class),
                     timeStart = dto.timeStart,
                     timeEnd = dto.timeEnd,
                     dayOfWeek = dto.dayOfWeek,
@@ -76,8 +80,8 @@ class AcademyServiceMapper(
             else -> {
                 PersonAcademyTime(
                     id = dto.id!!,
-                    person = personRepository.findById(dto.personId!!).get(),
-                    academy = academyRepository.findById(dto.academyId!!).get(),
+                    person = personRepository.findById(dto.personId!!).getOrThrowDefaultException(messageSource, Person::class),
+                    academy = academyRepository.findById(dto.academyId!!).getOrThrowDefaultException(messageSource, Academy::class),
                     timeStart = dto.timeStart,
                     timeEnd = dto.timeEnd,
                     dayOfWeek = dto.dayOfWeek,
