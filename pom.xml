@@ -11,7 +11,7 @@
 
     <groupId>br.com</groupId>
     <artifactId>fitnesspro</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>fitnesspro</name>
     <description>FitnessPro Service</description>
