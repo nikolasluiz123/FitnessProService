@@ -154,10 +154,12 @@ class ExecutionsLogService(
         logPackage.requestBody = requestBody
         logPackage.responseBody = responseBody
 
+        val packageExecutions = listOf(IMPORTATION, EXPORTATION, STORAGE)
+
         if (exception != null) {
             log.state = EnumExecutionState.ERROR
             logPackage.error = exception.stackTraceToString()
-        } else if (log.type in listOf(IMPORTATION, EXPORTATION, STORAGE)) {
+        } else if (log.type !in packageExecutions) {
             log.state = EnumExecutionState.FINISHED
         }
 
