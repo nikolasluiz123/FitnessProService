@@ -19,7 +19,7 @@ class OpenApiConfig {
         return OpenAPI()
             .info(
                 Info().title("FitnessPro API")
-                    .version("1.0.0")
+                    .version("2.0.0")
                     .description("Documentação da API FitnessPro")
             )
             .components(
