@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import java.time.Instant
 import java.time.LocalDateTime
 
 @Schema(description = "Classe DTO usada para manutenção dos registros de execução dos exercícios do treino")
@@ -42,9 +43,16 @@ data class ValidatedExerciseExecutionDTO(
     @field:Schema(description = "Peso utilizado na execução do exercício", example = "80.0", required = false)
     override var weight: Double? = null,
 
-    @field:Schema(description = "Data da execução do exercício", required = true, example = "2023-01-01T10:00:00")
-    @field:NotNull(message = "exerciseExecutionDTO.date.notNull")
-    override var date: LocalDateTime? = null,
+    @field:Schema(description = "Flag que indica se já houve a coleta de dados dos sensores para essa execução", required = true)
+    @field:NotNull(message = "exerciseExecutionDTO.healthDataCollected.notNull")
+    override var healthDataCollected: Boolean = false,
+
+    @field:Schema(description = "Início da execução do exercício", required = true)
+    @field:NotNull(message = "exerciseExecutionDTO.executionStartTime.notNull")
+    override var executionStartTime: Instant = Instant.now(),
+
+    @field:Schema(description = "Fim da execução do exercício", required = true)
+    override var executionEndTime: Instant? = null,
 
     @field:Schema(description = "Identificador do exercício executado", required = true)
     @field:NotNull(message = "exerciseExecutionDTO.exerciseId.notNull")

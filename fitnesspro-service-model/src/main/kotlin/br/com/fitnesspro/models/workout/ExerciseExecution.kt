@@ -2,8 +2,9 @@ package br.com.fitnesspro.models.workout
 
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.models.base.AuditableModel
-import br.com.fitnesspro.models.base.IntegratedModel
+import br.com.fitnesspro.models.base.IHealthDataRangeEntity
 import jakarta.persistence.*
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
@@ -40,10 +41,25 @@ data class ExerciseExecution(
 
     var weight: Double? = null,
 
-    @Column(nullable = false)
-    var date: LocalDateTime = LocalDateTime.now(),
+    @Column(name = "health_data_collected")
+    override var healthDataCollected: Boolean = false,
+
+    @Column(name = "execution_start_time", nullable = false)
+    var executionStartTime: Instant = Instant.now(),
+
+    @Column(name = "execution_end_time")
+    var executionEndTime: Instant? = null,
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
     var exercise: Exercise? = null,
-): IntegratedModel, AuditableModel
+): IHealthDataRangeEntity, AuditableModel {
+
+    @get:Transient
+    override val rangeStartTime: Instant
+        get() = this.executionStartTime
+
+    @get:Transient
+    override val rangeEndTime: Instant?
+        get() = this.executionEndTime
+}

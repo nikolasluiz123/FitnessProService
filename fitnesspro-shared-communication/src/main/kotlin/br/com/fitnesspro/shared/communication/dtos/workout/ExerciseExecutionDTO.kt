@@ -1,6 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.workout
 
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.IExerciseExecutionDTO
+import java.time.Instant
 import java.time.LocalDateTime
 
 data class ExerciseExecutionDTO(
@@ -13,6 +14,8 @@ data class ExerciseExecutionDTO(
     override var set: Int? = null,
     override var rest: Long? = null,
     override var weight: Double? = null,
-    override var date: LocalDateTime? = null,
     override var exerciseId: String? = null,
+    override var healthDataCollected: Boolean = false,
+    override var executionStartTime: Instant = Instant.now(),
+    override var executionEndTime: Instant? = null,
 ) : IExerciseExecutionDTO

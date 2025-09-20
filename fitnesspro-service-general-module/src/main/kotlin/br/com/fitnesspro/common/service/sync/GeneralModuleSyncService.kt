@@ -17,16 +17,6 @@ class GeneralModuleSyncService(
     private val schedulerConfigService: SchedulerConfigService
 ) {
 
-    @Cacheable(
-        cacheNames = [
-            ACADEMY_IMPORT_CACHE_NAME,
-            PERSON_IMPORT_CACHE_NAME,
-            PERSON_USER_IMPORT_CACHE_NAME,
-            PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME,
-            SCHEDULER_CONFIG_IMPORT_CACHE_NAME
-        ],
-        key = "#filter.toCacheKey()"
-    )
     fun getImportationData(filter: CommonImportFilter, pageInfos: ImportPageInfos): ValidatedGeneralModuleSyncDTO {
         return ValidatedGeneralModuleSyncDTO(
             academies = academyService.getAcademiesImport(filter, pageInfos),

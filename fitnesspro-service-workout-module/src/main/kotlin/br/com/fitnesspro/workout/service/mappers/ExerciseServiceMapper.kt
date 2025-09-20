@@ -109,7 +109,9 @@ class ExerciseServiceMapper(
                     set = dto.set,
                     rest = dto.rest,
                     weight = dto.weight,
-                    date = dto.date!!,
+                    healthDataCollected = dto.healthDataCollected,
+                    executionStartTime = dto.executionStartTime,
+                    executionEndTime = dto.executionEndTime,
                     exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class)
                 )
             }
@@ -122,7 +124,9 @@ class ExerciseServiceMapper(
                     set = dto.set,
                     rest = dto.rest,
                     weight = dto.weight,
-                    date = dto.date!!,
+                    healthDataCollected = dto.healthDataCollected,
+                    executionStartTime = dto.executionStartTime,
+                    executionEndTime = dto.executionEndTime,
                     exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class)
                 )
             }
@@ -136,7 +140,9 @@ class ExerciseServiceMapper(
                     set = dto.set,
                     rest = dto.rest,
                     weight = dto.weight,
-                    date = dto.date!!,
+                    healthDataCollected = dto.healthDataCollected,
+                    executionStartTime = dto.executionStartTime,
+                    executionEndTime = dto.executionEndTime,
                     exercise = exerciseRepository.findById(dto.exerciseId!!).getOrThrowDefaultException(messageSource, Exercise::class),
                 )
             }
@@ -154,7 +160,9 @@ class ExerciseServiceMapper(
             set = model.set,
             rest = model.rest,
             weight = model.weight,
-            date = model.date,
+            healthDataCollected = model.healthDataCollected,
+            executionStartTime = model.executionStartTime,
+            executionEndTime = model.executionEndTime,
             exerciseId = model.exercise!!.id
         )
     }

@@ -1,9 +1,6 @@
 package br.com.fitnesspro.service.communication.gson
 
-import br.com.fitnesspro.core.gson.LocalDateTimeTypeAdapter
-import br.com.fitnesspro.core.gson.LocalDateTypeAdapter
-import br.com.fitnesspro.core.gson.LocalTimeTypeAdapter
-import br.com.fitnesspro.core.gson.OffsetDateTimeTypeAdapter
+import br.com.fitnesspro.core.gson.*
 import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheClearConfigDTO
 import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheDTO
 import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheEntryDTO
@@ -45,16 +42,14 @@ import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IServi
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
+import java.time.*
 
 fun GsonBuilder.defaultServiceGSon(): Gson {
     return registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter())
         .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter())
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
+        .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheClearConfigDTO::class.java, ValidatedCacheClearConfigDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheDTO::class.java, ValidatedCacheDTO::class.java))

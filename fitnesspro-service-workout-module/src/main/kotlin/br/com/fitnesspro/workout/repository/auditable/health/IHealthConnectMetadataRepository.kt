@@ -1,0 +1,6 @@
+package br.com.fitnesspro.workout.repository.auditable.health
+
+import br.com.fitnesspro.jpa.IAuditableFitnessProRepository
+import br.com.fitnesspro.models.workout.health.HealthConnectMetadata
+
+interface IHealthConnectMetadataRepository : IAuditableFitnessProRepository<HealthConnectMetadata>
