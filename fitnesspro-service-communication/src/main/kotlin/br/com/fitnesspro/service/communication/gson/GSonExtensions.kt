@@ -52,6 +52,7 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
         .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
+        .registerTypeAdapter(ZoneOffset::class.java, ZoneOffsetTypeAdapter())
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheClearConfigDTO::class.java, ValidatedCacheClearConfigDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ICacheDTO::class.java, ValidatedCacheDTO::class.java))

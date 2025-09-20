@@ -10,5 +10,6 @@ fun GsonBuilder.defaultGSon(): Gson {
         .registerTypeAdapter(LocalTime::class.java, LocalTimeTypeAdapter())
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter())
         .registerTypeAdapter(Instant::class.java, InstantTypeAdapter())
+        .registerTypeAdapter(ZoneOffset::class.java, ZoneOffsetTypeAdapter())
         .create()
 }
