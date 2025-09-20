@@ -117,12 +117,12 @@ class PersonService(
         personRepository.saveAll(persons)
     }
 
-    @Cacheable(cacheNames = [PERSON_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [PERSON_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedPersonDTO> {
         return customPersonRepository.getPersonsImport(filter, pageInfos).map(personServiceMapper::getPersonDTO)
     }
 
-    @Cacheable(cacheNames = [PERSON_USER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [PERSON_USER_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedUserDTO> {
         return customPersonRepository.getUsersImport(filter, pageInfos).map(userServiceMapper::getUserDTO)
     }

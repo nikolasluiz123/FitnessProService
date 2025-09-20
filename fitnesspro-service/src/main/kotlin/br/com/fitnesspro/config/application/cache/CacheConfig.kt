@@ -16,8 +16,8 @@ class CacheConfig {
     @Bean
     fun cacheManager(): CacheManager {
         val caffeine = Caffeine.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .maximumSize(1000)
+            .expireAfterAccess(30, TimeUnit.MINUTES)
+            .maximumSize(5)
 
         return CaffeineCacheManager(*cacheNames).apply {
             isAllowNullValues = false

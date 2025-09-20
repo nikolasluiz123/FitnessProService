@@ -27,7 +27,7 @@ class SchedulerReportService(
         schedulerReportRepository.saveAll(schedulerReports)
     }
 
-    @Cacheable(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getSchedulerReportsImport(filter: SchedulerReportImportFilter, pageInfos: ImportPageInfos): List<ValidatedSchedulerReportDTO> {
         return customSchedulerReportRepository.getSchedulerReportsImport(filter, pageInfos).map(schedulerReportServiceMapper::getValidatedSchedulerReportDTO)
     }

@@ -47,12 +47,12 @@ class AcademyService(
         personAcademyTimeRepository.saveAll(personAcademyTimeList)
     }
 
-    @Cacheable(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getPersonAcademyTimesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedPersonAcademyTimeDTO> {
         return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos).map(academyServiceMapper::getValidatedPersonAcademyTimeDTO)
     }
 
-    @Cacheable(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedAcademyDTO> {
         return customAcademyRepository.getAcademiesImport(filter, pageInfos).map(academyServiceMapper::getValidatedAcademyDTO)
     }

@@ -42,7 +42,7 @@ class VideoService(
     private val videoGCBucketService: VideoGCBucketService
 ) {
 
-    @Cacheable(cacheNames = [VIDEO_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [VIDEO_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getVideosImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoDTO> {
         return customVideoRepository.getVideosImport(filter, pageInfos).map(videoServiceMapper::getVideoDTO)
     }
@@ -61,7 +61,7 @@ class VideoService(
         }
     }
 
-    @Cacheable(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [VIDEO_EXERCISE_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getVideoExercisesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExerciseDTO> {
         return customVideoExerciseRepository.getVideoExercisesImport(filter, pageInfos).map(videoServiceMapper::getVideoExerciseDTO)
     }
@@ -72,7 +72,7 @@ class VideoService(
         videoExerciseRepository.saveAll(videos)
     }
 
-    @Cacheable(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [VIDEO_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getVideoExercisesExecutionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExerciseExecutionDTO> {
         return customVideoExerciseExecutionRepository.getVideoExercisesExecutionImport(filter, pageInfos).map { video ->
             videoServiceMapper.getVideoExerciseExecutionDTO(video)
@@ -91,7 +91,7 @@ class VideoService(
         videoExercisePreDefinitionRepository.saveAll(videos)
     }
 
-    @Cacheable(cacheNames = [VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [VIDEO_EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getVideoExercisesPreDefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedVideoExercisePreDefinitionDTO> {
         return customVideoExercisePreDefinitionRepository.getVideoExercisesPreDefinitionImport(filter, pageInfos).map { video ->
             videoServiceMapper.getVideoExercisePreDefinitionDTO(video)

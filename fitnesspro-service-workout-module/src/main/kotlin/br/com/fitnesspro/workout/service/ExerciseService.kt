@@ -33,7 +33,7 @@ class ExerciseService(
     private val exerciseServiceMapper: ExerciseServiceMapper
 ) {
 
-    @Cacheable(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getExercisesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedExerciseDTO> {
         return customExerciseRepository.getExercisesImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseDTO)
     }
@@ -53,7 +53,7 @@ class ExerciseService(
         exerciseExecutionRepository.saveAll(exercises)
     }
 
-    @Cacheable(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getExercisesExecutionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedExerciseExecutionDTO> {
         return customExerciseExecutionRepository.getExercisesExecutionImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseExecutionDTO)
     }
@@ -67,7 +67,7 @@ class ExerciseService(
         exercisePreDefinitionRepository.saveAll(exercises)
     }
 
-    @Cacheable(cacheNames = [EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getExercisesPredefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedExercisePreDefinitionDTO> {
         return customExercisePreDefinitionRepository.getExercisesPreDefinitionImport(filter, pageInfos).map(exerciseServiceMapper::getExercisePreDefinitionDTO)
     }

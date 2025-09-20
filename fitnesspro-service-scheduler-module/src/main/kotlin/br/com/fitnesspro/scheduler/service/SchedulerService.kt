@@ -457,7 +457,7 @@ class SchedulerService(
         schedulerRepository.saveAll(schedules)
     }
 
-    @Cacheable(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedSchedulerDTO> {
         return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map(schedulerServiceMapper::getSchedulerDTO)
     }

@@ -38,7 +38,7 @@ class ReportService(
         }
     }
 
-    @Cacheable(cacheNames = [REPORT_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [REPORT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getReportsImport(filter: ReportImportFilter, pageInfos: ImportPageInfos): List<ValidatedReportDTO> {
         return customReportRepository.getReportsImport(filter, pageInfos).map(reportServiceMapper::getValidatedReportDTO)
     }

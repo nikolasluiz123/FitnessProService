@@ -33,7 +33,7 @@ class HealthConnectGeneralDataService(
     private val mapper: HealthConnectServiceMapper
 ) {
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getMetadataImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectMetadataDTO> {
         return customMetadataRepository.getHealthConnectMetadataImport(filter, pageInfos).map(mapper::getHealthConnectMetadataDTO)
     }
@@ -43,7 +43,7 @@ class HealthConnectGeneralDataService(
         metadataRepository.saveAll(dtos.map(mapper::getHealthConnectMetadata))
     }
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getStepsImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectStepsDTO> {
         return customStepsRepository.getHealthConnectStepsImport(filter, pageInfos).map(mapper::getHealthConnectStepsDTO)
     }
@@ -53,7 +53,7 @@ class HealthConnectGeneralDataService(
         stepsRepository.saveAll(dtos.map(mapper::getHealthConnectSteps))
     }
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME], key = "#filter.toCacheKey()")
+    @Cacheable(cacheNames = [HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getCaloriesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectCaloriesBurnedDTO> {
         return customCaloriesBurnedRepository.getHealthConnectCaloriesBurnedImport(filter, pageInfos).map(mapper::getHealthConnectCaloriesBurnedDTO)
     }
