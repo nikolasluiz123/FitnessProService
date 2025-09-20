@@ -20,6 +20,7 @@ import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedDeviceD
 import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenDTO
 import br.com.fitnesspro.service.communication.dtos.serviceauth.ValidatedServiceTokenGenerationDTO
 import br.com.fitnesspro.service.communication.dtos.workout.*
+import br.com.fitnesspro.service.communication.dtos.workout.health.*
 import br.com.fitnesspro.service.communication.gson.adapters.GenericInterfaceAdapterFactory
 import br.com.fitnesspro.shared.communication.dtos.cache.interfaces.ICacheClearConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.cache.interfaces.ICacheDTO
@@ -40,6 +41,7 @@ import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IDevic
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IServiceTokenDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IServiceTokenGenerationDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.*
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.time.*
@@ -93,5 +95,14 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutDTO::class.java, ValidatedWorkoutDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupDTO::class.java, ValidatedWorkoutGroupDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupPreDefinitionDTO::class.java,ValidatedWorkoutGroupPreDefinitionDTO::class.java))
+
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectMetadataDTO::class.java, ValidatedHealthConnectMetadataDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectStepsDTO::class.java, ValidatedHealthConnectStepsDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectCaloriesBurnedDTO::class.java, ValidatedHealthConnectCaloriesBurnedDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectHeartRateDTO::class.java, ValidatedHealthConnectHeartRateDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectHeartRateSamplesDTO::class.java, ValidatedHealthConnectHeartRateSamplesDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectSleepSessionDTO::class.java, ValidatedHealthConnectSleepSessionDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectSleepStagesDTO::class.java, ValidatedHealthConnectSleepStagesDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(ISleepSessionExerciseExecutionDTO::class.java, ValidatedSleepSessionExerciseExecutionDTO::class.java))
         .create()
 }
