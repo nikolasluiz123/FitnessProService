@@ -75,21 +75,26 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
-            filter.lastUpdateDate?.let {
-                add(" and a.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[Academy::class.simpleName!!]?.let {
+                add(" and (a.updateDate > :pLastUpdateDate OR (a.updateDate = :pLastUpdateDate AND a.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Academy::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by a.updateDate asc, a.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), Academy::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         val result = query.getResultList(Academy::class.java)

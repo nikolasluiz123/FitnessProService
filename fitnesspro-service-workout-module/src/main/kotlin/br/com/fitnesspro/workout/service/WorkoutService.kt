@@ -33,32 +33,26 @@ class WorkoutService(
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
-    @CacheEvict(cacheNames = [WORKOUT_IMPORT_CACHE_NAME], allEntries = true)
     fun saveWorkoutBatch(workouts: List<IWorkoutDTO>) {
         workoutRepository.saveAll(workouts.map(workoutServiceMapper::getWorkout))
     }
 
-    @CacheEvict(cacheNames = [WORKOUT_GROUP_IMPORT_CACHE_NAME], allEntries = true)
     fun saveWorkoutGroupBatch(workoutGroups: List<IWorkoutGroupDTO>) {
         workoutGroupRepository.saveAll(workoutGroups.map(workoutServiceMapper::getWorkoutGroup))
     }
 
-    @Cacheable(cacheNames = [WORKOUT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getWorkoutsImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedWorkoutDTO> {
         return customWorkoutRepository.getWorkoutsImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutDTO)
     }
 
-    @Cacheable(cacheNames = [WORKOUT_GROUP_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getWorkoutGroupsImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedWorkoutGroupDTO> {
         return customWorkoutGroupRepository.getWorkoutGroupsImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutGroupDTO)
     }
 
-    @CacheEvict(cacheNames = [WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME], allEntries = true)
     fun saveWorkoutGroupPreDefinitionBatch(workoutGroups: List<IWorkoutGroupPreDefinitionDTO>) {
         workoutGroupPreDefinitionRepository.saveAll(workoutGroups.map(workoutServiceMapper::getWorkoutGroupPreDefinition))
     }
 
-    @Cacheable(cacheNames = [WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getWorkoutGroupsPreDefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedWorkoutGroupPreDefinitionDTO> {
         return customWorkoutGroupPreDefinitionRepository.getWorkoutGroupsPreDefinitionImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutGroupPreDefinitionDTO)
     }

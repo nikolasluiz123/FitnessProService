@@ -57,21 +57,26 @@ class CustomHealthConnectHeartRateRepositoryImpl : ICustomHealthConnectHeartRate
                 params.add(Parameter(name = "pMetadataIds", value = metadataIds))
             }
 
-            filter.lastUpdateDate?.let {
-                add(" and hr.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[HealthConnectHeartRate::class.simpleName!!]?.let {
+                add(" and (hr.updateDate > :pLastUpdateDate OR (hr.updateDate = :pLastUpdateDate AND hr.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectHeartRate::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by hr.updateDate asc, hr.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), HealthConnectHeartRate::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(HealthConnectHeartRate::class.java)

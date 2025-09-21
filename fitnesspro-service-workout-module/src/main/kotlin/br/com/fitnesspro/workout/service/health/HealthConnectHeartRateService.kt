@@ -26,7 +26,6 @@ class HealthConnectHeartRateService(
     private val mapper: HealthConnectServiceMapper
 ) {
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_HEART_RATE_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getHeartRateImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -36,12 +35,10 @@ class HealthConnectHeartRateService(
         return customHeartRateRepository.getHealthConnectHeartRateImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectHeartRateDTO)
     }
 
-    @CacheEvict(cacheNames = [HEALTH_CONNECT_HEART_RATE_IMPORT_CACHE_NAME], allEntries = true)
     fun saveHeartRateBatch(dtos: List<IHealthConnectHeartRateDTO>) {
         heartRateRepository.saveAll(dtos.map(mapper::getHealthConnectHeartRate))
     }
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_HEART_RATE_SAMPLES_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getHeartRateSamplesImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -50,7 +47,6 @@ class HealthConnectHeartRateService(
         return customSamplesRepository.getHealthConnectHeartRateSamplesImport(filter, pageInfos, heartRateSessionIds).map(mapper::getHealthConnectHeartRateSamplesDTO)
     }
 
-    @CacheEvict(cacheNames = [HEALTH_CONNECT_HEART_RATE_SAMPLES_IMPORT_CACHE_NAME], allEntries = true)
     fun saveHeartRateSamplesBatch(dtos: List<IHealthConnectHeartRateSamplesDTO>) {
         samplesRepository.saveAll(dtos.map(mapper::getHealthConnectHeartRateSamples))
     }

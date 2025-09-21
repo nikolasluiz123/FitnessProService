@@ -71,21 +71,26 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            filter.lastUpdateDate?.let {
-                add(" and video.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[Video::class.simpleName!!]?.let {
+                add(" and (video.updateDate > :pLastUpdateDate OR (video.updateDate = :pLastUpdateDate AND video.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Video::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by video.updateDate asc, video.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), Video::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         val result = query.getResultList(Video::class.java)

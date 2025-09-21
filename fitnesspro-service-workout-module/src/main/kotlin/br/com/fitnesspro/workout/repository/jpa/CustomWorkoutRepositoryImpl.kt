@@ -40,21 +40,26 @@ class CustomWorkoutRepositoryImpl: ICustomWorkoutRepository {
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            filter.lastUpdateDate?.let {
-                add(" and workout.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[Workout::class.simpleName!!]?.let {
+                add(" and (workout.updateDate > :pLastUpdateDate OR (workout.updateDate = :pLastUpdateDate AND workout.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Workout::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by workout.updateDate asc, workout.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), Workout::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         val result = query.getResultList(Workout::class.java)

@@ -59,21 +59,26 @@ class CustomSleepSessionExerciseExecutionRepositoryImpl : ICustomSleepSessionExe
                 params.add(Parameter(name = "pExerciseExecutionIds", value = exerciseExecutionIds))
             }
 
-            filter.lastUpdateDate?.let {
-                add(" and assoc.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[SleepSessionExerciseExecution::class.simpleName!!]?.let {
+                add(" and (assoc.updateDate > :pLastUpdateDate OR (assoc.updateDate = :pLastUpdateDate AND assoc.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[SleepSessionExerciseExecution::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by assoc.updateDate asc, assoc.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), SleepSessionExerciseExecution::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(SleepSessionExerciseExecution::class.java)

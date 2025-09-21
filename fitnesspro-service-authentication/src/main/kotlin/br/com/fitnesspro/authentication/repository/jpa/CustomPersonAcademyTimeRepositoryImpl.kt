@@ -17,10 +17,10 @@ import java.util.*
 
 @Repository
 class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository {
-    
+
     @PersistenceContext
     private lateinit var entityManager: EntityManager
-    
+
     override fun getConflictPersonAcademyTime(
         personAcademyTimeId: String?,
         personId: String,
@@ -100,22 +100,26 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
                 params.add(Parameter(name = "pAcademyIds", value = academyIds))
             }
 
-            filter.lastUpdateDate?.let {
-                add(" and pat.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[PersonAcademyTime::class.simpleName!!]?.let {
+                add(" and (pat.updateDate > :pLastUpdateDate OR (pat.updateDate = :pLastUpdateDate AND pat.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[PersonAcademyTime::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by pat.updateDate asc, pat.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), PersonAcademyTime::class.java)
         query.setParameters(params)
-
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(PersonAcademyTime::class.java)

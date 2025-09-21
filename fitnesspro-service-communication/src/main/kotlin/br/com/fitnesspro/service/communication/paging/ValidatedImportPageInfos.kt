@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.communication.paging
 
-import br.com.fitnesspro.shared.communication.paging.PageInfos
+import br.com.fitnesspro.shared.communication.paging.SyncPageInfos
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -11,7 +11,6 @@ data class ValidatedImportPageInfos(
     @field:Max(value = 1000, message = "O tamanho da página deve ser no máximo 1000")
     override val pageSize: Int = 200,
 
-    @field:Schema(description = "Número da página", example = "0", required = true)
-    @field:Min(value = 0, message = "O número da página deve ser no mínimo 0")
-    override var pageNumber: Int = 0
-): PageInfos
+    @field:Schema(description = "Map de cursor de página por classe", example = "0", required = false)
+    override var cursorIdMap: Map<String, String?>
+): SyncPageInfos

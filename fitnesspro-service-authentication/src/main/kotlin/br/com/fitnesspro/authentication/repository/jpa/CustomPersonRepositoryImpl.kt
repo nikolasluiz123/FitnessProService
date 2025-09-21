@@ -43,21 +43,26 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
 
             params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
-            filter.lastUpdateDate?.let {
-                add(" and p.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[Person::class.simpleName!!]?.let {
+                add(" and (p.updateDate > :pLastUpdateDate OR (p.updateDate = :pLastUpdateDate AND p.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Person::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by p.updateDate asc, p.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), Person::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         val result = query.getResultList(Person::class.java)
@@ -81,21 +86,26 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
 
             params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
-            filter.lastUpdateDate?.let {
-                add(" and u.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[User::class.simpleName!!]?.let {
+                add(" and (u.updateDate > :pLastUpdateDate OR (u.updateDate = :pLastUpdateDate AND u.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[User::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by u.updateDate asc, u.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), User::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         val result = query.getResultList(User::class.java)

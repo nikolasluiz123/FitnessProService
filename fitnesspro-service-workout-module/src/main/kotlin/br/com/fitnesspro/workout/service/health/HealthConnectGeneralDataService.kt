@@ -33,17 +33,14 @@ class HealthConnectGeneralDataService(
     private val mapper: HealthConnectServiceMapper
 ) {
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getMetadataImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectMetadataDTO> {
         return customMetadataRepository.getHealthConnectMetadataImport(filter, pageInfos).map(mapper::getHealthConnectMetadataDTO)
     }
 
-    @CacheEvict(cacheNames = [HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME], allEntries = true)
     fun saveMetadataBatch(dtos: List<IHealthConnectMetadataDTO>) {
         metadataRepository.saveAll(dtos.map(mapper::getHealthConnectMetadata))
     }
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getStepsImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -52,12 +49,10 @@ class HealthConnectGeneralDataService(
     ): List<ValidatedHealthConnectStepsDTO> {
         return customStepsRepository.getHealthConnectStepsImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectStepsDTO)    }
 
-    @CacheEvict(cacheNames = [HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME], allEntries = true)
     fun saveStepsBatch(dtos: List<IHealthConnectStepsDTO>) {
         stepsRepository.saveAll(dtos.map(mapper::getHealthConnectSteps))
     }
 
-    @Cacheable(cacheNames = [HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getCaloriesImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -67,7 +62,6 @@ class HealthConnectGeneralDataService(
         return customCaloriesBurnedRepository.getHealthConnectCaloriesBurnedImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectCaloriesBurnedDTO)
     }
 
-    @CacheEvict(cacheNames = [HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME], allEntries = true)
     fun saveCaloriesBatch(dtos: List<IHealthConnectCaloriesBurnedDTO>) {
         caloriesBurnedRepository.saveAll(dtos.map(mapper::getHealthConnectCaloriesBurned))
     }

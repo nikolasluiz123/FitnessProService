@@ -16,8 +16,8 @@ class SchedulerModuleSyncService(
 ) {
 
     fun getImportationData(filter: SchedulerModuleImportationFilter, pageInfos: ImportPageInfos): ValidatedSchedulerModuleSyncDTO {
-        val reportImportFilter = ReportImportFilter(filter.personId, filter.reportContext, filter.lastUpdateDate)
-        val schedulerReportImportFilter = SchedulerReportImportFilter(filter.personId, filter.lastUpdateDate)
+        val reportImportFilter = ReportImportFilter(filter.personId, filter.reportContext, filter.lastUpdateDateMap)
+        val schedulerReportImportFilter = SchedulerReportImportFilter(filter.personId, filter.lastUpdateDateMap)
 
         val schedulers = schedulerService.getSchedulesImport(filter, pageInfos)
         val reports = reportService.getReportsImport(reportImportFilter, pageInfos)

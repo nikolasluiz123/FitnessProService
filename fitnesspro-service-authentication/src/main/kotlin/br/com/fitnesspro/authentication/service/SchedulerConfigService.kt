@@ -3,15 +3,12 @@ package br.com.fitnesspro.authentication.service
 import br.com.fitnesspro.authentication.repository.auditable.ISchedulerConfigRepository
 import br.com.fitnesspro.authentication.repository.jpa.ICustomSchedulerConfigRepository
 import br.com.fitnesspro.authentication.service.mappers.SchedulerConfigServiceMapper
-import br.com.fitnesspro.core.cache.SCHEDULER_CONFIG_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.models.scheduler.SchedulerConfig
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 import java.util.*
@@ -24,7 +21,6 @@ class SchedulerConfigService(
     private val messageSource: MessageSource
 ) {
 
-    @Cacheable(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getSchedulerConfigsImport(
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos,
@@ -34,7 +30,6 @@ class SchedulerConfigService(
             .map(schedulerConfigServiceMapper::getValidatedSchedulerConfigDTO)
     }
 
-    @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerConfig(schedulerConfigDTO: ValidatedSchedulerConfigDTO) {
         val config = schedulerConfigServiceMapper.getSchedulerConfig(schedulerConfigDTO)
 
@@ -56,7 +51,6 @@ class SchedulerConfigService(
         }
     }
 
-    @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerConfigBatch(list: List<ISchedulerConfigDTO>) {
         val configs = list.map {
             val config = schedulerConfigServiceMapper.getSchedulerConfig(it)

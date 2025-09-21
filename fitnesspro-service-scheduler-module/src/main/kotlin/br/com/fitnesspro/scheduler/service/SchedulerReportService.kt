@@ -18,7 +18,6 @@ class SchedulerReportService(
     private val customSchedulerReportRepository: ICustomSchedulerReportRepository,
     private val schedulerReportServiceMapper: SchedulerReportServiceMapper,
 ) {
-    @CacheEvict(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerReportBatch(list: List<ISchedulerReportDTO>) {
         val schedulerReports = list.map {
             schedulerReportServiceMapper.getSchedulerReport(it)
@@ -27,7 +26,6 @@ class SchedulerReportService(
         schedulerReportRepository.saveAll(schedulerReports)
     }
 
-    @Cacheable(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getSchedulerReportsImport(
         filter: SchedulerReportImportFilter,
         pageInfos: ImportPageInfos,

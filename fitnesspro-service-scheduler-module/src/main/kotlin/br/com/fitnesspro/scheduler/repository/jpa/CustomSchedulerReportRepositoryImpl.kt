@@ -32,7 +32,7 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
 
         val from = StringJoiner(QR_NL).apply {
             add(" from ${SchedulerReport::class.java.name} sr ")
-            add(" inner join sr.report report ") // Join explícito
+            add(" inner join sr.report report ")
         }
 
         val where = StringJoiner(QR_NL).apply {
@@ -45,21 +45,26 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
                 params.add(Parameter(name = "pReportIds", value = reportIds))
             }
 
-            filter.lastUpdateDate?.let {
-                add(" and sr.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[SchedulerReport::class.simpleName!!]?.let {
+                add(" and (sr.updateDate > :pLastUpdateDate OR (sr.updateDate = :pLastUpdateDate AND sr.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[SchedulerReport::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by sr.updateDate asc, sr.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), SchedulerReport::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         val result = query.getResultList(SchedulerReport::class.java)

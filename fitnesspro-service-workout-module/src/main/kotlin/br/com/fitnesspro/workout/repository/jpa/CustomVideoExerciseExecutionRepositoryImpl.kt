@@ -44,21 +44,26 @@ class CustomVideoExerciseExecutionRepositoryImpl: ICustomVideoExerciseExecutionR
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            filter.lastUpdateDate?.let {
-                add(" and videoExecution.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[VideoExerciseExecution::class.simpleName!!]?.let {
+                add(" and (videoExecution.updateDate > :pLastUpdateDate OR (videoExecution.updateDate = :pLastUpdateDate AND videoExecution.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[VideoExerciseExecution::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by videoExecution.updateDate asc, videoExecution.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), VideoExerciseExecution::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(VideoExerciseExecution::class.java)

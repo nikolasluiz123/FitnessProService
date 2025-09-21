@@ -1,8 +1,5 @@
 package br.com.fitnesspro.workout.service
 
-import br.com.fitnesspro.core.cache.EXERCISE_EXECUTION_IMPORT_CACHE_NAME
-import br.com.fitnesspro.core.cache.EXERCISE_IMPORT_CACHE_NAME
-import br.com.fitnesspro.core.cache.EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExerciseExecutionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedExercisePreDefinitionDTO
@@ -18,8 +15,6 @@ import br.com.fitnesspro.workout.repository.jpa.ICustomExerciseExecutionReposito
 import br.com.fitnesspro.workout.repository.jpa.ICustomExercisePreDefinitionRepository
 import br.com.fitnesspro.workout.repository.jpa.ICustomExerciseRepository
 import br.com.fitnesspro.workout.service.mappers.ExerciseServiceMapper
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -33,12 +28,10 @@ class ExerciseService(
     private val exerciseServiceMapper: ExerciseServiceMapper
 ) {
 
-    @Cacheable(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getExercisesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedExerciseDTO> {
         return customExerciseRepository.getExercisesImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseDTO)
     }
 
-    @CacheEvict(cacheNames = [EXERCISE_IMPORT_CACHE_NAME], allEntries = true)
     fun saveExerciseBatch(exerciseDTOs: List<IExerciseDTO>) {
         val exercises = exerciseDTOs.map {
             exerciseServiceMapper.getExercise(dto = it)
@@ -47,18 +40,15 @@ class ExerciseService(
         exerciseRepository.saveAll(exercises)
     }
 
-    @CacheEvict(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
     fun saveExerciseExecutionBatch(exerciseDTOs: List<IExerciseExecutionDTO>) {
         val exercises = exerciseDTOs.map(exerciseServiceMapper::getExerciseExecution)
         exerciseExecutionRepository.saveAll(exercises)
     }
 
-    @Cacheable(cacheNames = [EXERCISE_EXECUTION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getExercisesExecutionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedExerciseExecutionDTO> {
         return customExerciseExecutionRepository.getExercisesExecutionImport(filter, pageInfos).map(exerciseServiceMapper::getExerciseExecutionDTO)
     }
 
-    @CacheEvict(cacheNames = [EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], allEntries = true)
     fun saveExercisePreDefinitionBatch(exerciseDTOs: List<IExercisePreDefinitionDTO>) {
         val exercises = exerciseDTOs.map {
             exerciseServiceMapper.getExercisePreDefinition(dto = it)
@@ -67,7 +57,6 @@ class ExerciseService(
         exercisePreDefinitionRepository.saveAll(exercises)
     }
 
-    @Cacheable(cacheNames = [EXERCISE_PRE_DEFINITION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getExercisesPredefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedExercisePreDefinitionDTO> {
         return customExercisePreDefinitionRepository.getExercisesPreDefinitionImport(filter, pageInfos).map(exerciseServiceMapper::getExercisePreDefinitionDTO)
     }

@@ -4,5 +4,5 @@ import java.time.LocalDateTime
 
 class WorkoutModuleImportationFilter(
     val personId: String,
-    lastUpdateDate: LocalDateTime? = null
-): CommonImportFilter(lastUpdateDate)
+    lastUpdateDateMap: Map<String, LocalDateTime?> = emptyMap()
+): CommonImportFilter(lastUpdateDateMap)

@@ -1,8 +1,5 @@
 package br.com.fitnesspro.service.communication // Ou qualquer pacote de configuração
 
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_SQLITE
-import br.com.fitnesspro.core.extensions.dateTimeNow
-import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.*
 import org.springframework.cache.interceptor.KeyGenerator
@@ -23,8 +20,8 @@ class ImportationCacheKeyGenerator : KeyGenerator {
 
         keyBuilder.append("page:${pageInfos.pageNumber}-size:${pageInfos.pageSize}")
 
-        val dateKey = filter.lastUpdateDate?.format(DATE_TIME_SQLITE) ?: dateTimeNow().format(DATE_TIME_SQLITE)
-        keyBuilder.append("-date:$dateKey")
+//        val dateKey = filter.lastUpdateDateMap?.format(DATE_TIME_SQLITE) ?: dateTimeNow().format(DATE_TIME_SQLITE)
+//        keyBuilder.append("-date:$dateKey")
 
         when (filter) {
             is WorkoutModuleImportationFilter -> {

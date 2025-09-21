@@ -57,21 +57,26 @@ class CustomHealthConnectStepsRepositoryImpl : ICustomHealthConnectStepsReposito
                 params.add(Parameter(name = "pMetadataIds", value = metadataIds))
             }
 
-            filter.lastUpdateDate?.let {
-                add(" and steps.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[HealthConnectSteps::class.simpleName!!]?.let {
+                add(" and (steps.updateDate > :pLastUpdateDate OR (steps.updateDate = :pLastUpdateDate AND steps.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectSteps::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by steps.updateDate asc, steps.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), HealthConnectSteps::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(HealthConnectSteps::class.java)

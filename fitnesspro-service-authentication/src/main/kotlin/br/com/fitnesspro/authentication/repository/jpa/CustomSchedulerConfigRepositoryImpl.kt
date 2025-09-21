@@ -14,10 +14,10 @@ import java.util.*
 
 @Repository
 class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
-    
+
     @PersistenceContext
     private lateinit var entityManager: EntityManager
-    
+
     override fun getSchedulerConfigImport(
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos,
@@ -42,21 +42,26 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
                 params.add(Parameter(name = "pPersonIds", value = personIds))
             }
 
-            filter.lastUpdateDate?.let {
-                add(" and config.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[SchedulerConfig::class.simpleName!!]?.let {
+                add(" and (config.updateDate > :pLastUpdateDate OR (config.updateDate = :pLastUpdateDate AND config.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[SchedulerConfig::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by config.updateDate asc, config.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), SchedulerConfig::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(SchedulerConfig::class.java)

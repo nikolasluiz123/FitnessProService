@@ -21,7 +21,6 @@ class ReportService(
     private val reportServiceMapper: ReportServiceMapper,
     private val reportGCBucketService: ReportGCBucketService,
 ) {
-    @CacheEvict(cacheNames = [REPORT_IMPORT_CACHE_NAME], allEntries = true)
     fun saveReportBatch(list: List<IReportDTO>) {
         val reports = list.map {
             reportServiceMapper.getReport(it)
@@ -38,7 +37,6 @@ class ReportService(
         }
     }
 
-    @Cacheable(cacheNames = [REPORT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
     fun getReportsImport(filter: ReportImportFilter, pageInfos: ImportPageInfos): List<ValidatedReportDTO> {
         return customReportRepository.getReportsImport(filter, pageInfos).map(reportServiceMapper::getValidatedReportDTO)
     }

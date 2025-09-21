@@ -6,5 +6,5 @@ import java.time.LocalDateTime
 class ReportImportFilter(
     val personId: String,
     val reportContext: EnumReportContext,
-    lastUpdateDate: LocalDateTime? = null
-): CommonImportFilter(lastUpdateDate)
+    lastUpdateDateMap: Map<String, LocalDateTime?> = emptyMap()
+): CommonImportFilter(lastUpdateDateMap)

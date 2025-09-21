@@ -110,21 +110,26 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
 
-            filter.lastUpdateDate?.let {
-                add(" and scheduler.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[Scheduler::class.simpleName!!]?.let {
+                add(" and (scheduler.updateDate > :pLastUpdateDate OR (scheduler.updateDate = :pLastUpdateDate AND scheduler.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Scheduler::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by scheduler.updateDate asc, scheduler.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), Scheduler::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(Scheduler::class.java)

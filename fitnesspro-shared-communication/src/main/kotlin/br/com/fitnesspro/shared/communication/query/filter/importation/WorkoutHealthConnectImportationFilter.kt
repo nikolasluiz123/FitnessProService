@@ -4,5 +4,5 @@ import java.time.LocalDateTime
 
 class WorkoutHealthConnectImportationFilter(
     val exerciseExecutionIds: List<String>,
-    lastUpdateDate: LocalDateTime? = null
-): CommonImportFilter(lastUpdateDate)
+    lastUpdateDateMap: Map<String, LocalDateTime?> = emptyMap()
+): CommonImportFilter(lastUpdateDateMap)

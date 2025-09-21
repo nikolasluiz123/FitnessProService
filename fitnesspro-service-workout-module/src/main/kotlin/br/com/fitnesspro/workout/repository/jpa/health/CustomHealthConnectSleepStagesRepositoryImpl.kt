@@ -57,21 +57,26 @@ class CustomHealthConnectSleepStagesRepositoryImpl : ICustomHealthConnectSleepSt
             add(" and session.id in (:pSleepSessionIds) ")
             params.add(Parameter(name = "pSleepSessionIds", value = sleepSessionIds))
 
-            filter.lastUpdateDate?.let {
-                add(" and stage.updateDate >= :pLastUpdateDate ")
+            filter.lastUpdateDateMap[HealthConnectSleepStages::class.simpleName!!]?.let {
+                add(" and (stage.updateDate > :pLastUpdateDate OR (stage.updateDate = :pLastUpdateDate AND stage.id > :pCursorId)) ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
+                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectSleepStages::class.simpleName!!] ?: ""))
             }
+        }
+
+        val orderBy = StringJoiner(QR_NL).apply {
+            add(" order by stage.updateDate asc, stage.id asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
+            add(orderBy.toString())
         }
 
         val query = entityManager.createQuery(sql.toString(), HealthConnectSleepStages::class.java)
         query.setParameters(params)
-        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
         query.maxResults = pageInfos.pageSize
 
         return query.getResultList(HealthConnectSleepStages::class.java)
