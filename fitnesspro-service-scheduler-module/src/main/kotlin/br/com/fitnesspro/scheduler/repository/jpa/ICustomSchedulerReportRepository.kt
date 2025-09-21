@@ -7,7 +7,11 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.Scheduler
 
 interface ICustomSchedulerReportRepository {
 
-    fun getSchedulerReportsImport(filter: SchedulerReportImportFilter, pageInfos: ImportPageInfos): List<SchedulerReport>
+    fun getSchedulerReportsImport(
+        filter: SchedulerReportImportFilter,
+        pageInfos: ImportPageInfos,
+        reportIds: List<String>
+    ): List<SchedulerReport>
 
     fun getReportIdsFromSchedulerDelete(context: EnumReportContext, personId: String): List<String>
 

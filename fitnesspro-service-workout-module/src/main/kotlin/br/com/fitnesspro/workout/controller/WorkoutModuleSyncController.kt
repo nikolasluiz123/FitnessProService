@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(EndPointsV1.SYNC_V1)
-@Tag(name = "Workout Module Sync Controller", description = "Controle de Importação e Exportação de Dados do Módulo de Treinamento")
+@Tag(name = "Workout & Health Module Sync Controller", description = "Controle de Importação e Exportação de Dados do Módulo de Treinamento e Health Connect")
 class WorkoutModuleSyncController(
     private val workoutModuleSyncService: WorkoutModuleSyncService
 ) {

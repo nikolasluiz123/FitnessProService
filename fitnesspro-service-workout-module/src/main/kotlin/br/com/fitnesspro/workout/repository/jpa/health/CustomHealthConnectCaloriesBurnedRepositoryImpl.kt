@@ -20,7 +20,9 @@ class CustomHealthConnectCaloriesBurnedRepositoryImpl : ICustomHealthConnectCalo
 
     override fun getHealthConnectCaloriesBurnedImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos
+        pageInfos: ImportPageInfos,
+        exerciseExecutionIds: List<String>,
+        metadataIds: List<String>
     ): List<HealthConnectCaloriesBurned> {
         val params = mutableListOf<Parameter>()
 
@@ -34,6 +36,7 @@ class CustomHealthConnectCaloriesBurnedRepositoryImpl : ICustomHealthConnectCalo
             add(" inner join execution.exercise exercise ")
             add(" inner join exercise.workoutGroup wGroup ")
             add(" inner join wGroup.workout workout ")
+            add(" inner join calories.healthConnectMetadata meta ") // Join explícito
         }
 
         val where = StringJoiner(QR_NL).apply {
@@ -43,6 +46,16 @@ class CustomHealthConnectCaloriesBurnedRepositoryImpl : ICustomHealthConnectCalo
             add("       ) ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
+
+            if (exerciseExecutionIds.isNotEmpty()) {
+                add(" and execution.id in (:pExerciseExecutionIds) ")
+                params.add(Parameter(name = "pExerciseExecutionIds", value = exerciseExecutionIds))
+            }
+
+            if (metadataIds.isNotEmpty()) {
+                add(" and meta.id in (:pMetadataIds) ")
+                params.add(Parameter(name = "pMetadataIds", value = metadataIds))
+            }
 
             filter.lastUpdateDate?.let {
                 add(" and calories.updateDate >= :pLastUpdateDate ")

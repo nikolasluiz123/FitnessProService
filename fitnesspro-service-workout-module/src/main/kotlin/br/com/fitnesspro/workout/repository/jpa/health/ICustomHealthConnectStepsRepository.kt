@@ -6,5 +6,10 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 
 interface ICustomHealthConnectStepsRepository {
 
-    fun getHealthConnectStepsImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<HealthConnectSteps>
+    fun getHealthConnectStepsImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        exerciseExecutionIds: List<String>,
+        metadataIds: List<String>
+    ): List<HealthConnectSteps>
 }

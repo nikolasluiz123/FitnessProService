@@ -7,5 +7,9 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImp
 
 interface ICustomSchedulerConfigRepository {
 
-    fun getSchedulerConfigImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<SchedulerConfig>
+    fun getSchedulerConfigImport(
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos,
+        personIds: List<String>
+    ): List<SchedulerConfig>
 }

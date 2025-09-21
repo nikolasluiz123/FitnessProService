@@ -20,7 +20,9 @@ class CustomHealthConnectHeartRateRepositoryImpl : ICustomHealthConnectHeartRate
 
     override fun getHealthConnectHeartRateImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos
+        pageInfos: ImportPageInfos,
+        exerciseExecutionIds: List<String>,
+        metadataIds: List<String>
     ): List<HealthConnectHeartRate> {
         val params = mutableListOf<Parameter>()
 
@@ -34,6 +36,7 @@ class CustomHealthConnectHeartRateRepositoryImpl : ICustomHealthConnectHeartRate
             add(" inner join execution.exercise exercise ")
             add(" inner join exercise.workoutGroup wGroup ")
             add(" inner join wGroup.workout workout ")
+            add(" inner join hr.healthConnectMetadata meta ")
         }
 
         val where = StringJoiner(QR_NL).apply {
@@ -43,6 +46,16 @@ class CustomHealthConnectHeartRateRepositoryImpl : ICustomHealthConnectHeartRate
             add("       ) ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
+
+            if (exerciseExecutionIds.isNotEmpty()) {
+                add(" and execution.id in (:pExerciseExecutionIds) ")
+                params.add(Parameter(name = "pExerciseExecutionIds", value = exerciseExecutionIds))
+            }
+
+            if (metadataIds.isNotEmpty()) {
+                add(" and meta.id in (:pMetadataIds) ")
+                params.add(Parameter(name = "pMetadataIds", value = metadataIds))
+            }
 
             filter.lastUpdateDate?.let {
                 add(" and hr.updateDate >= :pLastUpdateDate ")

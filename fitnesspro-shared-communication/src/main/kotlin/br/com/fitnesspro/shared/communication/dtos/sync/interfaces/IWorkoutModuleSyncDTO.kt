@@ -1,6 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.sync.interfaces
 
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.*
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.*
 
 interface IWorkoutModuleSyncDTO : ISyncDTO {
     var workouts: List<IWorkoutDTO>
@@ -16,6 +17,16 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
     var exercisePredefinitions: List<IExercisePreDefinitionDTO>
     var videoExercisePreDefinitions: List<IVideoExercisePreDefinitionDTO>
 
+    var metadata: List<IHealthConnectMetadataDTO>
+    var steps: List<IHealthConnectStepsDTO>
+    var caloriesBurned: List<IHealthConnectCaloriesBurnedDTO>
+    var heartRateSessions: List<IHealthConnectHeartRateDTO>
+    var heartRateSamples: List<IHealthConnectHeartRateSamplesDTO>
+    var sleepSessions: List<IHealthConnectSleepSessionDTO>
+    var sleepStages: List<IHealthConnectSleepStagesDTO>
+    var sleepSessionAssociations: List<ISleepSessionExerciseExecutionDTO>
+
+
     override fun isEmpty(): Boolean {
         return workouts.isEmpty() &&
                 workoutGroups.isEmpty() &&
@@ -28,7 +39,16 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
 
                 workoutGroupsPreDefinitions.isEmpty() &&
                 exercisePredefinitions.isEmpty() &&
-                videoExercisePreDefinitions.isEmpty()
+                videoExercisePreDefinitions.isEmpty() &&
+
+                metadata.isEmpty() &&
+                steps.isEmpty() &&
+                caloriesBurned.isEmpty() &&
+                heartRateSessions.isEmpty() &&
+                heartRateSamples.isEmpty() &&
+                sleepSessions.isEmpty() &&
+                sleepStages.isEmpty() &&
+                sleepSessionAssociations.isEmpty()
     }
 
     override fun getMaxListSize(): Int {
@@ -44,7 +64,16 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
 
             workoutGroupsPreDefinitions.size,
             exercisePredefinitions.size,
-            videoExercisePreDefinitions.size
+            videoExercisePreDefinitions.size,
+
+            metadata.size,
+            steps.size,
+            caloriesBurned.size,
+            heartRateSessions.size,
+            heartRateSamples.size,
+            sleepSessions.size,
+            sleepStages.size,
+            sleepSessionAssociations.size
         )
     }
 
@@ -60,6 +89,15 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
 
                 workoutGroupsPreDefinitions.size +
                 exercisePredefinitions.size +
-                videoExercisePreDefinitions.size
+                videoExercisePreDefinitions.size +
+
+                metadata.size +
+                steps.size +
+                caloriesBurned.size +
+                heartRateSessions.size +
+                heartRateSamples.size +
+                sleepSessions.size +
+                sleepStages.size +
+                sleepSessionAssociations.size
     }
 }

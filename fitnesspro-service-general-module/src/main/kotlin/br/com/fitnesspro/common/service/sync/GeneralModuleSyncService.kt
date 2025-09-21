@@ -18,11 +18,20 @@ class GeneralModuleSyncService(
 ) {
 
     fun getImportationData(filter: CommonImportFilter, pageInfos: ImportPageInfos): ValidatedGeneralModuleSyncDTO {
+        val academies = academyService.getAcademiesImport(filter, pageInfos)
+        val persons = personService.getPersonsImport(filter, pageInfos)
+
+        val academyIds = academies.mapNotNull { it.id }
+        val personIds = persons.mapNotNull { it.id }
+
+        val personAcademyTimes = academyService.getPersonAcademyTimesImport(filter, pageInfos, personIds, academyIds)
+        val schedulerConfigs = schedulerConfigService.getSchedulerConfigsImport(filter, pageInfos, personIds)
+
         return ValidatedGeneralModuleSyncDTO(
-            academies = academyService.getAcademiesImport(filter, pageInfos),
-            persons = personService.getPersonsImport(filter, pageInfos),
-            personAcademyTimes = academyService.getPersonAcademyTimesImport(filter, pageInfos),
-            schedulerConfigs = schedulerConfigService.getSchedulerConfigsImport(filter, pageInfos)
+            academies = academies,
+            persons = persons,
+            personAcademyTimes = personAcademyTimes,
+            schedulerConfigs = schedulerConfigs
         )
     }
 

@@ -19,7 +19,11 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getSchedulerReportsImport(filter: SchedulerReportImportFilter, pageInfos: ImportPageInfos): List<SchedulerReport> {
+    override fun getSchedulerReportsImport(
+        filter: SchedulerReportImportFilter,
+        pageInfos: ImportPageInfos,
+        reportIds: List<String>
+    ): List<SchedulerReport> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -28,12 +32,18 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
 
         val from = StringJoiner(QR_NL).apply {
             add(" from ${SchedulerReport::class.java.name} sr ")
+            add(" inner join sr.report report ") // Join explícito
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where sr.person.id = :pPersonId ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
+
+            if (reportIds.isNotEmpty()) {
+                add(" and report.id in (:pReportIds) ")
+                params.add(Parameter(name = "pReportIds", value = reportIds))
+            }
 
             filter.lastUpdateDate?.let {
                 add(" and sr.updateDate >= :pLastUpdateDate ")

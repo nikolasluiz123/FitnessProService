@@ -25,8 +25,13 @@ class SchedulerConfigService(
 ) {
 
     @Cacheable(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
-    fun getSchedulerConfigsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedSchedulerConfigDTO> {
-        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos).map(schedulerConfigServiceMapper::getValidatedSchedulerConfigDTO)
+    fun getSchedulerConfigsImport(
+        filter: CommonImportFilter,
+        pageInfos: ImportPageInfos,
+        personIds: List<String>
+    ): List<ValidatedSchedulerConfigDTO> {
+        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos, personIds)
+            .map(schedulerConfigServiceMapper::getValidatedSchedulerConfigDTO)
     }
 
     @CacheEvict(cacheNames = [SCHEDULER_CONFIG_IMPORT_CACHE_NAME], allEntries = true)

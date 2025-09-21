@@ -34,8 +34,12 @@ class HealthConnectSleepService(
 ) {
 
     @Cacheable(cacheNames = [HEALTH_CONNECT_SLEEP_SESSION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
-    fun getSleepSessionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectSleepSessionDTO> {
-        return customSleepSessionRepository.getHealthConnectSleepSessionImport(filter, pageInfos).map(mapper::getHealthConnectSleepSessionDTO)
+    fun getSleepSessionImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        metadataIds: List<String>
+    ): List<ValidatedHealthConnectSleepSessionDTO> {
+        return customSleepSessionRepository.getHealthConnectSleepSessionImport(filter, pageInfos, metadataIds).map(mapper::getHealthConnectSleepSessionDTO)
     }
 
     @CacheEvict(cacheNames = [HEALTH_CONNECT_SLEEP_SESSION_IMPORT_CACHE_NAME], allEntries = true)
@@ -44,8 +48,12 @@ class HealthConnectSleepService(
     }
 
     @Cacheable(cacheNames = [HEALTH_CONNECT_SLEEP_STAGES_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
-    fun getSleepStagesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectSleepStagesDTO> {
-        return customSleepStagesRepository.getHealthConnectSleepStagesImport(filter, pageInfos).map(mapper::getHealthConnectSleepStagesDTO)
+    fun getSleepStagesImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        sleepSessionIds: List<String>
+    ): List<ValidatedHealthConnectSleepStagesDTO> {
+        return customSleepStagesRepository.getHealthConnectSleepStagesImport(filter, pageInfos, sleepSessionIds).map(mapper::getHealthConnectSleepStagesDTO)
     }
 
     @CacheEvict(cacheNames = [HEALTH_CONNECT_SLEEP_STAGES_IMPORT_CACHE_NAME], allEntries = true)
@@ -54,8 +62,13 @@ class HealthConnectSleepService(
     }
 
     @Cacheable(cacheNames = [SLEEP_SESSION_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
-    fun getSleepSessionAssociationImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedSleepSessionExerciseExecutionDTO> {
-        return customAssociationRepository.getSleepSessionExerciseExecutionImport(filter, pageInfos).map(mapper::getSleepSessionExerciseExecutionDTO)
+    fun getSleepSessionAssociationImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        sleepSessionIds: List<String>,
+        exerciseExecutionIds: List<String>
+    ): List<ValidatedSleepSessionExerciseExecutionDTO> {
+        return customAssociationRepository.getSleepSessionExerciseExecutionImport(filter, pageInfos, sleepSessionIds, exerciseExecutionIds).map(mapper::getSleepSessionExerciseExecutionDTO)
     }
 
     @CacheEvict(cacheNames = [SLEEP_SESSION_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)

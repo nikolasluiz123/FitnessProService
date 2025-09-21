@@ -6,5 +6,9 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 
 interface ICustomHealthConnectSleepStagesRepository {
 
-    fun getHealthConnectSleepStagesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<HealthConnectSleepStages>
+    fun getHealthConnectSleepStagesImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        sleepSessionIds: List<String>
+    ): List<HealthConnectSleepStages>
 }

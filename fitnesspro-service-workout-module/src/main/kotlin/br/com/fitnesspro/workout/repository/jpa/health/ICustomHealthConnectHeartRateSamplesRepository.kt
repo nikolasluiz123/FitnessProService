@@ -6,5 +6,9 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 
 interface ICustomHealthConnectHeartRateSamplesRepository {
 
-    fun getHealthConnectHeartRateSamplesImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<HealthConnectHeartRateSamples>
+    fun getHealthConnectHeartRateSamplesImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        heartRateSessionIds: List<String>
+    ): List<HealthConnectHeartRateSamples>
 }

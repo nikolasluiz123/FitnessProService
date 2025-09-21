@@ -6,5 +6,10 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 
 interface ICustomHealthConnectCaloriesBurnedRepository {
 
-    fun getHealthConnectCaloriesBurnedImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<HealthConnectCaloriesBurned>
+    fun getHealthConnectCaloriesBurnedImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        exerciseExecutionIds: List<String>,
+        metadataIds: List<String>
+    ): List<HealthConnectCaloriesBurned>
 }

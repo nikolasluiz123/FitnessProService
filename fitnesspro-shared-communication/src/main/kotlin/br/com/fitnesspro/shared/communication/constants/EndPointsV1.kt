@@ -70,6 +70,4 @@ object EndPointsV1 {
     const val SYNC_EXPORT_SCHEDULER = "/scheduler/export"
     const val SYNC_IMPORT_WORKOUT = "/workout/import"
     const val SYNC_EXPORT_WORKOUT = "/workout/export"
-    const val SYNC_IMPORT_HEALTH_CONNECT = "/health/import"
-    const val SYNC_EXPORT_HEALTH_CONNECT = "/health/export"
 }

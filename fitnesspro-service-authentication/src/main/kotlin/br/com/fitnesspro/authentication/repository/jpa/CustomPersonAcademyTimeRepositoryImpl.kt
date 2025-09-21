@@ -75,7 +75,9 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
 
     override fun getPersonAcademyTimesImport(
         filter: CommonImportFilter,
-        pageInfos: ImportPageInfos
+        pageInfos: ImportPageInfos,
+        personIds: List<String>,
+        academyIds: List<String>
     ): List<PersonAcademyTime> {
         val params = mutableListOf<Parameter>()
 
@@ -85,10 +87,18 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
 
         val from = StringJoiner(QR_NL).apply {
             add(" from ${PersonAcademyTime::class.java.name} pat ")
+            add(" inner join pat.person person ")
+            add(" inner join pat.academy academy ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where 1 = 1 ")
+            add(" where person.id in (:pPersonIds) ")
+            params.add(Parameter(name = "pPersonIds", value = personIds))
+
+            if (academyIds.isNotEmpty()) {
+                add(" and academy.id in (:pAcademyIds) ")
+                params.add(Parameter(name = "pAcademyIds", value = academyIds))
+            }
 
             filter.lastUpdateDate?.let {
                 add(" and pat.updateDate >= :pLastUpdateDate ")

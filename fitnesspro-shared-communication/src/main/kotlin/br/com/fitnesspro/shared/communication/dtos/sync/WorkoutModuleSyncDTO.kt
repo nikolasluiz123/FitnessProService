@@ -2,6 +2,7 @@ package br.com.fitnesspro.shared.communication.dtos.sync
 
 import br.com.fitnesspro.shared.communication.dtos.sync.interfaces.IWorkoutModuleSyncDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.*
+import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.*
 
 class WorkoutModuleSyncDTO(
     override var workouts: List<IWorkoutDTO> = emptyList(),
@@ -15,6 +16,15 @@ class WorkoutModuleSyncDTO(
 
     override var workoutGroupsPreDefinitions: List<IWorkoutGroupPreDefinitionDTO> = emptyList(),
     override var exercisePredefinitions: List<IExercisePreDefinitionDTO> = emptyList(),
-    override var videoExercisePreDefinitions: List<IVideoExercisePreDefinitionDTO> = emptyList()
+    override var videoExercisePreDefinitions: List<IVideoExercisePreDefinitionDTO> = emptyList(),
+
+    override var metadata: List<IHealthConnectMetadataDTO> = emptyList(),
+    override var steps: List<IHealthConnectStepsDTO> = emptyList(),
+    override var caloriesBurned: List<IHealthConnectCaloriesBurnedDTO> = emptyList(),
+    override var heartRateSessions: List<IHealthConnectHeartRateDTO> = emptyList(),
+    override var heartRateSamples: List<IHealthConnectHeartRateSamplesDTO> = emptyList(),
+    override var sleepSessions: List<IHealthConnectSleepSessionDTO> = emptyList(),
+    override var sleepStages: List<IHealthConnectSleepStagesDTO> = emptyList(),
+    override var sleepSessionAssociations: List<ISleepSessionExerciseExecutionDTO> = emptyList()
 ) : IWorkoutModuleSyncDTO {
 }

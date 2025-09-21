@@ -20,7 +20,8 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
     
     override fun getSchedulerConfigImport(
         filter: CommonImportFilter,
-        pageInfos: ImportPageInfos
+        pageInfos: ImportPageInfos,
+        personIds: List<String>
     ): List<SchedulerConfig> {
         val params = mutableListOf<Parameter>()
 
@@ -30,10 +31,16 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
 
         val from = StringJoiner(QR_NL).apply {
             add(" from ${SchedulerConfig::class.java.name} config ")
+            add(" inner join config.person person ")
         }
 
         val where = StringJoiner(QR_NL).apply {
             add(" where 1 = 1 ")
+
+            if (personIds.isNotEmpty()) {
+                add(" and person.id in (:pPersonIds) ")
+                params.add(Parameter(name = "pPersonIds", value = personIds))
+            }
 
             filter.lastUpdateDate?.let {
                 add(" and config.updateDate >= :pLastUpdateDate ")

@@ -6,5 +6,10 @@ import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutMo
 
 interface ICustomSleepSessionExerciseExecutionRepository {
 
-    fun getSleepSessionExerciseExecutionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<SleepSessionExerciseExecution>
+    fun getSleepSessionExerciseExecutionImport(
+        filter: WorkoutModuleImportationFilter,
+        pageInfos: ImportPageInfos,
+        sleepSessionIds: List<String>,
+        exerciseExecutionIds: List<String>
+    ): List<SleepSessionExerciseExecution>
 }
