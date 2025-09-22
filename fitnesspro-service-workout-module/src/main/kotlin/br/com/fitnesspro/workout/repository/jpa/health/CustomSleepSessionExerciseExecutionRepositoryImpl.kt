@@ -60,9 +60,8 @@ class CustomSleepSessionExerciseExecutionRepositoryImpl : ICustomSleepSessionExe
             }
 
             filter.lastUpdateDateMap[SleepSessionExerciseExecution::class.simpleName!!]?.let {
-                add(" and (assoc.updateDate > :pLastUpdateDate OR (assoc.updateDate = :pLastUpdateDate AND assoc.id > :pCursorId)) ")
+                add(" and assoc.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[SleepSessionExerciseExecution::class.simpleName!!] ?: ""))
             }
         }
 

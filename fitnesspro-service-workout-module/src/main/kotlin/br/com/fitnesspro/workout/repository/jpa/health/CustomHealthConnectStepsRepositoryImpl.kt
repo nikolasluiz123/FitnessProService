@@ -58,9 +58,8 @@ class CustomHealthConnectStepsRepositoryImpl : ICustomHealthConnectStepsReposito
             }
 
             filter.lastUpdateDateMap[HealthConnectSteps::class.simpleName!!]?.let {
-                add(" and (steps.updateDate > :pLastUpdateDate OR (steps.updateDate = :pLastUpdateDate AND steps.id > :pCursorId)) ")
+                add(" and steps.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectSteps::class.simpleName!!] ?: ""))
             }
         }
 

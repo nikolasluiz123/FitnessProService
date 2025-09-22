@@ -44,9 +44,8 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
             params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
             filter.lastUpdateDateMap[Person::class.simpleName!!]?.let {
-                add(" and (p.updateDate > :pLastUpdateDate OR (p.updateDate = :pLastUpdateDate AND p.id > :pCursorId)) ")
+                add(" and p.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Person::class.simpleName!!] ?: ""))
             }
         }
 
@@ -87,9 +86,8 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
             params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
             filter.lastUpdateDateMap[User::class.simpleName!!]?.let {
-                add(" and (u.updateDate > :pLastUpdateDate OR (u.updateDate = :pLastUpdateDate AND u.id > :pCursorId)) ")
+                add(" and u.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[User::class.simpleName!!] ?: ""))
             }
         }
 

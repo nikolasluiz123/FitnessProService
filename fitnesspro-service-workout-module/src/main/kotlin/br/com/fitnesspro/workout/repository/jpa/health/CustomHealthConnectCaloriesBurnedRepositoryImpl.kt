@@ -58,9 +58,8 @@ class CustomHealthConnectCaloriesBurnedRepositoryImpl : ICustomHealthConnectCalo
             }
 
             filter.lastUpdateDateMap[HealthConnectCaloriesBurned::class.simpleName!!]?.let {
-                add(" and (calories.updateDate > :pLastUpdateDate OR (calories.updateDate = :pLastUpdateDate AND calories.id > :pCursorId)) ")
+                add(" and calories.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectCaloriesBurned::class.simpleName!!] ?: ""))
             }
         }
 

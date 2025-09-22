@@ -38,9 +38,8 @@ class CustomWorkoutGroupPreDefinitionRepositoryImpl: ICustomWorkoutGroupPreDefin
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[WorkoutGroupPreDefinition::class.simpleName!!]?.let {
-                add(" and (group.updateDate > :pLastUpdateDate OR (group.updateDate = :pLastUpdateDate AND group.id > :pCursorId)) ")
+                add(" and group.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[WorkoutGroupPreDefinition::class.simpleName!!] ?: ""))
             }
         }
 

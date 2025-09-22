@@ -43,9 +43,8 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
             }
 
             filter.lastUpdateDateMap[SchedulerConfig::class.simpleName!!]?.let {
-                add(" and (config.updateDate > :pLastUpdateDate OR (config.updateDate = :pLastUpdateDate AND config.id > :pCursorId)) ")
+                add(" and config.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[SchedulerConfig::class.simpleName!!] ?: ""))
             }
         }
 

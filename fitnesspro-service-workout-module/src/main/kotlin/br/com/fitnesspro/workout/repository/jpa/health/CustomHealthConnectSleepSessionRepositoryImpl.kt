@@ -58,9 +58,8 @@ class CustomHealthConnectSleepSessionRepositoryImpl : ICustomHealthConnectSleepS
             }
 
             filter.lastUpdateDateMap[HealthConnectSleepSession::class.simpleName!!]?.let {
-                add(" and (session.updateDate > :pLastUpdateDate OR (session.updateDate = :pLastUpdateDate AND session.id > :pCursorId)) ")
+                add(" and session.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectSleepSession::class.simpleName!!] ?: ""))
             }
         }
 

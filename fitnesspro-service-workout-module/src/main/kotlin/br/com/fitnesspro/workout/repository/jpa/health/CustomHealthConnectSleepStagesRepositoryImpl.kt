@@ -58,9 +58,8 @@ class CustomHealthConnectSleepStagesRepositoryImpl : ICustomHealthConnectSleepSt
             params.add(Parameter(name = "pSleepSessionIds", value = sleepSessionIds))
 
             filter.lastUpdateDateMap[HealthConnectSleepStages::class.simpleName!!]?.let {
-                add(" and (stage.updateDate > :pLastUpdateDate OR (stage.updateDate = :pLastUpdateDate AND stage.id > :pCursorId)) ")
+                add(" and stage.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectSleepStages::class.simpleName!!] ?: ""))
             }
         }
 

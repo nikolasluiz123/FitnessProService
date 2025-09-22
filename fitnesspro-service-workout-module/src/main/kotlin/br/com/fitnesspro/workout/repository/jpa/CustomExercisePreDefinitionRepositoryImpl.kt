@@ -35,9 +35,8 @@ class CustomExercisePreDefinitionRepositoryImpl: ICustomExercisePreDefinitionRep
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[ExercisePreDefinition::class.simpleName!!]?.let {
-                add(" and (exercisePreDefinition.updateDate > :pLastUpdateDate OR (exercisePreDefinition.updateDate = :pLastUpdateDate AND exercisePreDefinition.id > :pCursorId)) ")
+                add(" and exercisePreDefinition.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[ExercisePreDefinition::class.simpleName!!] ?: ""))
             }
         }
 

@@ -72,9 +72,8 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[Video::class.simpleName!!]?.let {
-                add(" and (video.updateDate > :pLastUpdateDate OR (video.updateDate = :pLastUpdateDate AND video.id > :pCursorId)) ")
+                add(" and video.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Video::class.simpleName!!] ?: ""))
             }
         }
 

@@ -52,9 +52,8 @@ class CustomHealthConnectHeartRateSamplesRepositoryImpl : ICustomHealthConnectHe
             params.add(Parameter(name = "pHeartRateSessionIds", value = heartRateSessionIds))
 
             filter.lastUpdateDateMap[HealthConnectHeartRateSamples::class.simpleName!!]?.let {
-                add(" and (sample.updateDate > :pLastUpdateDate OR (sample.updateDate = :pLastUpdateDate AND sample.id > :pCursorId)) ")
+                add(" and sample.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[HealthConnectHeartRateSamples::class.simpleName!!] ?: ""))
             }
         }
 

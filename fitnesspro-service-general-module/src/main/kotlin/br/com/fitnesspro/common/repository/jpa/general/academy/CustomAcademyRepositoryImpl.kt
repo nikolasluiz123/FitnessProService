@@ -76,9 +76,8 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDateMap[Academy::class.simpleName!!]?.let {
-                add(" and (a.updateDate > :pLastUpdateDate OR (a.updateDate = :pLastUpdateDate AND a.id > :pCursorId)) ")
+                add(" and a.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Academy::class.simpleName!!] ?: ""))
             }
         }
 

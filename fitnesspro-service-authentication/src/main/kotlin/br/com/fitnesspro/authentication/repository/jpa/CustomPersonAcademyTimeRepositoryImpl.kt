@@ -101,9 +101,8 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
             }
 
             filter.lastUpdateDateMap[PersonAcademyTime::class.simpleName!!]?.let {
-                add(" and (pat.updateDate > :pLastUpdateDate OR (pat.updateDate = :pLastUpdateDate AND pat.id > :pCursorId)) ")
+                add(" and pat.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[PersonAcademyTime::class.simpleName!!] ?: ""))
             }
         }
 

@@ -43,9 +43,8 @@ class CustomReportRepositoryImpl: ICustomReportRepository {
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[Report::class.simpleName!!]?.let {
-                add(" and (report.updateDate > :pLastUpdateDate OR (report.updateDate = :pLastUpdateDate AND report.id > :pCursorId)) ")
+                add(" and report.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[Report::class.simpleName!!] ?: ""))
             }
         }
 

@@ -44,9 +44,8 @@ class CustomExerciseExecutionRepositoryImpl: ICustomExerciseExecutionRepository 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[ExerciseExecution::class.simpleName!!]?.let {
-                add(" and (execution.updateDate > :pLastUpdateDate OR (execution.updateDate = :pLastUpdateDate AND execution.id > :pCursorId)) ")
+                add(" and execution.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[ExerciseExecution::class.simpleName!!] ?: ""))
             }
         }
 

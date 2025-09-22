@@ -46,9 +46,8 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
             }
 
             filter.lastUpdateDateMap[SchedulerReport::class.simpleName!!]?.let {
-                add(" and (sr.updateDate > :pLastUpdateDate OR (sr.updateDate = :pLastUpdateDate AND sr.id > :pCursorId)) ")
+                add(" and sr.updateDate >= :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
-                params.add(Parameter(name = "pCursorId", value = pageInfos.cursorIdMap[SchedulerReport::class.simpleName!!] ?: ""))
             }
         }
 

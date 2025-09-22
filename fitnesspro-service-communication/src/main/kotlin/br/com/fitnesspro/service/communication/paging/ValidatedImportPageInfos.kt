@@ -10,7 +10,4 @@ data class ValidatedImportPageInfos(
     @field:Min(value = 1, message = "O tamanho da página deve ser no mínimo 1")
     @field:Max(value = 1000, message = "O tamanho da página deve ser no máximo 1000")
     override val pageSize: Int = 200,
-
-    @field:Schema(description = "Map de cursor de página por classe", example = "0", required = false)
-    override var cursorIdMap: Map<String, String?>
 ): SyncPageInfos
