@@ -6,11 +6,12 @@ import br.com.fitnesspro.authentication.repository.jpa.ICustomPersonRepository
 import br.com.fitnesspro.authentication.repository.jpa.ICustomUserRepository
 import br.com.fitnesspro.authentication.service.mappers.PersonServiceMapper
 import br.com.fitnesspro.authentication.service.mappers.UserServiceMapper
+import br.com.fitnesspro.core.cache.PERSON_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.exceptions.BusinessException
 import br.com.fitnesspro.models.general.Person
 import br.com.fitnesspro.models.general.User
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonDTO
-import br.com.fitnesspro.service.communication.dtos.general.ValidatedUserDTO
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerConfigDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IPersonDTO
 import br.com.fitnesspro.shared.communication.helper.HashHelper
@@ -18,6 +19,8 @@ import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.PersonFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 import java.util.*
@@ -36,6 +39,7 @@ class PersonService(
     private val messageSource: MessageSource
 ) {
 
+    @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME], allEntries = true)
     fun savePerson(personDTO: ValidatedPersonDTO) {
         val person = personServiceMapper.getPerson(personDTO)
         preparePersonSave(personDTO, person)
@@ -85,6 +89,7 @@ class PersonService(
         }
     }
 
+    @CacheEvict(cacheNames = [PERSON_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonBatch(list: List<IPersonDTO>) {
         val persons = list.map { personDTO ->
             val person = personServiceMapper.getPerson(personDTO)
@@ -111,12 +116,10 @@ class PersonService(
         personRepository.saveAll(persons)
     }
 
+    @Cacheable(cacheNames = [PERSON_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "Person")
     fun getPersonsImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedPersonDTO> {
         return customPersonRepository.getPersonsImport(filter, pageInfos).map(personServiceMapper::getPersonDTO)
-    }
-
-    fun getUsersImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedUserDTO> {
-        return customPersonRepository.getUsersImport(filter, pageInfos).map(userServiceMapper::getUserDTO)
     }
 
     fun getListPersons(filter: PersonFilter, pageInfos: CommonPageInfos): List<ValidatedPersonDTO> {

@@ -5,6 +5,9 @@ import br.com.fitnesspro.common.repository.auditable.general.IAcademyRepository
 import br.com.fitnesspro.common.repository.auditable.general.IPersonAcademyTimeRepository
 import br.com.fitnesspro.common.repository.jpa.general.academy.ICustomAcademyRepository
 import br.com.fitnesspro.common.service.mappers.AcademyServiceMapper
+import br.com.fitnesspro.core.cache.ACADEMY_IMPORT_CACHE_NAME
+import br.com.fitnesspro.core.cache.PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedAcademyDTO
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedPersonAcademyTimeDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IAcademyDTO
@@ -13,6 +16,8 @@ import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.AcademyFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.CommonImportFilter
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,6 +28,8 @@ class AcademyService(
     private val customAcademyRepository: ICustomAcademyRepository,
     private val academyServiceMapper: AcademyServiceMapper,
 ) {
+
+    @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademy(validatedAcademyDTO: ValidatedAcademyDTO) {
         val academy = academyServiceMapper.getAcademy(validatedAcademyDTO)
         academyRepository.save(academy)
@@ -30,16 +37,20 @@ class AcademyService(
         validatedAcademyDTO.id = academy.id
     }
 
+    @CacheEvict(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], allEntries = true)
     fun saveAcademyBatch(list: List<IAcademyDTO>) {
         val academyList = list.map(academyServiceMapper::getAcademy)
         academyRepository.saveAll(academyList)
     }
 
+    @CacheEvict(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], allEntries = true)
     fun savePersonAcademyTimeBatch(list: List<IPersonAcademyTimeDTO>) {
         val personAcademyTimeList = list.map(academyServiceMapper::getPersonAcademyTime)
         personAcademyTimeRepository.saveAll(personAcademyTimeList)
     }
 
+    @Cacheable(cacheNames = [PERSON_ACADEMY_TIME_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "PersonAcademyTime")
     fun getPersonAcademyTimesImport(
         filter: CommonImportFilter,
         pageInfos: ImportPageInfos,
@@ -50,6 +61,8 @@ class AcademyService(
             .map(academyServiceMapper::getValidatedPersonAcademyTimeDTO)
     }
 
+    @Cacheable(cacheNames = [ACADEMY_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "Academy")
     fun getAcademiesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedAcademyDTO> {
         return customAcademyRepository.getAcademiesImport(filter, pageInfos).map(academyServiceMapper::getValidatedAcademyDTO)
     }

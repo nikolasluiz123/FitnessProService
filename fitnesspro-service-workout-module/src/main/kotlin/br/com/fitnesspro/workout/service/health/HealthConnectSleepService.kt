@@ -3,6 +3,7 @@ package br.com.fitnesspro.workout.service.health
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_SLEEP_SESSION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_SLEEP_STAGES_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.SLEEP_SESSION_EXERCISE_EXECUTION_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectSleepSessionDTO
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectSleepStagesDTO
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedSleepSessionExerciseExecutionDTO
@@ -33,6 +34,8 @@ class HealthConnectSleepService(
     private val mapper: HealthConnectServiceMapper
 ) {
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_SLEEP_SESSION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectSleepSession")
     fun getSleepSessionImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -41,10 +44,13 @@ class HealthConnectSleepService(
         return customSleepSessionRepository.getHealthConnectSleepSessionImport(filter, pageInfos, metadataIds).map(mapper::getHealthConnectSleepSessionDTO)
     }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_SLEEP_SESSION_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSleepSessionBatch(dtos: List<IHealthConnectSleepSessionDTO>) {
         sleepSessionRepository.saveAll(dtos.map(mapper::getHealthConnectSleepSession))
     }
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_SLEEP_STAGES_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectSleepStages")
     fun getSleepStagesImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -53,10 +59,13 @@ class HealthConnectSleepService(
         return customSleepStagesRepository.getHealthConnectSleepStagesImport(filter, pageInfos, sleepSessionIds).map(mapper::getHealthConnectSleepStagesDTO)
     }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_SLEEP_STAGES_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSleepStagesBatch(dtos: List<IHealthConnectSleepStagesDTO>) {
         sleepStagesRepository.saveAll(dtos.map(mapper::getHealthConnectSleepStages))
     }
 
+    @Cacheable(cacheNames = [SLEEP_SESSION_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "SleepSessionExerciseExecution")
     fun getSleepSessionAssociationImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -66,6 +75,7 @@ class HealthConnectSleepService(
         return customAssociationRepository.getSleepSessionExerciseExecutionImport(filter, pageInfos, sleepSessionIds, exerciseExecutionIds).map(mapper::getSleepSessionExerciseExecutionDTO)
     }
 
+    @CacheEvict(cacheNames = [SLEEP_SESSION_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSleepSessionAssociationBatch(dtos: List<ISleepSessionExerciseExecutionDTO>) {
         associationRepository.saveAll(dtos.map(mapper::getSleepSessionExerciseExecution))
     }

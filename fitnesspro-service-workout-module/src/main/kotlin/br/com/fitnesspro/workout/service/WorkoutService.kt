@@ -3,6 +3,7 @@ package br.com.fitnesspro.workout.service
 import br.com.fitnesspro.core.cache.WORKOUT_GROUP_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.WORKOUT_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupDTO
 import br.com.fitnesspro.service.communication.dtos.workout.ValidatedWorkoutGroupPreDefinitionDTO
@@ -33,26 +34,35 @@ class WorkoutService(
     private val workoutServiceMapper: WorkoutServiceMapper
 ) {
 
+    @CacheEvict(cacheNames = [WORKOUT_IMPORT_CACHE_NAME], allEntries = true)
     fun saveWorkoutBatch(workouts: List<IWorkoutDTO>) {
         workoutRepository.saveAll(workouts.map(workoutServiceMapper::getWorkout))
     }
 
+    @CacheEvict(cacheNames = [WORKOUT_GROUP_IMPORT_CACHE_NAME], allEntries = true)
     fun saveWorkoutGroupBatch(workoutGroups: List<IWorkoutGroupDTO>) {
         workoutGroupRepository.saveAll(workoutGroups.map(workoutServiceMapper::getWorkoutGroup))
     }
 
+    @Cacheable(cacheNames = [WORKOUT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "Workout")
     fun getWorkoutsImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedWorkoutDTO> {
         return customWorkoutRepository.getWorkoutsImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutDTO)
     }
 
+    @Cacheable(cacheNames = [WORKOUT_GROUP_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "WorkoutGroup")
     fun getWorkoutGroupsImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedWorkoutGroupDTO> {
         return customWorkoutGroupRepository.getWorkoutGroupsImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutGroupDTO)
     }
 
+    @CacheEvict(cacheNames = [WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME], allEntries = true)
     fun saveWorkoutGroupPreDefinitionBatch(workoutGroups: List<IWorkoutGroupPreDefinitionDTO>) {
         workoutGroupPreDefinitionRepository.saveAll(workoutGroups.map(workoutServiceMapper::getWorkoutGroupPreDefinition))
     }
 
+    @Cacheable(cacheNames = [WORKOUT_GROUP_PRE_DEFINITION_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "WorkoutGroupPreDefinition")
     fun getWorkoutGroupsPreDefinitionImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedWorkoutGroupPreDefinitionDTO> {
         return customWorkoutGroupPreDefinitionRepository.getWorkoutGroupsPreDefinitionImport(filter, pageInfos).map(workoutServiceMapper::getWorkoutGroupPreDefinitionDTO)
     }

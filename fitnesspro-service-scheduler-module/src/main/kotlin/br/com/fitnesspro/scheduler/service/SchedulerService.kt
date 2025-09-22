@@ -16,6 +16,7 @@ import br.com.fitnesspro.models.scheduler.Scheduler
 import br.com.fitnesspro.scheduler.repository.auditable.ISchedulerRepository
 import br.com.fitnesspro.scheduler.repository.jpa.ICustomSchedulerRepository
 import br.com.fitnesspro.scheduler.service.mappers.SchedulerServiceMapper
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedRecurrentSchedulerDTO
 import br.com.fitnesspro.service.communication.dtos.scheduler.ValidatedSchedulerDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduler.interfaces.ISchedulerDTO
@@ -52,6 +53,8 @@ class SchedulerService(
     private val workoutServiceMapper: WorkoutServiceMapper,
     private val messageSource: MessageSource
 ) {
+
+    @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveScheduler(schedulerDTO: ValidatedSchedulerDTO) {
         validateScheduler(schedulerDTO)
 
@@ -75,6 +78,7 @@ class SchedulerService(
         }
     }
 
+    @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveRecurrentScheduler(recurrentSchedulerDTO: ValidatedRecurrentSchedulerDTO) {
         val schedules = recurrentSchedulerDTO.schedules.map(schedulerServiceMapper::getScheduler)
         validateConflictRecurrent(schedules)
@@ -435,6 +439,7 @@ class SchedulerService(
         }
     }
 
+    @CacheEvict(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerBatch(list: List<ISchedulerDTO>) {
         if (list.any { it.type == EnumSchedulerType.RECURRENT }) {
             throw BusinessException(
@@ -454,6 +459,8 @@ class SchedulerService(
         schedulerRepository.saveAll(schedules)
     }
 
+    @Cacheable(cacheNames = [SCHEDULER_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "Scheduler")
     fun getSchedulesImport(filter: CommonImportFilter, pageInfos: ImportPageInfos): List<ValidatedSchedulerDTO> {
         return customSchedulerRepository.getSchedulesImport(filter, pageInfos).map(schedulerServiceMapper::getSchedulerDTO)
     }

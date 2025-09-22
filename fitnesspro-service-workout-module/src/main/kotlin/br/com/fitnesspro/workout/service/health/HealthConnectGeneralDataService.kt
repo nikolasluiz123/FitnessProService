@@ -3,6 +3,7 @@ package br.com.fitnesspro.workout.service.health
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectCaloriesBurnedDTO
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectMetadataDTO
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectStepsDTO
@@ -33,14 +34,19 @@ class HealthConnectGeneralDataService(
     private val mapper: HealthConnectServiceMapper
 ) {
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectMetadata")
     fun getMetadataImport(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): List<ValidatedHealthConnectMetadataDTO> {
         return customMetadataRepository.getHealthConnectMetadataImport(filter, pageInfos).map(mapper::getHealthConnectMetadataDTO)
     }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_METADATA_IMPORT_CACHE_NAME], allEntries = true)
     fun saveMetadataBatch(dtos: List<IHealthConnectMetadataDTO>) {
         metadataRepository.saveAll(dtos.map(mapper::getHealthConnectMetadata))
     }
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectSteps")
     fun getStepsImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -49,10 +55,13 @@ class HealthConnectGeneralDataService(
     ): List<ValidatedHealthConnectStepsDTO> {
         return customStepsRepository.getHealthConnectStepsImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectStepsDTO)    }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_STEPS_IMPORT_CACHE_NAME], allEntries = true)
     fun saveStepsBatch(dtos: List<IHealthConnectStepsDTO>) {
         stepsRepository.saveAll(dtos.map(mapper::getHealthConnectSteps))
     }
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectCaloriesBurned")
     fun getCaloriesImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -62,6 +71,7 @@ class HealthConnectGeneralDataService(
         return customCaloriesBurnedRepository.getHealthConnectCaloriesBurnedImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectCaloriesBurnedDTO)
     }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_CALORIES_BURNED_IMPORT_CACHE_NAME], allEntries = true)
     fun saveCaloriesBatch(dtos: List<IHealthConnectCaloriesBurnedDTO>) {
         caloriesBurnedRepository.saveAll(dtos.map(mapper::getHealthConnectCaloriesBurned))
     }

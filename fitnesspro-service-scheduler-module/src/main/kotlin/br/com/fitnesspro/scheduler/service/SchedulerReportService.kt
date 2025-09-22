@@ -4,6 +4,7 @@ import br.com.fitnesspro.core.cache.SCHEDULER_REPORT_IMPORT_CACHE_NAME
 import br.com.fitnesspro.scheduler.repository.auditable.ISchedulerReportRepository
 import br.com.fitnesspro.scheduler.repository.jpa.ICustomSchedulerReportRepository
 import br.com.fitnesspro.scheduler.service.mappers.SchedulerReportServiceMapper
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.general.ValidatedSchedulerReportDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.ISchedulerReportDTO
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
@@ -18,6 +19,8 @@ class SchedulerReportService(
     private val customSchedulerReportRepository: ICustomSchedulerReportRepository,
     private val schedulerReportServiceMapper: SchedulerReportServiceMapper,
 ) {
+
+    @CacheEvict(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], allEntries = true)
     fun saveSchedulerReportBatch(list: List<ISchedulerReportDTO>) {
         val schedulerReports = list.map {
             schedulerReportServiceMapper.getSchedulerReport(it)
@@ -26,6 +29,8 @@ class SchedulerReportService(
         schedulerReportRepository.saveAll(schedulerReports)
     }
 
+    @Cacheable(cacheNames = [SCHEDULER_REPORT_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "SchedulerReport")
     fun getSchedulerReportsImport(
         filter: SchedulerReportImportFilter,
         pageInfos: ImportPageInfos,

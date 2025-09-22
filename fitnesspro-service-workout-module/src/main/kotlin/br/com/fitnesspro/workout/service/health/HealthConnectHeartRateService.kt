@@ -2,6 +2,7 @@ package br.com.fitnesspro.workout.service.health
 
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_HEART_RATE_IMPORT_CACHE_NAME
 import br.com.fitnesspro.core.cache.HEALTH_CONNECT_HEART_RATE_SAMPLES_IMPORT_CACHE_NAME
+import br.com.fitnesspro.service.communication.cache.ImportationEntity
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectHeartRateDTO
 import br.com.fitnesspro.service.communication.dtos.workout.health.ValidatedHealthConnectHeartRateSamplesDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.IHealthConnectHeartRateDTO
@@ -26,6 +27,8 @@ class HealthConnectHeartRateService(
     private val mapper: HealthConnectServiceMapper
 ) {
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_HEART_RATE_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectHeartRate")
     fun getHeartRateImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -35,10 +38,13 @@ class HealthConnectHeartRateService(
         return customHeartRateRepository.getHealthConnectHeartRateImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectHeartRateDTO)
     }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_HEART_RATE_IMPORT_CACHE_NAME], allEntries = true)
     fun saveHeartRateBatch(dtos: List<IHealthConnectHeartRateDTO>) {
         heartRateRepository.saveAll(dtos.map(mapper::getHealthConnectHeartRate))
     }
 
+    @Cacheable(cacheNames = [HEALTH_CONNECT_HEART_RATE_SAMPLES_IMPORT_CACHE_NAME], keyGenerator = "importationKeyGenerator")
+    @ImportationEntity(entitySimpleName = "HealthConnectHeartRateSamples")
     fun getHeartRateSamplesImport(
         filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos,
@@ -47,6 +53,7 @@ class HealthConnectHeartRateService(
         return customSamplesRepository.getHealthConnectHeartRateSamplesImport(filter, pageInfos, heartRateSessionIds).map(mapper::getHealthConnectHeartRateSamplesDTO)
     }
 
+    @CacheEvict(cacheNames = [HEALTH_CONNECT_HEART_RATE_SAMPLES_IMPORT_CACHE_NAME], allEntries = true)
     fun saveHeartRateSamplesBatch(dtos: List<IHealthConnectHeartRateSamplesDTO>) {
         samplesRepository.saveAll(dtos.map(mapper::getHealthConnectHeartRateSamples))
     }
