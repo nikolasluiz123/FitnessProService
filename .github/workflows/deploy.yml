@@ -83,7 +83,7 @@ jobs:
 
       - name: Copy JAR to Docker context
         run: |
-          cp docker-build/*-SNAPSHOT.jar docker/app.jar # Copia e renomeia o JAR
+          cp docker-build/*.jar docker/app.jar # Copia e renomeia o JAR
 
       - name: Build Docker image
         run: docker build -t nikolasluiz123/fitnesspro-service:latest docker
