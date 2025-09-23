@@ -50,7 +50,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by p.updateDate asc, p.id asc ")
+            add(" order by p.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -92,7 +92,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by u.updateDate asc, u.id asc ")
+            add(" order by u.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

@@ -50,7 +50,7 @@ class CustomVideoExerciseRepositoryImpl: ICustomVideoExerciseRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by videoExercise.updateDate asc, videoExercise.id asc ")
+            add(" order by videoExercise.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

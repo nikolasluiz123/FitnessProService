@@ -52,7 +52,7 @@ class CustomHealthConnectStepsRepositoryImpl : ICustomHealthConnectStepsReposito
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by steps.updateDate asc, steps.id asc ")
+            add(" order by steps.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

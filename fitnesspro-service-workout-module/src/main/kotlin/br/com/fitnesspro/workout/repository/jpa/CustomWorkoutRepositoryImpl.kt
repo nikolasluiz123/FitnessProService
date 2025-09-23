@@ -47,7 +47,7 @@ class CustomWorkoutRepositoryImpl: ICustomWorkoutRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by workout.updateDate asc, workout.id asc ")
+            add(" order by workout.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

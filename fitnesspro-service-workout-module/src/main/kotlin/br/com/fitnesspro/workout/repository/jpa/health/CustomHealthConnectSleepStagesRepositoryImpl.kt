@@ -58,7 +58,7 @@ class CustomHealthConnectSleepStagesRepositoryImpl : ICustomHealthConnectSleepSt
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by stage.updateDate asc, stage.id asc ")
+            add(" order by stage.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

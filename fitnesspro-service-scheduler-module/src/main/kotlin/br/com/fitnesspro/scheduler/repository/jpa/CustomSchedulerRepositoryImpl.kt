@@ -117,7 +117,7 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by scheduler.updateDate asc, scheduler.id asc ")
+            add(" order by scheduler.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

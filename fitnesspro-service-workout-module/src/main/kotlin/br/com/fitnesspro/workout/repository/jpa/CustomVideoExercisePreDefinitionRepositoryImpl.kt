@@ -45,7 +45,7 @@ class CustomVideoExercisePreDefinitionRepositoryImpl: ICustomVideoExercisePreDef
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by videoPreDefinition.updateDate asc, videoPreDefinition.id asc ")
+            add(" order by videoPreDefinition.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

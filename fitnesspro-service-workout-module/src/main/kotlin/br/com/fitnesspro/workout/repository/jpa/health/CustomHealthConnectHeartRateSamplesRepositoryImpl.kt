@@ -52,7 +52,7 @@ class CustomHealthConnectHeartRateSamplesRepositoryImpl : ICustomHealthConnectHe
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by sample.updateDate asc, sample.id asc ")
+            add(" order by sample.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

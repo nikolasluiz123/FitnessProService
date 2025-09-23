@@ -78,7 +78,7 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by video.updateDate asc, video.id asc ")
+            add(" order by video.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

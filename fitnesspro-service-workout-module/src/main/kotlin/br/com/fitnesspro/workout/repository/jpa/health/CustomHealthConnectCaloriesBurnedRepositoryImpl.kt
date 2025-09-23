@@ -52,7 +52,7 @@ class CustomHealthConnectCaloriesBurnedRepositoryImpl : ICustomHealthConnectCalo
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by calories.updateDate asc, calories.id asc ")
+            add(" order by calories.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

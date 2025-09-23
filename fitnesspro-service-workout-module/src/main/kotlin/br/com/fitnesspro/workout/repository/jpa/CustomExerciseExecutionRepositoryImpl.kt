@@ -50,7 +50,7 @@ class CustomExerciseExecutionRepositoryImpl: ICustomExerciseExecutionRepository 
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by execution.updateDate asc, execution.id asc ")
+            add(" order by execution.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

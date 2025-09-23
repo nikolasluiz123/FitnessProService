@@ -43,7 +43,7 @@ class CustomSchedulerConfigRepositoryImpl: ICustomSchedulerConfigRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by config.updateDate asc, config.id asc ")
+            add(" order by config.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

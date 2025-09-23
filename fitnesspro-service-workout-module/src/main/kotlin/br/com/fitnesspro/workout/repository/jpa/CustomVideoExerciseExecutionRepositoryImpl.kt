@@ -51,7 +51,7 @@ class CustomVideoExerciseExecutionRepositoryImpl: ICustomVideoExerciseExecutionR
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by videoExecution.updateDate asc, videoExecution.id asc ")
+            add(" order by videoExecution.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

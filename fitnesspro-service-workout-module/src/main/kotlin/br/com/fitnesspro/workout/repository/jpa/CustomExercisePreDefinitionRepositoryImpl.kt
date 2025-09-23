@@ -41,7 +41,7 @@ class CustomExercisePreDefinitionRepositoryImpl: ICustomExercisePreDefinitionRep
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by exercisePreDefinition.updateDate asc, exercisePreDefinition.id asc ")
+            add(" order by exercisePreDefinition.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

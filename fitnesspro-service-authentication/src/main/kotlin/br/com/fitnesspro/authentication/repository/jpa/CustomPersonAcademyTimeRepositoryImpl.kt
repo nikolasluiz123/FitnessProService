@@ -99,7 +99,7 @@ class CustomPersonAcademyTimeRepositoryImpl: ICustomPersonAcademyTimeRepository 
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by pat.updateDate asc, pat.id asc ")
+            add(" order by pat.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

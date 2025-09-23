@@ -58,7 +58,7 @@ class CustomHealthConnectSleepSessionRepositoryImpl : ICustomHealthConnectSleepS
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by session.updateDate asc, session.id asc ")
+            add(" order by session.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

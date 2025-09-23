@@ -49,7 +49,7 @@ class CustomReportRepositoryImpl: ICustomReportRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by report.updateDate asc, report.id asc ")
+            add(" order by report.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

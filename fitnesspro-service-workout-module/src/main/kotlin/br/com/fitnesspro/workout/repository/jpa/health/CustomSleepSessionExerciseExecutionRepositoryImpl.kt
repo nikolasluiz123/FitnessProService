@@ -52,7 +52,7 @@ class CustomSleepSessionExerciseExecutionRepositoryImpl : ICustomSleepSessionExe
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by assoc.updateDate asc, assoc.id asc ")
+            add(" order by assoc.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

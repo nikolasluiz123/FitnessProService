@@ -82,7 +82,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by a.updateDate asc, a.id asc ")
+            add(" order by a.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
