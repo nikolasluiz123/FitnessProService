@@ -1,6 +1,6 @@
 package br.com.fitnesspro.service.communication.cache
 
-import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_SQLITE
+import br.com.fitnesspro.core.enums.EnumDateTimePatterns.DATE_TIME_CACHE_KEY
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.core.extensions.format
 import br.com.fitnesspro.shared.communication.paging.PageInfos
@@ -69,7 +69,7 @@ class ImportationCacheKeyGenerator : KeyGenerator {
 
         val entitySimpleName = importationEntityAnnotation.entitySimpleName
         val lastUpdateDate = filter.lastUpdateDateMap[entitySimpleName]
-        val dateKey = lastUpdateDate?.format(DATE_TIME_SQLITE) ?: dateTimeNow().format(DATE_TIME_SQLITE)
+        val dateKey = lastUpdateDate?.format(DATE_TIME_CACHE_KEY) ?: dateTimeNow().format(DATE_TIME_CACHE_KEY)
 
         return String.format(KEY_DATE, dateKey)
     }

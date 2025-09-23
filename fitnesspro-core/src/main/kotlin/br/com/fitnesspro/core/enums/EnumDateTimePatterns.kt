@@ -12,4 +12,5 @@ enum class EnumDateTimePatterns(val pattern: String) {
     DATE_TIME_SQLITE("yyyy-MM-dd HH:mm"),
     DATE_TIME_FILE_NAME("dd_MM_yyyy_HHmmss"),
     MONTH_YEAR("MMMM 'de' yyyy"),
+    DATE_TIME_CACHE_KEY("dd_MM_yyyy_HHmmss_SSSS")
 }
