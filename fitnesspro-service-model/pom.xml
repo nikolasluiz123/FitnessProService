@@ -5,7 +5,7 @@
     <parent>
         <groupId>br.com</groupId>
         <artifactId>fitnesspro</artifactId>
-        <version>2.1.X-SNAPSHOT</version>
+        <version>2.1.0</version>
     </parent>
 
     <artifactId>fitnesspro-service-model</artifactId>
