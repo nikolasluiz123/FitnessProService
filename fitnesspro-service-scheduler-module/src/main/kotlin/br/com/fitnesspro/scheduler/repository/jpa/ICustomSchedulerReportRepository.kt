@@ -9,8 +9,7 @@ interface ICustomSchedulerReportRepository {
 
     fun getSchedulerReportsImport(
         filter: SchedulerReportImportFilter,
-        pageInfos: ImportPageInfos,
-        reportIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<SchedulerReport>
 
     fun getReportIdsFromSchedulerDelete(context: EnumReportContext, personId: String): List<String>

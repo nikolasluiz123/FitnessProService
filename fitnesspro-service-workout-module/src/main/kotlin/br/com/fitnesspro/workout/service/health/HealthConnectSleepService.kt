@@ -38,10 +38,9 @@ class HealthConnectSleepService(
     @ImportationEntity(entitySimpleName = "HealthConnectSleepSession")
     fun getSleepSessionImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedHealthConnectSleepSessionDTO> {
-        return customSleepSessionRepository.getHealthConnectSleepSessionImport(filter, pageInfos, metadataIds).map(mapper::getHealthConnectSleepSessionDTO)
+        return customSleepSessionRepository.getHealthConnectSleepSessionImport(filter, pageInfos).map(mapper::getHealthConnectSleepSessionDTO)
     }
 
     @CacheEvict(cacheNames = [HEALTH_CONNECT_SLEEP_SESSION_IMPORT_CACHE_NAME], allEntries = true)
@@ -53,10 +52,9 @@ class HealthConnectSleepService(
     @ImportationEntity(entitySimpleName = "HealthConnectSleepStages")
     fun getSleepStagesImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        sleepSessionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedHealthConnectSleepStagesDTO> {
-        return customSleepStagesRepository.getHealthConnectSleepStagesImport(filter, pageInfos, sleepSessionIds).map(mapper::getHealthConnectSleepStagesDTO)
+        return customSleepStagesRepository.getHealthConnectSleepStagesImport(filter, pageInfos).map(mapper::getHealthConnectSleepStagesDTO)
     }
 
     @CacheEvict(cacheNames = [HEALTH_CONNECT_SLEEP_STAGES_IMPORT_CACHE_NAME], allEntries = true)
@@ -68,11 +66,9 @@ class HealthConnectSleepService(
     @ImportationEntity(entitySimpleName = "SleepSessionExerciseExecution")
     fun getSleepSessionAssociationImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        sleepSessionIds: List<String>,
-        exerciseExecutionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedSleepSessionExerciseExecutionDTO> {
-        return customAssociationRepository.getSleepSessionExerciseExecutionImport(filter, pageInfos, sleepSessionIds, exerciseExecutionIds).map(mapper::getSleepSessionExerciseExecutionDTO)
+        return customAssociationRepository.getSleepSessionExerciseExecutionImport(filter, pageInfos).map(mapper::getSleepSessionExerciseExecutionDTO)
     }
 
     @CacheEvict(cacheNames = [SLEEP_SESSION_EXERCISE_EXECUTION_IMPORT_CACHE_NAME], allEntries = true)

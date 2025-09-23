@@ -20,11 +20,8 @@ class CustomHealthConnectHeartRateSamplesRepositoryImpl : ICustomHealthConnectHe
 
     override fun getHealthConnectHeartRateSamplesImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        heartRateSessionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectHeartRateSamples> {
-        if (heartRateSessionIds.isEmpty()) return emptyList()
-
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -48,11 +45,8 @@ class CustomHealthConnectHeartRateSamplesRepositoryImpl : ICustomHealthConnectHe
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            add(" and hr.id in (:pHeartRateSessionIds) ")
-            params.add(Parameter(name = "pHeartRateSessionIds", value = heartRateSessionIds))
-
             filter.lastUpdateDateMap[HealthConnectHeartRateSamples::class.simpleName!!]?.let {
-                add(" and sample.updateDate >= :pLastUpdateDate ")
+                add(" and sample.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

@@ -21,8 +21,7 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
 
     override fun getSchedulerReportsImport(
         filter: SchedulerReportImportFilter,
-        pageInfos: ImportPageInfos,
-        reportIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<SchedulerReport> {
         val params = mutableListOf<Parameter>()
 
@@ -40,13 +39,8 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            if (reportIds.isNotEmpty()) {
-                add(" and report.id in (:pReportIds) ")
-                params.add(Parameter(name = "pReportIds", value = reportIds))
-            }
-
             filter.lastUpdateDateMap[SchedulerReport::class.simpleName!!]?.let {
-                add(" and sr.updateDate >= :pLastUpdateDate ")
+                add(" and sr.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

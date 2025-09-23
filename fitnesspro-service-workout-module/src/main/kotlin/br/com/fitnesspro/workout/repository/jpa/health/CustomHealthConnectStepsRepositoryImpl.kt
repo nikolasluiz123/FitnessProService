@@ -20,9 +20,7 @@ class CustomHealthConnectStepsRepositoryImpl : ICustomHealthConnectStepsReposito
 
     override fun getHealthConnectStepsImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        exerciseExecutionIds: List<String>,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectSteps> {
         val params = mutableListOf<Parameter>()
 
@@ -47,18 +45,8 @@ class CustomHealthConnectStepsRepositoryImpl : ICustomHealthConnectStepsReposito
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            if (exerciseExecutionIds.isNotEmpty()) {
-                add(" and execution.id in (:pExerciseExecutionIds) ")
-                params.add(Parameter(name = "pExerciseExecutionIds", value = exerciseExecutionIds))
-            }
-
-            if (metadataIds.isNotEmpty()) {
-                add(" and meta.id in (:pMetadataIds) ")
-                params.add(Parameter(name = "pMetadataIds", value = metadataIds))
-            }
-
             filter.lastUpdateDateMap[HealthConnectSteps::class.simpleName!!]?.let {
-                add(" and steps.updateDate >= :pLastUpdateDate ")
+                add(" and steps.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

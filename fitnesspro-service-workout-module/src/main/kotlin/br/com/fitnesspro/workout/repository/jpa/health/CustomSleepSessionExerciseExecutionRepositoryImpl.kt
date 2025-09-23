@@ -20,12 +20,8 @@ class CustomSleepSessionExerciseExecutionRepositoryImpl : ICustomSleepSessionExe
 
     override fun getSleepSessionExerciseExecutionImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        sleepSessionIds: List<String>,
-        exerciseExecutionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<SleepSessionExerciseExecution> {
-        if (sleepSessionIds.isEmpty()) return emptyList()
-
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -49,18 +45,8 @@ class CustomSleepSessionExerciseExecutionRepositoryImpl : ICustomSleepSessionExe
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            if (sleepSessionIds.isNotEmpty()) {
-                add(" and session.id in (:pSleepSessionIds) ")
-                params.add(Parameter(name = "pSleepSessionIds", value = sleepSessionIds))
-            }
-
-            if (exerciseExecutionIds.isNotEmpty()) {
-                add(" and execution.id in (:pExerciseExecutionIds) ")
-                params.add(Parameter(name = "pExerciseExecutionIds", value = exerciseExecutionIds))
-            }
-
             filter.lastUpdateDateMap[SleepSessionExerciseExecution::class.simpleName!!]?.let {
-                add(" and assoc.updateDate >= :pLastUpdateDate ")
+                add(" and assoc.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

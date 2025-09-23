@@ -76,7 +76,7 @@ class CustomAcademyRepositoryImpl: ICustomAcademyRepository {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDateMap[Academy::class.simpleName!!]?.let {
-                add(" and a.updateDate >= :pLastUpdateDate ")
+                add(" and a.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

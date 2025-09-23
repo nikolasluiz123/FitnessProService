@@ -8,8 +8,6 @@ interface ICustomHealthConnectCaloriesBurnedRepository {
 
     fun getHealthConnectCaloriesBurnedImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        exerciseExecutionIds: List<String>,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectCaloriesBurned>
 }

@@ -72,7 +72,7 @@ class CustomVideoRepositoryImpl: ICustomVideoRepository {
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[Video::class.simpleName!!]?.let {
-                add(" and video.updateDate >= :pLastUpdateDate ")
+                add(" and video.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

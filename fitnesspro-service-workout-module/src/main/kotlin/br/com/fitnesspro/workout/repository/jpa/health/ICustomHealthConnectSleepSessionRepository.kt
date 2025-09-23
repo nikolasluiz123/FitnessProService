@@ -8,7 +8,6 @@ interface ICustomHealthConnectSleepSessionRepository {
 
     fun getHealthConnectSleepSessionImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectSleepSession>
 }

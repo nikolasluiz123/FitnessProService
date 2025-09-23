@@ -21,8 +21,7 @@ class CustomHealthConnectSleepSessionRepositoryImpl : ICustomHealthConnectSleepS
 
     override fun getHealthConnectSleepSessionImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectSleepSession> {
         val params = mutableListOf<Parameter>()
 
@@ -52,13 +51,8 @@ class CustomHealthConnectSleepSessionRepositoryImpl : ICustomHealthConnectSleepS
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            if (metadataIds.isNotEmpty()) {
-                add(" and meta.id in (:pMetadataIds) ")
-                params.add(Parameter(name = "pMetadataIds", value = metadataIds))
-            }
-
             filter.lastUpdateDateMap[HealthConnectSleepSession::class.simpleName!!]?.let {
-                add(" and session.updateDate >= :pLastUpdateDate ")
+                add(" and session.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

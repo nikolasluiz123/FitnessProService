@@ -8,8 +8,6 @@ interface ICustomHealthConnectStepsRepository {
 
     fun getHealthConnectStepsImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        exerciseExecutionIds: List<String>,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectSteps>
 }

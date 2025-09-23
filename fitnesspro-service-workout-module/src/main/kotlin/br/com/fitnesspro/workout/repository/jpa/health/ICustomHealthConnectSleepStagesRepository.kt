@@ -8,7 +8,6 @@ interface ICustomHealthConnectSleepStagesRepository {
 
     fun getHealthConnectSleepStagesImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        sleepSessionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectSleepStages>
 }

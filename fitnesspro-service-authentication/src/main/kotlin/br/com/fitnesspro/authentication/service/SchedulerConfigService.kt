@@ -29,10 +29,9 @@ class SchedulerConfigService(
     @ImportationEntity(entitySimpleName = "SchedulerConfig")
     fun getSchedulerConfigsImport(
         filter: CommonImportFilter,
-        pageInfos: ImportPageInfos,
-        personIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedSchedulerConfigDTO> {
-        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos, personIds)
+        return customSchedulerConfigRepository.getSchedulerConfigImport(filter, pageInfos)
             .map(schedulerConfigServiceMapper::getValidatedSchedulerConfigDTO)
     }
 

@@ -41,7 +41,7 @@ class CustomWorkoutRepositoryImpl: ICustomWorkoutRepository {
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[Workout::class.simpleName!!]?.let {
-                add(" and workout.updateDate >= :pLastUpdateDate ")
+                add(" and workout.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

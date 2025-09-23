@@ -9,7 +9,6 @@ interface ICustomSchedulerConfigRepository {
 
     fun getSchedulerConfigImport(
         filter: CommonImportFilter,
-        pageInfos: ImportPageInfos,
-        personIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<SchedulerConfig>
 }

@@ -39,7 +39,7 @@ class CustomVideoExercisePreDefinitionRepositoryImpl: ICustomVideoExercisePreDef
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[VideoExercisePreDefinition::class.simpleName!!]?.let {
-                add(" and videoPreDefinition.updateDate >= :pLastUpdateDate ")
+                add(" and videoPreDefinition.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

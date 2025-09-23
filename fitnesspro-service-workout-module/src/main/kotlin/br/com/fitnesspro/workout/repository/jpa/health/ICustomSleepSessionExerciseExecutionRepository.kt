@@ -8,8 +8,6 @@ interface ICustomSleepSessionExerciseExecutionRepository {
 
     fun getSleepSessionExerciseExecutionImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        sleepSessionIds: List<String>,
-        exerciseExecutionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<SleepSessionExerciseExecution>
 }

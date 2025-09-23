@@ -111,7 +111,7 @@ class CustomSchedulerRepositoryImpl: ICustomSchedulerRepository {
             add(" where 1 = 1 ")
 
             filter.lastUpdateDateMap[Scheduler::class.simpleName!!]?.let {
-                add(" and scheduler.updateDate >= :pLastUpdateDate ")
+                add(" and scheduler.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

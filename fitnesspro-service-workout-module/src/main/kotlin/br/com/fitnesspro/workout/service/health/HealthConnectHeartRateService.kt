@@ -31,11 +31,9 @@ class HealthConnectHeartRateService(
     @ImportationEntity(entitySimpleName = "HealthConnectHeartRate")
     fun getHeartRateImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        exerciseExecutionIds: List<String>,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedHealthConnectHeartRateDTO> {
-        return customHeartRateRepository.getHealthConnectHeartRateImport(filter, pageInfos, exerciseExecutionIds, metadataIds).map(mapper::getHealthConnectHeartRateDTO)
+        return customHeartRateRepository.getHealthConnectHeartRateImport(filter, pageInfos).map(mapper::getHealthConnectHeartRateDTO)
     }
 
     @CacheEvict(cacheNames = [HEALTH_CONNECT_HEART_RATE_IMPORT_CACHE_NAME], allEntries = true)
@@ -47,10 +45,9 @@ class HealthConnectHeartRateService(
     @ImportationEntity(entitySimpleName = "HealthConnectHeartRateSamples")
     fun getHeartRateSamplesImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        heartRateSessionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedHealthConnectHeartRateSamplesDTO> {
-        return customSamplesRepository.getHealthConnectHeartRateSamplesImport(filter, pageInfos, heartRateSessionIds).map(mapper::getHealthConnectHeartRateSamplesDTO)
+        return customSamplesRepository.getHealthConnectHeartRateSamplesImport(filter, pageInfos).map(mapper::getHealthConnectHeartRateSamplesDTO)
     }
 
     @CacheEvict(cacheNames = [HEALTH_CONNECT_HEART_RATE_SAMPLES_IMPORT_CACHE_NAME], allEntries = true)

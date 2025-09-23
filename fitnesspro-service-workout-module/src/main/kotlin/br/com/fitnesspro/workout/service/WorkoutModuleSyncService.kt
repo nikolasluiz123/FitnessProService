@@ -19,40 +19,22 @@ class WorkoutModuleSyncService(
 ) {
 
     fun getImportationData(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): ValidatedWorkoutModuleSyncDTO {
-        val exerciseExecutions = exerciseService.getExercisesExecutionImport(filter, pageInfos)
-        val metadata = healthConnectGeneralDataService.getMetadataImport(filter, pageInfos)
-
-        val exerciseExecutionIds = exerciseExecutions.mapNotNull { it.id }
-        val metadataIds = metadata.mapNotNull { it.id }
-
-        val heartRateSessions = healthConnectHeartRateService.getHeartRateImport(filter, pageInfos, exerciseExecutionIds, metadataIds)
-        val sleepSessions = healthConnectSleepService.getSleepSessionImport(filter, pageInfos, metadataIds)
-
-        val heartRateSessionIds = heartRateSessions.mapNotNull { it.id }
-        val sleepSessionIds = sleepSessions.mapNotNull { it.id }
-
-        val steps = healthConnectGeneralDataService.getStepsImport(filter, pageInfos, exerciseExecutionIds, metadataIds)
-        val caloriesBurned = healthConnectGeneralDataService.getCaloriesImport(filter, pageInfos, exerciseExecutionIds, metadataIds)
-        val heartRateSamples = healthConnectHeartRateService.getHeartRateSamplesImport(filter, pageInfos, heartRateSessionIds)
-        val sleepStages = healthConnectSleepService.getSleepStagesImport(filter, pageInfos, sleepSessionIds)
-        val sleepSessionAssociations = healthConnectSleepService.getSleepSessionAssociationImport(filter, pageInfos, sleepSessionIds, exerciseExecutionIds)
-
         return ValidatedWorkoutModuleSyncDTO(
             workouts = workoutService.getWorkoutsImport(filter, pageInfos),
             workoutGroups = workoutService.getWorkoutGroupsImport(filter, pageInfos),
             exercises = exerciseService.getExercisesImport(filter, pageInfos),
             videos = videoService.getVideosImport(filter, pageInfos),
             videoExercises = videoService.getVideoExercisesImport(filter, pageInfos),
-            exerciseExecutions = exerciseExecutions,
+            exerciseExecutions = exerciseService.getExercisesExecutionImport(filter, pageInfos),
             videoExerciseExecutions = videoService.getVideoExercisesExecutionImport(filter, pageInfos),
-            metadata = metadata,
-            heartRateSessions = heartRateSessions,
-            sleepSessions = sleepSessions,
-            steps = steps,
-            caloriesBurned = caloriesBurned,
-            heartRateSamples = heartRateSamples,
-            sleepStages = sleepStages,
-            sleepSessionAssociations = sleepSessionAssociations,
+            metadata = healthConnectGeneralDataService.getMetadataImport(filter, pageInfos),
+            heartRateSessions = healthConnectHeartRateService.getHeartRateImport(filter, pageInfos),
+            sleepSessions = healthConnectSleepService.getSleepSessionImport(filter, pageInfos),
+            steps = healthConnectGeneralDataService.getStepsImport(filter, pageInfos),
+            caloriesBurned = healthConnectGeneralDataService.getCaloriesImport(filter, pageInfos),
+            heartRateSamples = healthConnectHeartRateService.getHeartRateSamplesImport(filter, pageInfos),
+            sleepStages = healthConnectSleepService.getSleepStagesImport(filter, pageInfos),
+            sleepSessionAssociations = healthConnectSleepService.getSleepSessionAssociationImport(filter, pageInfos),
             workoutGroupsPreDefinitions = workoutService.getWorkoutGroupsPreDefinitionImport(filter, pageInfos),
             exercisePredefinitions = exerciseService.getExercisesPredefinitionImport(filter, pageInfos),
             videoExercisePreDefinitions = videoService.getVideoExercisesPreDefinitionImport(filter, pageInfos),

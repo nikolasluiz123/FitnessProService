@@ -18,8 +18,6 @@ interface ICustomPersonAcademyTimeRepository {
 
     fun getPersonAcademyTimesImport(
         filter: CommonImportFilter,
-        pageInfos: ImportPageInfos,
-        personIds: List<String>,
-        academyIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<PersonAcademyTime>
 }

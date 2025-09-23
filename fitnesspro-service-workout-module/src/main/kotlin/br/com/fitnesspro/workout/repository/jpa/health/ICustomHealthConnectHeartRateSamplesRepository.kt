@@ -8,7 +8,6 @@ interface ICustomHealthConnectHeartRateSamplesRepository {
 
     fun getHealthConnectHeartRateSamplesImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        heartRateSessionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectHeartRateSamples>
 }

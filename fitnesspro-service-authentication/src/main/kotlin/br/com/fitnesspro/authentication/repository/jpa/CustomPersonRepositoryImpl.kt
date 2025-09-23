@@ -44,7 +44,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
             params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
             filter.lastUpdateDateMap[Person::class.simpleName!!]?.let {
-                add(" and p.updateDate >= :pLastUpdateDate ")
+                add(" and p.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
@@ -86,7 +86,7 @@ class CustomPersonRepositoryImpl: ICustomPersonRepository {
             params.add(Parameter(name = "pAdministrator", value = EnumUserType.ADMINISTRATOR))
 
             filter.lastUpdateDateMap[User::class.simpleName!!]?.let {
-                add(" and u.updateDate >= :pLastUpdateDate ")
+                add(" and u.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

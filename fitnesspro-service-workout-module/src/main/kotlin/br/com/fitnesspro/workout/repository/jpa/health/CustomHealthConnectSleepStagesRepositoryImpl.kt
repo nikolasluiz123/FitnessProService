@@ -21,11 +21,8 @@ class CustomHealthConnectSleepStagesRepositoryImpl : ICustomHealthConnectSleepSt
 
     override fun getHealthConnectSleepStagesImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        sleepSessionIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectSleepStages> {
-        if (sleepSessionIds.isEmpty()) return emptyList()
-
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
@@ -54,11 +51,8 @@ class CustomHealthConnectSleepStagesRepositoryImpl : ICustomHealthConnectSleepSt
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            add(" and session.id in (:pSleepSessionIds) ")
-            params.add(Parameter(name = "pSleepSessionIds", value = sleepSessionIds))
-
             filter.lastUpdateDateMap[HealthConnectSleepStages::class.simpleName!!]?.let {
-                add(" and stage.updateDate >= :pLastUpdateDate ")
+                add(" and stage.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

@@ -45,7 +45,7 @@ class CustomVideoExerciseExecutionRepositoryImpl: ICustomVideoExerciseExecutionR
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[VideoExerciseExecution::class.simpleName!!]?.let {
-                add(" and videoExecution.updateDate >= :pLastUpdateDate ")
+                add(" and videoExecution.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

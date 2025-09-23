@@ -43,7 +43,7 @@ class CustomReportRepositoryImpl: ICustomReportRepository {
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[Report::class.simpleName!!]?.let {
-                add(" and report.updateDate >= :pLastUpdateDate ")
+                add(" and report.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

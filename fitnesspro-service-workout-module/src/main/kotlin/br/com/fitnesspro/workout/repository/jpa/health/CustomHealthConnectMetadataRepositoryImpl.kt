@@ -88,7 +88,7 @@ class CustomHealthConnectMetadataRepositoryImpl : ICustomHealthConnectMetadataRe
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[HealthConnectMetadata::class.simpleName!!]?.let {
-                add(" and meta.updateDate >= :pLastUpdateDate ")
+                add(" and meta.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

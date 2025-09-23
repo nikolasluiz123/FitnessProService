@@ -42,7 +42,7 @@ class CustomExerciseRepositoryImpl: ICustomExerciseRepository {
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
             filter.lastUpdateDateMap[Exercise::class.simpleName!!]?.let {
-                add(" and exercise.updateDate >= :pLastUpdateDate ")
+                add(" and exercise.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

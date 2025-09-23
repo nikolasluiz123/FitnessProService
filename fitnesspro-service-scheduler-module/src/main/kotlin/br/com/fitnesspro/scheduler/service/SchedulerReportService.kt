@@ -33,10 +33,9 @@ class SchedulerReportService(
     @ImportationEntity(entitySimpleName = "SchedulerReport")
     fun getSchedulerReportsImport(
         filter: SchedulerReportImportFilter,
-        pageInfos: ImportPageInfos,
-        reportIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedSchedulerReportDTO> {
-        return customSchedulerReportRepository.getSchedulerReportsImport(filter, pageInfos, reportIds)
+        return customSchedulerReportRepository.getSchedulerReportsImport(filter, pageInfos)
             .map(schedulerReportServiceMapper::getValidatedSchedulerReportDTO)
     }
 }

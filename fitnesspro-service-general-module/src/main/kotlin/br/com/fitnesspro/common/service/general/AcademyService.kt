@@ -53,11 +53,9 @@ class AcademyService(
     @ImportationEntity(entitySimpleName = "PersonAcademyTime")
     fun getPersonAcademyTimesImport(
         filter: CommonImportFilter,
-        pageInfos: ImportPageInfos,
-        personIds: List<String>,
-        academyIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<ValidatedPersonAcademyTimeDTO> {
-        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos, personIds, academyIds)
+        return customPersonAcademyTimeRepository.getPersonAcademyTimesImport(filter, pageInfos)
             .map(academyServiceMapper::getValidatedPersonAcademyTimeDTO)
     }
 

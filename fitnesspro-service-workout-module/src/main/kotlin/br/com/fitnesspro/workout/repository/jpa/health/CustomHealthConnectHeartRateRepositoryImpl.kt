@@ -20,9 +20,7 @@ class CustomHealthConnectHeartRateRepositoryImpl : ICustomHealthConnectHeartRate
 
     override fun getHealthConnectHeartRateImport(
         filter: WorkoutModuleImportationFilter,
-        pageInfos: ImportPageInfos,
-        exerciseExecutionIds: List<String>,
-        metadataIds: List<String>
+        pageInfos: ImportPageInfos
     ): List<HealthConnectHeartRate> {
         val params = mutableListOf<Parameter>()
 
@@ -47,18 +45,8 @@ class CustomHealthConnectHeartRateRepositoryImpl : ICustomHealthConnectHeartRate
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            if (exerciseExecutionIds.isNotEmpty()) {
-                add(" and execution.id in (:pExerciseExecutionIds) ")
-                params.add(Parameter(name = "pExerciseExecutionIds", value = exerciseExecutionIds))
-            }
-
-            if (metadataIds.isNotEmpty()) {
-                add(" and meta.id in (:pMetadataIds) ")
-                params.add(Parameter(name = "pMetadataIds", value = metadataIds))
-            }
-
             filter.lastUpdateDateMap[HealthConnectHeartRate::class.simpleName!!]?.let {
-                add(" and hr.updateDate >= :pLastUpdateDate ")
+                add(" and hr.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }

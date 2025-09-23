@@ -19,15 +19,10 @@ class SchedulerModuleSyncService(
         val reportImportFilter = ReportImportFilter(filter.personId, filter.reportContext, filter.lastUpdateDateMap)
         val schedulerReportImportFilter = SchedulerReportImportFilter(filter.personId, filter.lastUpdateDateMap)
 
-        val schedulers = schedulerService.getSchedulesImport(filter, pageInfos)
-        val reports = reportService.getReportsImport(reportImportFilter, pageInfos)
-        val reportIds = reports.mapNotNull { it.id }
-        val schedulerReports = schedulerReportService.getSchedulerReportsImport(schedulerReportImportFilter, pageInfos, reportIds)
-
         return ValidatedSchedulerModuleSyncDTO(
-            schedulers = schedulers,
-            reports = reports,
-            schedulerReports = schedulerReports
+            schedulers = schedulerService.getSchedulesImport(filter, pageInfos),
+            reports = reportService.getReportsImport(reportImportFilter, pageInfos),
+            schedulerReports = schedulerReportService.getSchedulerReportsImport(schedulerReportImportFilter, pageInfos)
         )
     }
 
