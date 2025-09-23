@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fitnesspro-service-jar
-          path: fitnesspro-service/target/*-SNAPSHOT.jar
+          path: fitnesspro-service/target/*.jar
 
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
