@@ -242,7 +242,14 @@ class ExecutionsLogService(
     }
 
     fun getListExecutionLogPackage(filter: ExecutionLogsPackageFilter, pageInfos: PageInfos): List<ValidatedExecutionLogPackageDTO> {
-        return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map(logsServiceMapper::getValidatedExecutionLogPackageDTO)
+        return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map {
+            val dto = logsServiceMapper.getValidatedExecutionLogPackageDTO(it)
+            dto.insertedItemsCount = customSubPackageRepository.getCountInsertedItemsFromPackage(it.id)
+            dto.updatedItemsCount = customSubPackageRepository.getCountUpdatedItemsFromPackage(it.id)
+            dto.allItemsCount = customSubPackageRepository.getCountProcessedItemsFromPackage(it.id)
+
+            dto
+        }
     }
 
     fun getCountListExecutionLogPackage(filter: ExecutionLogsPackageFilter): Int {

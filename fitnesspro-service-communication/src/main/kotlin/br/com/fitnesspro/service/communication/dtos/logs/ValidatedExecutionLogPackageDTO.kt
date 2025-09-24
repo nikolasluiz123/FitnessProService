@@ -37,11 +37,11 @@ data class ValidatedExecutionLogPackageDTO(
     override val executionLogId: String? = null,
 
     @field:Schema(description = "Quantidade de itens inseridos", required = false)
-    override val insertedItemsCount: Int? = null,
+    override var insertedItemsCount: Int? = null,
 
     @field:Schema(description = "Quantidade de itens atualizados", required = false)
-    override val updatedItemsCount: Int? = null,
+    override var updatedItemsCount: Int? = null,
 
     @field:Schema(description = "Quantidade de itens enviados na exportação", required = false)
-    override val allItemsCount: Int? = null,
+    override var allItemsCount: Int? = null,
 ): IExecutionLogPackageDTO

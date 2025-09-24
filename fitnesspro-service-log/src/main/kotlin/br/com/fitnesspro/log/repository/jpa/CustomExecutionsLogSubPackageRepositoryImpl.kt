@@ -43,4 +43,106 @@ class CustomExecutionsLogSubPackageRepositoryImpl: ICustomExecutionsLogSubPackag
 
         return query.resultList
     }
+
+    override fun getCountInsertedItemsFromPackage(packageId: String): Int {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select sum(subPackage.insertedItemsCount) ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+            add(" inner join subPackage.executionLogPackage logPackage ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where logPackage.id = :pLogPackageId ")
+            queryParams.add(Parameter(name = "pLogPackageId", value = packageId))
+        }
+
+        val groupBy = StringJoiner(QR_NL).apply {
+            add(" group by logPackage.id ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(groupBy.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), Long::class.java)
+        query.setParameters(queryParams)
+
+        return query.singleResult?.toInt() ?: 0
+    }
+
+    override fun getCountUpdatedItemsFromPackage(packageId: String): Int {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select sum(subPackage.updatedItemsCount) ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+            add(" inner join subPackage.executionLogPackage logPackage ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where logPackage.id = :pLogPackageId ")
+            queryParams.add(Parameter(name = "pLogPackageId", value = packageId))
+        }
+
+        val groupBy = StringJoiner(QR_NL).apply {
+            add(" group by logPackage.id ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(groupBy.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), Long::class.java)
+        query.setParameters(queryParams)
+
+        return query.singleResult?.toInt() ?: 0
+    }
+
+    override fun getCountProcessedItemsFromPackage(packageId: String): Int {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select sum(subPackage.allItemsCount) ")
+        }
+
+        val from = StringJoiner(QR_NL).apply {
+            add(" from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+            add(" inner join subPackage.executionLogPackage logPackage ")
+        }
+
+        val where = StringJoiner(QR_NL).apply {
+            add(" where logPackage.id = :pLogPackageId ")
+            queryParams.add(Parameter(name = "pLogPackageId", value = packageId))
+        }
+
+        val groupBy = StringJoiner(QR_NL).apply {
+            add(" group by logPackage.id ")
+        }
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(groupBy.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), Long::class.java)
+        query.setParameters(queryParams)
+
+        return query.singleResult?.toInt() ?: 0
+    }
 }

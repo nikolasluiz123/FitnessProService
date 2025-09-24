@@ -5,6 +5,7 @@ import br.com.fitnesspro.jpa.query.Parameter
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.logs.ExecutionLog
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
+import br.com.fitnesspro.models.logs.ExecutionLogSubPackage
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState.PENDING
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState.RUNNING
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
@@ -121,6 +122,46 @@ class CustomExecutionsLogRepositoryImpl: ICustomExecutionsLogRepository {
             filter.applicationName?.let {
                 add(" and lower(application.name) like lower(:applicationName) ")
                 queryParams.add(Parameter(name = "applicationName", value = "%$it%"))
+            }
+
+            filter.executionsWithInsertedEntities?.let {
+                if (it) {
+                    add(" and exists ( ")
+                    add("               select 1 ")
+                    add("               from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+                    add("               inner join subPackage.executionLogPackage executionPackage ")
+                    add("               where executionPackage.executionLog.id = log.id ")
+                    add("               and subPackage.insertedItemsCount > 0 ")
+                    add("            ) ")
+                } else {
+                    add(" and not exists ( ")
+                    add("               select 1 ")
+                    add("               from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+                    add("               inner join subPackage.executionLogPackage executionPackage ")
+                    add("               where executionPackage.executionLog.id = log.id ")
+                    add("               and subPackage.insertedItemsCount > 0 ")
+                    add("            ) ")
+                }
+            }
+
+            filter.executionsWithUpdatedEntities?.let {
+                if (it) {
+                    add(" and exists ( ")
+                    add("               select 1 ")
+                    add("               from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+                    add("               inner join subPackage.executionLogPackage executionPackage ")
+                    add("               where executionPackage.executionLog.id = log.id ")
+                    add("               and subPackage.updatedItemsCount > 0 ")
+                    add("            ) ")
+                } else {
+                    add(" and not exists ( ")
+                    add("               select 1 ")
+                    add("               from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+                    add("               inner join subPackage.executionLogPackage executionPackage ")
+                    add("               where executionPackage.executionLog.id = log.id ")
+                    add("               and subPackage.updatedItemsCount > 0 ")
+                    add("            ) ")
+                }
             }
         }
     }

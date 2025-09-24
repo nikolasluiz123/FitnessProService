@@ -15,5 +15,7 @@ data class ExecutionLogsFilter(
     var userEmail: String? = null,
     var deviceId: String? = null,
     var applicationName: String? = null,
+    var executionsWithInsertedEntities: Boolean? = null,
+    var executionsWithUpdatedEntities: Boolean? = null,
     var sort: List<Sort<EnumExecutionLogsFields>> = emptyList()
 )
