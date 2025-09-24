@@ -5,10 +5,7 @@ import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheClearCon
 import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheDTO
 import br.com.fitnesspro.service.communication.dtos.cache.ValidatedCacheEntryDTO
 import br.com.fitnesspro.service.communication.dtos.general.*
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogPackageDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogInfosDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.service.communication.dtos.logs.*
 import br.com.fitnesspro.service.communication.dtos.notification.ValidatedGlobalNotificationDTO
 import br.com.fitnesspro.service.communication.dtos.notification.ValidatedNotificationDTO
 import br.com.fitnesspro.service.communication.dtos.scheduledtask.ValidatedScheduledTaskDTO
@@ -26,10 +23,7 @@ import br.com.fitnesspro.shared.communication.dtos.cache.interfaces.ICacheClearC
 import br.com.fitnesspro.shared.communication.dtos.cache.interfaces.ICacheDTO
 import br.com.fitnesspro.shared.communication.dtos.cache.interfaces.ICacheEntryDTO
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.*
-import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IExecutionLogDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IExecutionLogPackageDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogInfosDTO
-import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.IUpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.shared.communication.dtos.logs.interfaces.*
 import br.com.fitnesspro.shared.communication.dtos.notification.interfaces.IGlobalNotificationDTO
 import br.com.fitnesspro.shared.communication.dtos.notification.interfaces.INotificationDTO
 import br.com.fitnesspro.shared.communication.dtos.scheduledtask.IScheduledTaskDTO
@@ -71,6 +65,8 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IExecutionLogPackageDTO::class.java,ValidatedExecutionLogPackageDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogInfosDTO::class.java,ValidatedUpdatableExecutionLogInfosDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogPackageInfosDTO::class.java, ValidatedUpdatableExecutionLogPackageInfosDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogSubPackageInfosDTO::class.java, ValidatedUpdatableExecutionLogSubPackageInfosDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogSubPackageEntityCountsDTO::class.java, ValidatedUpdatableExecutionLogSubPackageEntityCountsDTO::class.java))
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IGlobalNotificationDTO::class.java, ValidatedGlobalNotificationDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(INotificationDTO::class.java, ValidatedNotificationDTO::class.java))

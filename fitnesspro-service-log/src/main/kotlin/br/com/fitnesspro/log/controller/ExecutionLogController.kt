@@ -5,6 +5,7 @@ import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogDT
 import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogPackageDTO
 import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogInfosDTO
 import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogSubPackageInfosDTO
 import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
 import br.com.fitnesspro.service.communication.responses.ValidatedPersistenceServiceResponse
 import br.com.fitnesspro.service.communication.responses.ValidatedReadServiceResponse
@@ -54,6 +55,24 @@ class ExecutionLogController(
         @RequestBody dto: ValidatedUpdatableExecutionLogPackageInfosDTO
     ): ResponseEntity<ValidatedPersistenceServiceResponse<*>> {
         logService.updateExecutionLogPackage(executionLogPackageId, dto)
+        return ResponseEntity.ok(
+            ValidatedPersistenceServiceResponse(
+                code = HttpStatus.OK.value(),
+                success = true,
+                savedDTO = null
+            )
+        )
+    }
+
+    @PutMapping(EndPointsV1.LOGS_SUB_PACKAGE)
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun updateExecutionLogSubPackage(
+        @PathVariable executionLogPackageId: String,
+        @RequestBody dto: ValidatedUpdatableExecutionLogSubPackageInfosDTO
+    ): ResponseEntity<ValidatedPersistenceServiceResponse<*>> {
+        logService.updateExecutionLogSubPackage(executionLogPackageId, dto)
+
         return ResponseEntity.ok(
             ValidatedPersistenceServiceResponse(
                 code = HttpStatus.OK.value(),

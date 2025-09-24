@@ -2,6 +2,7 @@ package br.com.fitnesspro.log.config.advice
 
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
 import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
+import br.com.fitnesspro.service.communication.responses.ValidatedImportationServiceResponse
 import com.google.gson.GsonBuilder
 import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType
@@ -35,6 +36,11 @@ class FitnessProResponseAdviceAdapter: ResponseBodyAdvice<Any> {
         val jsonData = gson.toJson(body)
         val requestAttributes = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes
         requestAttributes.request.setAttribute(EnumRequestAttributes.RESPONSE_DATA.name, jsonData)
+
+        if (body is ValidatedImportationServiceResponse<*>) {
+            requestAttributes.request.setAttribute(EnumRequestAttributes.SYNC_DTO_CLASS.name, body.value!!::class)
+            requestAttributes.request.setAttribute(EnumRequestAttributes.SYNC_DTO_JSON.name, gson.toJson(body.value))
+        }
 
         return body
     }

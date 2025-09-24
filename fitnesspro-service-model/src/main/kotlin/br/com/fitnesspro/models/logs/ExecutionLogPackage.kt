@@ -42,13 +42,4 @@ class ExecutionLogPackage(
 
     @Column(name = "execution_additional_infos", columnDefinition = "TEXT")
     var executionAdditionalInfos: String? = null,
-
-    @Column(name = "inserted_items_count")
-    var insertedItemsCount: Int? = null,
-
-    @Column(name = "updated_items_count")
-    var updatedItemsCount: Int? = null,
-
-    @Column(name = "all_items_count")
-    var allItemsCount: Int? = null,
 )

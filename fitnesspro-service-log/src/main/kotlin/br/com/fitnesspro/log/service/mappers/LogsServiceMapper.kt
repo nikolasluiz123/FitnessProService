@@ -37,9 +37,6 @@ class LogsServiceMapper {
             responseBody = model.responseBody,
             executionAdditionalInfos = model.executionAdditionalInfos,
             error = model.error,
-            insertedItemsCount = model.insertedItemsCount,
-            updatedItemsCount = model.updatedItemsCount,
-            allItemsCount = model.allItemsCount,
         )
     }
 }

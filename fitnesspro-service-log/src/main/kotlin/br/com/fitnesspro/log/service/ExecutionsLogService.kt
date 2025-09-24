@@ -6,16 +6,14 @@ import br.com.fitnesspro.authentication.repository.jpa.IApplicationRepository
 import br.com.fitnesspro.authentication.service.TokenService
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
-import br.com.fitnesspro.log.repository.jpa.ICustomExecutionsLogRepository
-import br.com.fitnesspro.log.repository.jpa.IExecutionsLogPackageRepository
-import br.com.fitnesspro.log.repository.jpa.IExecutionsLogRepository
+import br.com.fitnesspro.log.repository.jpa.*
 import br.com.fitnesspro.log.service.mappers.LogsServiceMapper
 import br.com.fitnesspro.models.logs.ExecutionLog
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogPackageDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogInfosDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogPackageInfosDTO
+import br.com.fitnesspro.models.logs.ExecutionLogSubPackage
+import br.com.fitnesspro.service.communication.dtos.annotation.EntityReference
+import br.com.fitnesspro.service.communication.dtos.logs.*
+import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
 import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IUserDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IApplicationDTO
 import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IDeviceDTO
@@ -25,6 +23,7 @@ import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType.
 import br.com.fitnesspro.shared.communication.paging.PageInfos
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
+import com.google.gson.GsonBuilder
 import jakarta.persistence.EntityNotFoundException
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.MessageSource
@@ -32,12 +31,20 @@ import org.springframework.stereotype.Service
 import org.springframework.web.method.HandlerMethod
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.jvmErasure
 
 @Service
 class ExecutionsLogService(
     private val logRepository: IExecutionsLogRepository,
     private val logPackageRepository: IExecutionsLogPackageRepository,
+    private val logSubPackageRepository: IExecutionsLogSupPackageRepository,
     private val customLogRepository: ICustomExecutionsLogRepository,
+    private val customSubPackageRepository: ICustomExecutionsLogSubPackageRepository,
     private val tokenService: TokenService,
     private val userRepository: IUserRepository,
     private val deviceRepository: IDeviceRepository,
@@ -146,6 +153,8 @@ class ExecutionsLogService(
         val requestBody = request.getAttribute(EnumRequestAttributes.REQUEST_BODY_DATA.name) as String?
         val responseBody = request.getAttribute(EnumRequestAttributes.RESPONSE_DATA.name) as String?
         val exception = request.getAttribute(EnumRequestAttributes.REQUEST_EXCEPTION.name) as Exception?
+        val syncDTOClass = request.getAttribute(EnumRequestAttributes.SYNC_DTO_CLASS.name) as KClass<*>?
+        val syncDTOJSON = request.getAttribute(EnumRequestAttributes.SYNC_DTO_JSON.name) as String?
 
         val log = logRepository.findById(logId).orElseThrow()
 
@@ -156,6 +165,8 @@ class ExecutionsLogService(
 
         val packageExecutions = listOf(IMPORTATION, EXPORTATION, STORAGE)
 
+        createExecutionSubPackageLog(request, log, syncDTOJSON, syncDTOClass, logPackage)
+
         if (exception != null) {
             log.state = EnumExecutionState.ERROR
             logPackage.error = exception.stackTraceToString()
@@ -165,6 +176,61 @@ class ExecutionsLogService(
 
         logRepository.save(log)
         logPackageRepository.save(logPackage)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun createExecutionSubPackageLog(
+        request: HttpServletRequest,
+        log: ExecutionLog,
+        syncDTOJSON: String?,
+        syncDTOClass: KClass<*>?,
+        logPackage: ExecutionLogPackage
+    ) {
+        if (log.type in listOf(IMPORTATION, EXPORTATION)) {
+            val gson = GsonBuilder().defaultServiceGSon()
+            val syncDTO = gson.fromJson(syncDTOJSON, syncDTOClass!!.java)
+            val listProperties = syncDTOClass.memberProperties.filter { property ->
+                property.returnType.jvmErasure == List::class && property.hasAnnotation<EntityReference>()
+            }
+
+            if (log.type == IMPORTATION) {
+                val subPackages = listProperties.map { property ->
+                    property as KProperty1<Any, *>
+
+                    val value = property.get(syncDTO) as List<*>
+                    val valueAsJSON = gson.toJson(value)
+                    val kbSize = valueAsJSON.toByteArray(Charsets.UTF_8).size / 1024L
+
+                    ExecutionLogSubPackage(
+                        executionLogPackage = logPackage,
+                        entityName = property.findAnnotation<EntityReference>()?.entitySimpleName!!,
+                        allItemsCount = value.size,
+                        responseBody = valueAsJSON,
+                        kbSize = kbSize
+                    )
+                }
+
+                logSubPackageRepository.saveAll(subPackages)
+            } else {
+                val subPackages = listProperties.map { property ->
+                    property as KProperty1<Any, *>
+
+                    val value = property.get(syncDTO) as List<*>
+                    val valueAsJSON = gson.toJson(value)
+                    val kbSize = valueAsJSON.toByteArray(Charsets.UTF_8).size / 1024L
+
+                    ExecutionLogSubPackage(
+                        executionLogPackage = logPackage,
+                        entityName = property.findAnnotation<EntityReference>()?.entitySimpleName!!,
+                        allItemsCount = value.size,
+                        requestBody = valueAsJSON,
+                        kbSize = kbSize
+                    )
+                }
+
+                logSubPackageRepository.saveAll(subPackages)
+            }
+        }
     }
 
     fun getListExecutionLog(filter: ExecutionLogsFilter, pageInfos: PageInfos): List<ValidatedExecutionLogDTO> {
@@ -191,7 +257,6 @@ class ExecutionsLogService(
 
         log.apply {
             dto.pageSize?.let { pageSize = it }
-            dto.lastUpdateDate?.let { lastUpdateDate = it }
             dto.state?.let { state = it }
         }
 
@@ -205,9 +270,6 @@ class ExecutionsLogService(
         }
 
         logPackage.apply {
-            dto.insertedItemsCount?.let { insertedItemsCount = it }
-            dto.updatedItemsCount?.let { updatedItemsCount = it }
-            dto.allItemsCount?.let { allItemsCount = it }
             dto.clientExecutionStart?.let { clientExecutionStart = it }
             dto.clientExecutionEnd?.let { clientExecutionEnd = it }
             dto.error?.let { error = it }
@@ -256,5 +318,31 @@ class ExecutionsLogService(
         logPackage.executionAdditionalInfos = additionalInfos.toString()
 
         logPackageRepository.save(logPackage)
+    }
+
+    fun updateExecutionLogSubPackage(
+        executionLogPackageId: String,
+        dto: ValidatedUpdatableExecutionLogSubPackageInfosDTO
+    ) {
+        val subPackages = customSubPackageRepository.findSubPackagesByPackageId(executionLogPackageId)
+
+        dto.entityCounts.forEach { mapCount ->
+            subPackages
+                .first { it.entityName == mapCount.key }
+                .apply {
+                   insertedItemsCount = mapCount.value.insertedItemsCount
+                   updatedItemsCount = mapCount.value.updatedItemsCount
+                }
+        }
+
+        dto.lastUpdateDateMap.forEach { mapUpdateDate ->
+            subPackages
+                .first { it.entityName == mapUpdateDate.key }
+                .apply {
+                    lastUpdateDate = mapUpdateDate.value
+                }
+        }
+
+        logSubPackageRepository.saveAll(subPackages)
     }
 }

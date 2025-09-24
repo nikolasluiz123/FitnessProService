@@ -6,15 +6,6 @@ import java.time.LocalDateTime
 
 @Schema(description = "Classe DTO usada para atualização de um pacote de log de execução")
 data class ValidatedUpdatableExecutionLogPackageInfosDTO(
-    @field:Schema(description = "Quantidade de itens inseridos. Utilizado na importação de dados.", required = false)
-    override var insertedItemsCount: Int? = null,
-
-    @field:Schema(description = "Quantidade de itens atualizados. Utilizado na importação de dados.", required = false)
-    override var updatedItemsCount: Int? = null,
-
-    @field:Schema(description = "Quantidade de itens enviados na exportação.", required = false)
-    override var allItemsCount: Int? = null,
-
     @field:Schema(description = "Momento que o client começou a executar a operação.", required = false)
     override var clientExecutionStart: LocalDateTime? = null,
 
