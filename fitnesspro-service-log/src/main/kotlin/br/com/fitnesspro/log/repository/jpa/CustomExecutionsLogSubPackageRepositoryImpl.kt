@@ -75,7 +75,7 @@ class CustomExecutionsLogSubPackageRepositoryImpl: ICustomExecutionsLogSubPackag
         val query = entityManager.createQuery(sql.toString(), Long::class.java)
         query.setParameters(queryParams)
 
-        return query.singleResult?.toInt() ?: 0
+        return query.resultList.firstOrNull()?.toInt() ?: 0
     }
 
     override fun getCountUpdatedItemsFromPackage(packageId: String): Int {
@@ -109,7 +109,7 @@ class CustomExecutionsLogSubPackageRepositoryImpl: ICustomExecutionsLogSubPackag
         val query = entityManager.createQuery(sql.toString(), Long::class.java)
         query.setParameters(queryParams)
 
-        return query.singleResult?.toInt() ?: 0
+        return query.resultList.firstOrNull()?.toInt() ?: 0
     }
 
     override fun getCountProcessedItemsFromPackage(packageId: String): Int {
@@ -143,6 +143,6 @@ class CustomExecutionsLogSubPackageRepositoryImpl: ICustomExecutionsLogSubPackag
         val query = entityManager.createQuery(sql.toString(), Long::class.java)
         query.setParameters(queryParams)
 
-        return query.singleResult?.toInt() ?: 0
+        return query.resultList.firstOrNull()?.toInt() ?: 0
     }
 }
