@@ -15,7 +15,9 @@ class ScheduledTaskServiceMapper {
             lastExecutionTime = model.lastExecutionTime,
             active = model.active,
             handlerBeanName = model.handlerBeanName,
-            configJson = model.configJson
+            configJson = model.configJson,
+            creationDate = model.creationDate,
+            updateDate = model.updateDate
         )
     }
 
