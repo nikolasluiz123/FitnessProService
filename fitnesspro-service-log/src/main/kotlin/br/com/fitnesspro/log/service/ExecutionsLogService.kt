@@ -26,6 +26,7 @@ import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionState
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType
 import br.com.fitnesspro.shared.communication.enums.execution.EnumExecutionType.*
 import br.com.fitnesspro.shared.communication.paging.PageInfos
+import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogSubPackageFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
 import com.google.gson.GsonBuilder
@@ -34,6 +35,7 @@ import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
 import org.springframework.web.method.HandlerMethod
+import java.time.Duration
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.reflect.KClass
@@ -269,8 +271,36 @@ class ExecutionsLogService(
             dto.updatedItemsCount = result?.updatedItemsCount?.toInt()
             dto.allItemsCount = result?.allItemsCount?.toInt()
             dto.kbSize = result?.kbSize ?: 0
+            dto.serviceProcessingDuration = getServiceProcessingDuration(it, dto)
+            dto.clientProcessingDuration = getClientProcessingDuration(it, dto)
 
             dto
+        }
+    }
+
+    fun getListExecutionLogSubPackage(filter: ExecutionLogSubPackageFilter, pageInfos: PageInfos): List<ValidatedExecutionLogSubPackageDTO> {
+        return customSubPackageRepository.getListExecutionLogSubPackage(filter, pageInfos).map {
+            logsServiceMapper.getValidatedExecutionLogSubPackageDTO(it)
+        }
+    }
+
+    fun getCountListExecutionLogSubPackage(filter: ExecutionLogSubPackageFilter): Int {
+        return customSubPackageRepository.getCountListExecutionLogSubPackage(filter)
+    }
+
+    private fun getClientProcessingDuration(pkg: ExecutionLogPackage, dto: ValidatedExecutionLogPackageDTO): Long? {
+        return if (pkg.clientExecutionStart != null && pkg.clientExecutionEnd != null) {
+            Duration.between(dto.clientExecutionStart, dto.clientExecutionEnd).toMillis()
+        } else {
+            null
+        }
+    }
+
+    private fun getServiceProcessingDuration(pkg: ExecutionLogPackage, dto: ValidatedExecutionLogPackageDTO): Long? {
+        return if (pkg.serviceExecutionStart != null && pkg.serviceExecutionEnd != null) {
+            Duration.between(dto.serviceExecutionStart, dto.serviceExecutionEnd).toMillis()
+        } else {
+            null
         }
     }
 
@@ -359,8 +389,8 @@ class ExecutionsLogService(
             subPackages
                 .first { it.entityName == mapCount.key }
                 .apply {
-                   insertedItemsCount = mapCount.value.insertedItemsCount
-                   updatedItemsCount = mapCount.value.updatedItemsCount
+                    insertedItemsCount = mapCount.value.insertedItemsCount
+                    updatedItemsCount = mapCount.value.updatedItemsCount
                 }
         }
 

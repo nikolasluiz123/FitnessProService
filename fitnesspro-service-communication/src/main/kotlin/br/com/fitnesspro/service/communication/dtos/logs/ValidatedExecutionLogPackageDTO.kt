@@ -47,4 +47,10 @@ data class ValidatedExecutionLogPackageDTO(
 
     @field:Schema(description = "Tamanho do pacote em KB", required = false, readOnly = true)
     override var kbSize: Long = 0,
+
+    @field:Schema(description = "Duração de processamento no serviço em milisegundos", required = false, readOnly = true)
+    override var serviceProcessingDuration: Long? = null,
+
+    @field:Schema(description = "Duração de processamento no cliente em milisegundos", required = false, readOnly = true)
+    override var clientProcessingDuration: Long? = null
 ): IExecutionLogPackageDTO

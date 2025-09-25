@@ -67,6 +67,7 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogPackageInfosDTO::class.java, ValidatedUpdatableExecutionLogPackageInfosDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogSubPackageInfosDTO::class.java, ValidatedUpdatableExecutionLogSubPackageInfosDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IUpdatableExecutionLogSubPackageEntityCountsDTO::class.java, ValidatedUpdatableExecutionLogSubPackageEntityCountsDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IExecutionLogSubPackageDTO::class.java, ValidatedExecutionLogSubPackageDTO::class.java))
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IGlobalNotificationDTO::class.java, ValidatedGlobalNotificationDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(INotificationDTO::class.java, ValidatedNotificationDTO::class.java))

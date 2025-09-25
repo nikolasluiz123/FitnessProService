@@ -6,6 +6,8 @@ import br.com.fitnesspro.jpa.query.Parameter
 import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.logs.ExecutionLogSubPackage
+import br.com.fitnesspro.shared.communication.paging.PageInfos
+import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogSubPackageFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import jakarta.persistence.Tuple
@@ -91,6 +93,93 @@ class CustomExecutionsLogSubPackageRepositoryImpl: ICustomExecutionsLogSubPackag
                 allItemsCount = tuple.getLong("allItemsCount") ?: 0,
                 kbSize = tuple.getLong("kbSize") ?: 0
             )
+        }
+    }
+
+    override fun getListExecutionLogSubPackage(filter: ExecutionLogSubPackageFilter, pageInfos: PageInfos): List<ExecutionLogSubPackage> {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select subPackage ")
+        }
+
+        val from = getFromListExecutionLogSubPackage()
+        val where = getWhereListExecutionLogSubPackage(filter, queryParams)
+        val orderBy = getOrderByListExecutionLogSubPackage(filter)
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+            add(orderBy.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), ExecutionLogSubPackage::class.java)
+        query.setParameters(queryParams)
+
+        query.firstResult = pageInfos.pageSize * pageInfos.pageNumber
+        query.maxResults = pageInfos.pageSize
+
+        return query.resultList
+    }
+
+    override fun getCountListExecutionLogSubPackage(filter: ExecutionLogSubPackageFilter): Int {
+        val queryParams = mutableListOf<Parameter>()
+
+        val select = StringJoiner(QR_NL).apply {
+            add(" select count(subPackage.id) ")
+        }
+
+        val from = getFromListExecutionLogSubPackage()
+        val where = getWhereListExecutionLogSubPackage(filter, queryParams)
+
+        val sql = StringJoiner(QR_NL).apply {
+            add(select.toString())
+            add(from.toString())
+            add(where.toString())
+        }
+
+        val query = entityManager.createQuery(sql.toString(), Long::class.java)
+        query.setParameters(queryParams)
+
+        return query.singleResult.toInt()
+    }
+
+    private fun getFromListExecutionLogSubPackage(): StringJoiner {
+        return StringJoiner(QR_NL).apply {
+            add(" from ${ExecutionLogSubPackage::class.java.name} subPackage ")
+        }
+    }
+
+    private fun getWhereListExecutionLogSubPackage(filter: ExecutionLogSubPackageFilter, queryParams: MutableList<Parameter>): StringJoiner {
+        return StringJoiner(QR_NL).apply {
+            add(" where 1 = 1 ")
+
+            filter.executionLogPackageId?.let {
+                add(" and subPackage.executionLogPackage.id = :executionLogPackageId ")
+                queryParams.add(Parameter(name = "executionLogPackageId", value = it))
+            }
+
+            filter.entityName?.let {
+                add(" and lower(subPackage.entityName) like lower(:entityName) ")
+                queryParams.add(Parameter(name = "entityName", value = "%$it%"))
+            }
+        }
+    }
+
+    private fun getOrderByListExecutionLogSubPackage(filter: ExecutionLogSubPackageFilter): StringJoiner {
+        return StringJoiner(QR_NL).apply {
+            if (filter.sort.isEmpty()) {
+                add(" order by subPackage.entityName asc ")
+            } else {
+                add(" order by ")
+                filter.sort.forEachIndexed { index, sort ->
+                    val sortField = sort.field.fieldName
+                    val order = if (sort.asc) "asc" else "desc"
+                    val comma = if (index == filter.sort.lastIndex) "" else ", "
+                    add(" subPackage.$sortField $order$comma ")
+                }
+            }
         }
     }
 }

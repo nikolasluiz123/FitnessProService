@@ -1,11 +1,7 @@
 package br.com.fitnesspro.log.controller
 
 import br.com.fitnesspro.log.service.ExecutionsLogService
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedExecutionLogPackageDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogInfosDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogPackageInfosDTO
-import br.com.fitnesspro.service.communication.dtos.logs.ValidatedUpdatableExecutionLogSubPackageInfosDTO
+import br.com.fitnesspro.service.communication.dtos.logs.*
 import br.com.fitnesspro.service.communication.gson.defaultServiceGSon
 import br.com.fitnesspro.service.communication.responses.ValidatedPersistenceServiceResponse
 import br.com.fitnesspro.service.communication.responses.ValidatedReadServiceResponse
@@ -13,6 +9,7 @@ import br.com.fitnesspro.service.communication.responses.ValidatedSingleValueSer
 import br.com.fitnesspro.shared.communication.constants.EndPointsV1
 import br.com.fitnesspro.shared.communication.constants.Timeouts
 import br.com.fitnesspro.shared.communication.paging.CommonPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogSubPackageFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsFilter
 import br.com.fitnesspro.shared.communication.query.filter.ExecutionLogsPackageFilter
 import com.google.gson.GsonBuilder
@@ -143,6 +140,48 @@ class ExecutionLogController(
         val queryFilter = defaultGSon.fromJson(filter, ExecutionLogsPackageFilter::class.java)
 
         val count = logService.getCountListExecutionLogPackage(queryFilter)
+        return ResponseEntity.ok(
+            ValidatedSingleValueServiceResponse(
+                value = count,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
+    }
+
+    @GetMapping(EndPointsV1.LOGS_SUB_PACKAGE_LIST)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun getListExecutionLogSubPackage(
+        @RequestParam filter: String,
+        @RequestParam pageInfos: String
+    ): ResponseEntity<ValidatedReadServiceResponse<ValidatedExecutionLogSubPackageDTO>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
+        val queryFilter = defaultGSon.fromJson(filter, ExecutionLogSubPackageFilter::class.java)
+        val commonPageInfos = defaultGSon.fromJson(pageInfos, CommonPageInfos::class.java)
+
+        val logs = logService.getListExecutionLogSubPackage(queryFilter, commonPageInfos)
+
+        return ResponseEntity.ok(
+            ValidatedReadServiceResponse(
+                values = logs,
+                code = HttpStatus.OK.value(),
+                success = true
+            )
+        )
+    }
+
+    @GetMapping(EndPointsV1.LOGS_SUB_PACKAGE_COUNT)
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @SecurityRequirement(name = "Bearer Authentication")
+    fun getCountListExecutionLogSubPackage(
+        @RequestParam filter: String
+    ): ResponseEntity<ValidatedSingleValueServiceResponse<Int>> {
+        val defaultGSon = GsonBuilder().defaultServiceGSon()
+        val queryFilter = defaultGSon.fromJson(filter, ExecutionLogSubPackageFilter::class.java)
+
+        val count = logService.getCountListExecutionLogSubPackage(queryFilter)
+
         return ResponseEntity.ok(
             ValidatedSingleValueServiceResponse(
                 value = count,

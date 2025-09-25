@@ -17,4 +17,6 @@ interface IExecutionLogPackageDTO : BaseDTO {
     val updatedItemsCount: Int?
     val allItemsCount: Int?
     val kbSize: Long
+    val serviceProcessingDuration: Long?
+    val clientProcessingDuration: Long?
 }

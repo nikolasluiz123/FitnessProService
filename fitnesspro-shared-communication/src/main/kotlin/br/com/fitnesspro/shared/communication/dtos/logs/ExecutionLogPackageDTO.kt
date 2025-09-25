@@ -17,5 +17,7 @@ data class ExecutionLogPackageDTO(
     override val insertedItemsCount: Int? = null,
     override val updatedItemsCount: Int? = null,
     override val allItemsCount: Int? = null,
-    override val kbSize: Long = 0
+    override val kbSize: Long = 0,
+    override val serviceProcessingDuration: Long? = null,
+    override val clientProcessingDuration: Long? = null
 ) : IExecutionLogPackageDTO

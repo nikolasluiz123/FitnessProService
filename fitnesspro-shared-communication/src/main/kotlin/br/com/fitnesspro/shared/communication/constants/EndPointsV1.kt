@@ -29,6 +29,8 @@ object EndPointsV1 {
     const val LOGS_PACKAGE = "/package"
     const val LOGS_PACKAGE_COUNT = "$LOGS_PACKAGE/count"
     const val LOGS_SUB_PACKAGE = "$LOGS_PACKAGE/{executionLogPackageId}/subpackage"
+    const val LOGS_SUB_PACKAGE_LIST = "$LOGS_PACKAGE/subpackage"
+    const val LOGS_SUB_PACKAGE_COUNT = "$LOGS_PACKAGE/subpackage/count"
 
     const val CACHE = "cache"
     const val CACHE_V1 = "$API_V1/$CACHE"
