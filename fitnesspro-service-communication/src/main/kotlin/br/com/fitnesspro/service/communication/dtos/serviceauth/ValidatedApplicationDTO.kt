@@ -14,7 +14,7 @@ data class ValidatedApplicationDTO(
 
     @field:Schema(description = "Nome da aplicação", example = "FitnessPro Mobile", required = true)
     @field:NotBlank(message = "applicationDTO.name.notBlank")
-    override val name: String? = null,
+    override var name: String? = null,
 
     @field:Schema(description = "Valor booleano que representa se o registro está ativo", required = true)
     @field:NotNull(message = "applicationDTO.active.notNull")

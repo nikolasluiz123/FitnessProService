@@ -4,6 +4,6 @@ import br.com.fitnesspro.shared.communication.dtos.serviceauth.interfaces.IAppli
 
 data class ApplicationDTO(
     override var id: String? = null,
-    override val name: String? = null,
+    override var name: String? = null,
     override var active: Boolean = true,
 ) : IApplicationDTO
