@@ -11,5 +11,7 @@ data class ExecutionLogSubPackageDTO(
     override val updatedItemsCount: Int? = null,
     override val allItemsCount: Int? = null,
     override val kbSize: Long? = null,
-    override val lastUpdateDate: LocalDateTime? = null
+    override val lastUpdateDate: LocalDateTime? = null,
+    override var responseBody: String? = null,
+    override var requestBody: String? = null
 ) : IExecutionLogSubPackageDTO

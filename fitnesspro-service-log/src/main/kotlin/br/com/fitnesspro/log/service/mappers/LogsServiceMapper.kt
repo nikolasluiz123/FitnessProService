@@ -50,7 +50,9 @@ class LogsServiceMapper {
             updatedItemsCount = model.updatedItemsCount ?: 0,
             allItemsCount = model.allItemsCount ?: 0,
             kbSize = model.kbSize,
-            lastUpdateDate = model.lastUpdateDate
+            lastUpdateDate = model.lastUpdateDate,
+            requestBody = model.requestBody,
+            responseBody = model.responseBody,
         )
     }
 }

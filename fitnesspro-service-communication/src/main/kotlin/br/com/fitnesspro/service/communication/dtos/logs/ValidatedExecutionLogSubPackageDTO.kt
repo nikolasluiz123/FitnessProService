@@ -28,5 +28,11 @@ data class ValidatedExecutionLogSubPackageDTO(
     override val kbSize: Long? = null,
 
     @get:Schema(description = "Data da última atualização", required = false)
-    override val lastUpdateDate: LocalDateTime? = null
+    override val lastUpdateDate: LocalDateTime? = null,
+
+    @field:Schema(description = "Request body enviado na requisição", required = false)
+    override var requestBody: String? = null,
+
+    @field:Schema(description = "Response body retornado na requisição", required = false)
+    override var responseBody: String? = null,
 ) : IExecutionLogSubPackageDTO

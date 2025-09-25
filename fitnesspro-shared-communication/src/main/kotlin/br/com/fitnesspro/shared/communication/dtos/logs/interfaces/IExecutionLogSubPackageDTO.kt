@@ -11,4 +11,6 @@ interface IExecutionLogSubPackageDTO : BaseDTO {
     val allItemsCount: Int?
     val kbSize: Long?
     val lastUpdateDate: LocalDateTime?
+    var responseBody: String?
+    var requestBody: String?
 }
