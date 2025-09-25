@@ -15,6 +15,11 @@ data class ExecutionLogDTO(
     override val deviceId: String? = null,
     override val applicationName: String? = null,
     override var pageSize: Int? = null,
-    override var lastUpdateDate: LocalDateTime? = null,
-    override var creationDate: LocalDateTime? = null
+    override var creationDate: LocalDateTime? = null,
+    override val insertedItemsCount: Int? = null,
+    override val updatedItemsCount: Int? = null,
+    override val allItemsCount: Int? = null,
+    override val kbSize: Long = 0,
+    override val serviceProcessingDuration: Long? = null,
+    override val clientProcessingDuration: Long? = null
 ) : IExecutionLogDTO

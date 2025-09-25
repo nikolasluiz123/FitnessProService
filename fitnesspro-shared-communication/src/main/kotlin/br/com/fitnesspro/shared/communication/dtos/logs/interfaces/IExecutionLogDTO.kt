@@ -14,6 +14,11 @@ interface IExecutionLogDTO : BaseDTO {
     val deviceId: String?
     val applicationName: String?
     var pageSize: Int?
-    var lastUpdateDate: LocalDateTime?
     var creationDate: LocalDateTime?
+    val insertedItemsCount: Int?
+    val updatedItemsCount: Int?
+    val allItemsCount: Int?
+    val kbSize: Long
+    val serviceProcessingDuration: Long?
+    val clientProcessingDuration: Long?
 }

@@ -20,7 +20,6 @@ class LogsServiceMapper {
             deviceId = model.device?.id,
             applicationName = model.application?.name,
             pageSize = model.pageSize,
-            lastUpdateDate = model.lastUpdateDate,
             creationDate = model.creationDate,
         )
     }

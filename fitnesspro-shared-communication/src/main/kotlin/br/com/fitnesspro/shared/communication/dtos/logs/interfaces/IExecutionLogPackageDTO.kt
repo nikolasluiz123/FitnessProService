@@ -16,4 +16,5 @@ interface IExecutionLogPackageDTO : BaseDTO {
     val insertedItemsCount: Int?
     val updatedItemsCount: Int?
     val allItemsCount: Int?
+    val kbSize: Long
 }

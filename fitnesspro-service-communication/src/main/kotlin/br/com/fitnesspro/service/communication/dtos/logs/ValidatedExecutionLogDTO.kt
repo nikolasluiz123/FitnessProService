@@ -35,9 +35,24 @@ data class ValidatedExecutionLogDTO(
     @field:Schema(description = "Quantidade de itens por página", required = false)
     override var pageSize: Int? = null,
 
-    @field:Schema(description = "Data da última atualização. Utilizado na importação de dados.", required = false)
-    override var lastUpdateDate: LocalDateTime? = null,
-
     @field:Schema(description = "Data de criação do log de execução", required = true)
-    override var creationDate: LocalDateTime? = null
+    override var creationDate: LocalDateTime? = null,
+
+    @field:Schema(description = "Quantidade de itens inseridos", required = false, readOnly = true)
+    override var insertedItemsCount: Int? = null,
+
+    @field:Schema(description = "Quantidade de itens atualizados", required = false, readOnly = true)
+    override var updatedItemsCount: Int? = null,
+
+    @field:Schema(description = "Quantidade de itens enviados na exportação", required = false, readOnly = true)
+    override var allItemsCount: Int? = null,
+
+    @field:Schema(description = "Tamanho do pacote em KB", required = false, readOnly = true)
+    override var kbSize: Long = 0,
+
+    @field:Schema(description = "Duração de processamento no serviço em milisegundos", required = false, readOnly = true)
+    override var serviceProcessingDuration: Long? = null,
+
+    @field:Schema(description = "Duração de processamento no cliente em milisegundos", required = false, readOnly = true)
+    override var clientProcessingDuration: Long? = null
 ): IExecutionLogDTO

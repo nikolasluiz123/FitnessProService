@@ -36,12 +36,15 @@ data class ValidatedExecutionLogPackageDTO(
     @field:Schema(description = "Identificador do log de execução", required = true)
     override val executionLogId: String? = null,
 
-    @field:Schema(description = "Quantidade de itens inseridos", required = false)
+    @field:Schema(description = "Quantidade de itens inseridos", required = false, readOnly = true)
     override var insertedItemsCount: Int? = null,
 
-    @field:Schema(description = "Quantidade de itens atualizados", required = false)
+    @field:Schema(description = "Quantidade de itens atualizados", required = false, readOnly = true)
     override var updatedItemsCount: Int? = null,
 
-    @field:Schema(description = "Quantidade de itens enviados na exportação", required = false)
+    @field:Schema(description = "Quantidade de itens enviados na exportação", required = false, readOnly = true)
     override var allItemsCount: Int? = null,
+
+    @field:Schema(description = "Tamanho do pacote em KB", required = false, readOnly = true)
+    override var kbSize: Long = 0,
 ): IExecutionLogPackageDTO

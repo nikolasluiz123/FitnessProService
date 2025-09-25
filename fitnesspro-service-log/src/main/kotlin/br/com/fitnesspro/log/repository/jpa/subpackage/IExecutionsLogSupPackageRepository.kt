@@ -1,4 +1,4 @@
-package br.com.fitnesspro.log.repository.jpa
+package br.com.fitnesspro.log.repository.jpa.subpackage
 
 import br.com.fitnesspro.models.logs.ExecutionLogSubPackage
 import org.springframework.data.jpa.repository.JpaRepository

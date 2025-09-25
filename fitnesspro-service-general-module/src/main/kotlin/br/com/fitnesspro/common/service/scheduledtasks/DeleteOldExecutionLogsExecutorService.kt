@@ -2,7 +2,7 @@ package br.com.fitnesspro.common.service.scheduledtasks
 
 import br.com.fitnesspro.common.repository.jpa.logs.ICustomDeleteOldExecutionLogsRepository
 import br.com.fitnesspro.common.scheduledtasks.config.DeleteOldExecutionLogsConfig
-import br.com.fitnesspro.log.repository.jpa.IExecutionsLogPackageRepository
+import br.com.fitnesspro.log.repository.jpa.logpackage.IExecutionsLogPackageRepository
 import br.com.fitnesspro.log.repository.jpa.IExecutionsLogRepository
 import br.com.fitnesspro.log.service.ExecutionsLogService
 import br.com.fitnesspro.models.logs.ExecutionLog

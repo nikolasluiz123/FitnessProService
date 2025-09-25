@@ -6,7 +6,12 @@ import br.com.fitnesspro.authentication.repository.jpa.IApplicationRepository
 import br.com.fitnesspro.authentication.service.TokenService
 import br.com.fitnesspro.core.extensions.dateTimeNow
 import br.com.fitnesspro.log.enums.EnumRequestAttributes
-import br.com.fitnesspro.log.repository.jpa.*
+import br.com.fitnesspro.log.repository.jpa.ICustomExecutionsLogRepository
+import br.com.fitnesspro.log.repository.jpa.IExecutionsLogRepository
+import br.com.fitnesspro.log.repository.jpa.logpackage.ICustomExecutionsLogPackageRepository
+import br.com.fitnesspro.log.repository.jpa.logpackage.IExecutionsLogPackageRepository
+import br.com.fitnesspro.log.repository.jpa.subpackage.ICustomExecutionsLogSubPackageRepository
+import br.com.fitnesspro.log.repository.jpa.subpackage.IExecutionsLogSupPackageRepository
 import br.com.fitnesspro.log.service.mappers.LogsServiceMapper
 import br.com.fitnesspro.models.logs.ExecutionLog
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
@@ -45,6 +50,7 @@ class ExecutionsLogService(
     private val logSubPackageRepository: IExecutionsLogSupPackageRepository,
     private val customLogRepository: ICustomExecutionsLogRepository,
     private val customSubPackageRepository: ICustomExecutionsLogSubPackageRepository,
+    private val customExecutionsLogPackageRepository: ICustomExecutionsLogPackageRepository,
     private val tokenService: TokenService,
     private val userRepository: IUserRepository,
     private val deviceRepository: IDeviceRepository,
@@ -234,7 +240,20 @@ class ExecutionsLogService(
     }
 
     fun getListExecutionLog(filter: ExecutionLogsFilter, pageInfos: PageInfos): List<ValidatedExecutionLogDTO> {
-        return customLogRepository.getListExecutionLog(filter, pageInfos).map(logsServiceMapper::getValidatedExecutionLogDTO)
+        return customLogRepository.getListExecutionLog(filter, pageInfos).map {
+            val dto = logsServiceMapper.getValidatedExecutionLogDTO(it)
+            val subPackageCalculatedInformation = customSubPackageRepository.calculateSubPackageInformation(logId = it.id)
+            val processingTime = customExecutionsLogPackageRepository.getExecutionProcessingTime(it.id)
+
+            dto.insertedItemsCount = subPackageCalculatedInformation?.insertedItemsCount?.toInt()
+            dto.updatedItemsCount = subPackageCalculatedInformation?.updatedItemsCount?.toInt()
+            dto.allItemsCount = subPackageCalculatedInformation?.allItemsCount?.toInt()
+            dto.kbSize = subPackageCalculatedInformation?.kbSize ?: 0
+            dto.serviceProcessingDuration = processingTime.service
+            dto.clientProcessingDuration = processingTime.client
+
+            dto
+        }
     }
 
     fun getCountListExecutionLog(filter: ExecutionLogsFilter): Int {
@@ -244,9 +263,12 @@ class ExecutionsLogService(
     fun getListExecutionLogPackage(filter: ExecutionLogsPackageFilter, pageInfos: PageInfos): List<ValidatedExecutionLogPackageDTO> {
         return customLogRepository.getListExecutionLogPackage(filter, pageInfos).map {
             val dto = logsServiceMapper.getValidatedExecutionLogPackageDTO(it)
-            dto.insertedItemsCount = customSubPackageRepository.getCountInsertedItemsFromPackage(it.id)
-            dto.updatedItemsCount = customSubPackageRepository.getCountUpdatedItemsFromPackage(it.id)
-            dto.allItemsCount = customSubPackageRepository.getCountProcessedItemsFromPackage(it.id)
+            val result = customSubPackageRepository.calculateSubPackageInformation(packageId = it.id)
+
+            dto.insertedItemsCount = result?.insertedItemsCount?.toInt()
+            dto.updatedItemsCount = result?.updatedItemsCount?.toInt()
+            dto.allItemsCount = result?.allItemsCount?.toInt()
+            dto.kbSize = result?.kbSize ?: 0
 
             dto
         }
