@@ -58,7 +58,7 @@ class ServiceTokenController(
     }
 
     @GetMapping
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListServiceTokens(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedServiceTokenDTO>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -76,7 +76,7 @@ class ServiceTokenController(
     }
 
     @GetMapping(EndPointsV1.TOKENS_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListServiceTokens(@RequestParam filter: String): ResponseEntity<ValidatedSingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -93,7 +93,7 @@ class ServiceTokenController(
     }
 
     @GetMapping(EndPointsV1.TOKEN_SECRET)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getSecretKey(): ResponseEntity<ValidatedSingleValueServiceResponse<String>> {
         val secret = tokenService.generateSecretKey()
@@ -107,7 +107,7 @@ class ServiceTokenController(
     }
 
     @GetMapping(EndPointsV1.TOKEN_BY_ID)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getToken(@PathVariable("id") tokenId: String): ResponseEntity<ValidatedSingleValueServiceResponse<ValidatedServiceTokenDTO>> {
         val token = tokenService.findServiceTokenDTOById(tokenId)

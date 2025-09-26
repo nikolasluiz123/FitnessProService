@@ -62,7 +62,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_LIST)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListPerson(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedPersonDTO>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -80,7 +80,7 @@ class PersonController(
     }
 
     @GetMapping(EndPointsV1.PERSON_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_LOW_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListPerson(@RequestParam filter: String): ResponseEntity<ValidatedSingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()

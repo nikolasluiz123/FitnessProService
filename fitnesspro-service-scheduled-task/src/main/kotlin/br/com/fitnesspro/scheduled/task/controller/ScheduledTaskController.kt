@@ -36,7 +36,7 @@ class ScheduledTaskController(
     }
 
     @GetMapping
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListScheduledTask(): ResponseEntity<ValidatedReadServiceResponse<ValidatedScheduledTaskDTO>> {
         val result = scheduledTaskService.getListScheduledTask()

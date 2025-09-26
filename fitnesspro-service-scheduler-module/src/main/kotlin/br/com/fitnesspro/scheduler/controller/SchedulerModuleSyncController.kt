@@ -28,7 +28,7 @@ class SchedulerModuleSyncController(
 ) {
 
     @GetMapping(EndPointsV1.SYNC_IMPORT_SCHEDULER)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun import(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedSchedulerModuleSyncDTO>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()

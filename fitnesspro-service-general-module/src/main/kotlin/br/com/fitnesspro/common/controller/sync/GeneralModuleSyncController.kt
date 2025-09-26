@@ -28,7 +28,7 @@ class GeneralModuleSyncController(
 ) {
 
     @GetMapping(EndPointsV1.SYNC_IMPORT_GENERAL)
-    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_HIGH_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun import(@RequestParam filter: String, @RequestParam pageInfos: String, request: HttpServletRequest): ResponseEntity<ValidatedImportationServiceResponse<ValidatedGeneralModuleSyncDTO>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()

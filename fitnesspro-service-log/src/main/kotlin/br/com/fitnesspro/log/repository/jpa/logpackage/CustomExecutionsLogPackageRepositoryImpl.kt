@@ -122,7 +122,7 @@ class CustomExecutionsLogPackageRepositoryImpl: ICustomExecutionsLogPackageRepos
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by logPackage.serviceExecutionEnd ")
+            add(" order by logPackage.serviceExecutionEnd desc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {

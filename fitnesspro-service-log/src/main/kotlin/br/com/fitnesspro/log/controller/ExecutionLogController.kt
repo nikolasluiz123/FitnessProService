@@ -80,7 +80,7 @@ class ExecutionLogController(
     }
 
     @GetMapping
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListExecutionLog(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedExecutionLogDTO>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -98,7 +98,7 @@ class ExecutionLogController(
     }
 
     @GetMapping(EndPointsV1.LOGS_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListExecutionLog(@RequestParam filter: String, ): ResponseEntity<ValidatedSingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -115,7 +115,7 @@ class ExecutionLogController(
     }
 
     @GetMapping(EndPointsV1.LOGS_PACKAGE)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListExecutionLogPackage(@RequestParam filter: String, @RequestParam pageInfos: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedExecutionLogPackageDTO>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -133,7 +133,7 @@ class ExecutionLogController(
     }
 
     @GetMapping(EndPointsV1.LOGS_PACKAGE_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListExecutionLogPackage(@RequestParam filter: String): ResponseEntity<ValidatedSingleValueServiceResponse<Int>> {
         val defaultGSon = GsonBuilder().defaultServiceGSon()
@@ -150,7 +150,7 @@ class ExecutionLogController(
     }
 
     @GetMapping(EndPointsV1.LOGS_SUB_PACKAGE_LIST)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListExecutionLogSubPackage(
         @RequestParam filter: String,
@@ -172,7 +172,7 @@ class ExecutionLogController(
     }
 
     @GetMapping(EndPointsV1.LOGS_SUB_PACKAGE_COUNT)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getCountListExecutionLogSubPackage(
         @RequestParam filter: String

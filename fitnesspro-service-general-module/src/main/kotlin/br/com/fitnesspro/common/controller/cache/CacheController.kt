@@ -24,7 +24,7 @@ class CacheController(
 ) {
 
     @GetMapping(EndPointsV1.CACHE_LIST)
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListCache(): ResponseEntity<ValidatedReadServiceResponse<ValidatedCacheDTO>> {
         val values = cacheService.getListCaches()
@@ -38,7 +38,7 @@ class CacheController(
     }
 
     @GetMapping("${EndPointsV1.CACHE_ENTRIES}/{cacheName}")
-    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class])
+    @Transactional(timeout = Timeouts.OPERATION_MEDIUM_TIMEOUT, rollbackFor = [Exception::class], readOnly = true)
     @SecurityRequirement(name = "Bearer Authentication")
     fun getListCacheEntries(@PathVariable cacheName: String): ResponseEntity<ValidatedReadServiceResponse<ValidatedCacheEntryDTO>> {
         val values = cacheService.getListCacheEntries(cacheName)
