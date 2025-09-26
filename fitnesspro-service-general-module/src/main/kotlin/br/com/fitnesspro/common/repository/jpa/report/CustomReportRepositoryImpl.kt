@@ -6,6 +6,7 @@ import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.general.Report
 import br.com.fitnesspro.models.general.SchedulerReport
+import br.com.fitnesspro.models.general.WorkoutReport
 import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
 import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
@@ -31,6 +32,10 @@ class CustomReportRepositoryImpl: ICustomReportRepository {
             when (filter.reportContext) {
                 EnumReportContext.SCHEDULERS_REPORT -> {
                     add(" from ${SchedulerReport::class.java.name} intermediate ")
+                }
+
+                EnumReportContext.WORKOUT_REGISTER_EVOLUTION -> {
+                    add(" from ${WorkoutReport::class.java.name} intermediate ")
                 }
             }
 

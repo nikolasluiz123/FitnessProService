@@ -1,6 +1,8 @@
 package br.com.fitnesspro.service.communication.dtos.sync
 
 import br.com.fitnesspro.service.communication.dtos.annotation.EntityReference
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IWorkoutReportDTO
 import br.com.fitnesspro.shared.communication.dtos.sync.interfaces.IWorkoutModuleSyncDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.*
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.*
@@ -37,6 +39,12 @@ class ValidatedWorkoutModuleSyncDTO(
 
     @EntityReference("VideoExercisePreDefinition")
     override var videoExercisePreDefinitions: List<IVideoExercisePreDefinitionDTO> = emptyList(),
+
+    @EntityReference("Report")
+    override var reports: List<IReportDTO>,
+
+    @EntityReference("WorkoutReport")
+    override var workoutReports: List<IWorkoutReportDTO>,
 
     @EntityReference("HealthConnectMetadata")
     override var metadata: List<IHealthConnectMetadataDTO> = emptyList(),

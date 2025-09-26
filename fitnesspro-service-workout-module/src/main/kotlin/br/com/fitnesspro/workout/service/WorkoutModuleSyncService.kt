@@ -1,7 +1,10 @@
 package br.com.fitnesspro.workout.service
 
+import br.com.fitnesspro.common.service.general.ReportService
 import br.com.fitnesspro.service.communication.dtos.sync.ValidatedWorkoutModuleSyncDTO
+import br.com.fitnesspro.shared.communication.enums.report.EnumReportContext
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
+import br.com.fitnesspro.shared.communication.query.filter.importation.ReportImportFilter
 import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import br.com.fitnesspro.workout.service.health.HealthConnectGeneralDataService
 import br.com.fitnesspro.workout.service.health.HealthConnectHeartRateService
@@ -15,10 +18,18 @@ class WorkoutModuleSyncService(
     private val videoService: VideoService,
     private val healthConnectGeneralDataService: HealthConnectGeneralDataService,
     private val healthConnectHeartRateService: HealthConnectHeartRateService,
-    private val healthConnectSleepService: HealthConnectSleepService
+    private val healthConnectSleepService: HealthConnectSleepService,
+    private val workoutReportService: WorkoutReportService,
+    private val reportService: ReportService
 ) {
 
     fun getImportationData(filter: WorkoutModuleImportationFilter, pageInfos: ImportPageInfos): ValidatedWorkoutModuleSyncDTO {
+        val reportFilter = ReportImportFilter(
+            personId = filter.personId,
+            lastUpdateDateMap = filter.lastUpdateDateMap,
+            reportContext = EnumReportContext.WORKOUT_REGISTER_EVOLUTION
+        )
+
         return ValidatedWorkoutModuleSyncDTO(
             workouts = workoutService.getWorkoutsImport(filter, pageInfos),
             workoutGroups = workoutService.getWorkoutGroupsImport(filter, pageInfos),
@@ -38,6 +49,8 @@ class WorkoutModuleSyncService(
             workoutGroupsPreDefinitions = workoutService.getWorkoutGroupsPreDefinitionImport(filter, pageInfos),
             exercisePredefinitions = exerciseService.getExercisesPredefinitionImport(filter, pageInfos),
             videoExercisePreDefinitions = videoService.getVideoExercisesPreDefinitionImport(filter, pageInfos),
+            reports = reportService.getReportsImport(reportFilter, pageInfos),
+            workoutReports = workoutReportService.getWorkoutReportsImport(filter, pageInfos)
         )
     }
 
@@ -64,5 +77,8 @@ class WorkoutModuleSyncService(
         workoutService.saveWorkoutGroupPreDefinitionBatch(syncDTO.workoutGroupsPreDefinitions)
         exerciseService.saveExercisePreDefinitionBatch(syncDTO.exercisePredefinitions)
         videoService.saveExercisePreDefinitionVideosBatch(syncDTO.videoExercisePreDefinitions)
+
+        reportService.saveReportBatch(syncDTO.reports)
+        workoutReportService.saveWorkoutReportBatch(syncDTO.workoutReports)
     }
 }

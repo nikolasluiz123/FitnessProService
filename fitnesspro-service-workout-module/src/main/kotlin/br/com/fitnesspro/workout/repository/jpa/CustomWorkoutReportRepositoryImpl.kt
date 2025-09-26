@@ -1,51 +1,51 @@
-package br.com.fitnesspro.scheduler.repository.jpa
+package br.com.fitnesspro.workout.repository.jpa
 
 import br.com.fitnesspro.jpa.helper.Constants.QR_NL
 import br.com.fitnesspro.jpa.query.Parameter
 import br.com.fitnesspro.jpa.query.getResultList
 import br.com.fitnesspro.jpa.query.setParameters
-import br.com.fitnesspro.models.general.SchedulerReport
+import br.com.fitnesspro.models.general.WorkoutReport
 import br.com.fitnesspro.shared.communication.paging.ImportPageInfos
-import br.com.fitnesspro.shared.communication.query.filter.importation.SchedulerReportImportFilter
+import br.com.fitnesspro.shared.communication.query.filter.importation.WorkoutModuleImportationFilter
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
+class CustomWorkoutReportRepositoryImpl: ICustomWorkoutReportRepository {
 
     @PersistenceContext
     private lateinit var entityManager: EntityManager
 
-    override fun getSchedulerReportsImport(
-        filter: SchedulerReportImportFilter,
+    override fun getWorkoutReportsImport(
+        filter: WorkoutModuleImportationFilter,
         pageInfos: ImportPageInfos
-    ): List<SchedulerReport> {
+    ): List<WorkoutReport> {
         val params = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select sr ")
+            add(" select wr ")
         }
 
         val from = StringJoiner(QR_NL).apply {
-            add(" from ${SchedulerReport::class.java.name} sr ")
-            add(" inner join sr.report report ")
+            add(" from ${WorkoutReport::class.java.name} wr ")
+            add(" inner join wr.report report ")
         }
 
         val where = StringJoiner(QR_NL).apply {
-            add(" where sr.person.id = :pPersonId ")
+            add(" where wr.person.id = :pPersonId ")
 
             params.add(Parameter(name = "pPersonId", value = filter.personId))
 
-            filter.lastUpdateDateMap[SchedulerReport::class.simpleName!!]?.let {
-                add(" and sr.updateDate > :pLastUpdateDate ")
+            filter.lastUpdateDateMap[WorkoutReport::class.simpleName!!]?.let {
+                add(" and wr.updateDate > :pLastUpdateDate ")
                 params.add(Parameter(name = "pLastUpdateDate", value = it))
             }
         }
 
         val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by sr.updateDate asc ")
+            add(" order by wr.updateDate asc ")
         }
 
         val sql = StringJoiner(QR_NL).apply {
@@ -55,11 +55,11 @@ class CustomSchedulerReportRepositoryImpl: ICustomSchedulerReportRepository {
             add(orderBy.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), SchedulerReport::class.java)
+        val query = entityManager.createQuery(sql.toString(), WorkoutReport::class.java)
         query.setParameters(params)
         query.maxResults = pageInfos.pageSize
 
-        val result = query.getResultList(SchedulerReport::class.java)
+        val result = query.getResultList(WorkoutReport::class.java)
 
         return result
     }

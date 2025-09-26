@@ -1,5 +1,7 @@
 package br.com.fitnesspro.shared.communication.dtos.sync.interfaces
 
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IReportDTO
+import br.com.fitnesspro.shared.communication.dtos.general.interfaces.IWorkoutReportDTO
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.*
 import br.com.fitnesspro.shared.communication.dtos.workout.interfaces.health.*
 
@@ -16,6 +18,9 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
     var workoutGroupsPreDefinitions: List<IWorkoutGroupPreDefinitionDTO>
     var exercisePredefinitions: List<IExercisePreDefinitionDTO>
     var videoExercisePreDefinitions: List<IVideoExercisePreDefinitionDTO>
+
+    var reports: List<IReportDTO>
+    var workoutReports: List<IWorkoutReportDTO>
 
     var metadata: List<IHealthConnectMetadataDTO>
     var steps: List<IHealthConnectStepsDTO>
@@ -40,6 +45,9 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
                 workoutGroupsPreDefinitions.isEmpty() &&
                 exercisePredefinitions.isEmpty() &&
                 videoExercisePreDefinitions.isEmpty() &&
+
+                reports.isEmpty() &&
+                workoutReports.isEmpty() &&
 
                 metadata.isEmpty() &&
                 steps.isEmpty() &&
@@ -66,6 +74,10 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
             exercisePredefinitions.size,
             videoExercisePreDefinitions.size,
 
+            reports.size,
+            workoutReports.size,
+
+
             metadata.size,
             steps.size,
             caloriesBurned.size,
@@ -90,6 +102,9 @@ interface IWorkoutModuleSyncDTO : ISyncDTO {
                 workoutGroupsPreDefinitions.size +
                 exercisePredefinitions.size +
                 videoExercisePreDefinitions.size +
+
+                reports.size +
+                workoutReports.size +
 
                 metadata.size +
                 steps.size +
