@@ -6,6 +6,7 @@ import br.com.fitnesspro.jpa.query.setParameters
 import br.com.fitnesspro.models.logs.ExecutionLogPackage
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import jakarta.persistence.Tuple
 import org.springframework.stereotype.Repository
 import java.time.Duration
 import java.time.LocalDateTime
@@ -18,32 +19,13 @@ class CustomExecutionsLogPackageRepositoryImpl: ICustomExecutionsLogPackageRepos
     private lateinit var entityManager: EntityManager
 
     override fun getExecutionProcessingTime(logId: String): ExecutionProcessingTime {
-        val serviceStart = getServiceStartTime(logId)
-        val serviceEnd = getServiceEndTime(logId)
-
-        val clientStart = getClientStartTime(logId)
-        val clientEnd = getClientEndTime(logId)
-
-        val serviceDuration = if (serviceStart != null && serviceEnd != null) {
-            Duration.between(serviceStart, serviceEnd).toMillis()
-        } else {
-            null
-        }
-
-        val clientDuration = if (clientStart != null && clientEnd != null) {
-            Duration.between(clientStart, clientEnd).toMillis()
-        } else {
-            null
-        }
-
-        return ExecutionProcessingTime(service = serviceDuration, client = clientDuration)
-    }
-
-    private fun getServiceStartTime(logId: String): LocalDateTime? {
         val queryParams = mutableListOf<Parameter>()
 
         val select = StringJoiner(QR_NL).apply {
-            add(" select logPackage.serviceExecutionStart as serviceStart ")
+            add(" select logPackage.serviceExecutionStart as serviceStart, ")
+            add("        logPackage.serviceExecutionEnd as serviceEnd, ")
+            add("        logPackage.clientExecutionStart as clientStart, ")
+            add("        logPackage.clientExecutionEnd as clientEnd ")
         }
 
         val from = StringJoiner(QR_NL).apply {
@@ -55,120 +37,37 @@ class CustomExecutionsLogPackageRepositoryImpl: ICustomExecutionsLogPackageRepos
             queryParams.add(Parameter(name = "pLogId", value = logId))
         }
 
-        val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by logPackage.serviceExecutionStart ")
-        }
-
         val sql = StringJoiner(QR_NL).apply {
             add(select.toString())
             add(from.toString())
             add(where.toString())
-            add(orderBy.toString())
         }
 
-        val query = entityManager.createQuery(sql.toString(), LocalDateTime::class.java)
+        val query = entityManager.createQuery(sql.toString(), Tuple::class.java)
         query.setParameters(queryParams)
 
-        return query.resultList.firstOrNull()
-    }
+        var totalServiceDuration = 0L
+        var totalClientDuration = 0L
 
-    private fun getClientStartTime(logId: String): LocalDateTime? {
-        val queryParams = mutableListOf<Parameter>()
+        query.resultList.forEach { tuple ->
+            val serviceStart = tuple.get("serviceStart", LocalDateTime::class.java)
+            val serviceEnd = tuple.get("serviceEnd", LocalDateTime::class.java)
+            val clientStart = tuple.get("clientStart", LocalDateTime::class.java)
+            val clientEnd = tuple.get("clientEnd", LocalDateTime::class.java)
 
-        val select = StringJoiner(QR_NL).apply {
-            add(" select logPackage.clientExecutionStart as clientStart ")
+            if (serviceStart != null && serviceEnd != null) {
+                totalServiceDuration += Duration.between(serviceStart, serviceEnd).toMillis()
+            }
+
+            if (clientStart != null && clientEnd != null) {
+                totalClientDuration += Duration.between(clientStart, clientEnd).toMillis()
+            }
         }
 
-        val from = StringJoiner(QR_NL).apply {
-            add(" from ${ExecutionLogPackage::class.java.name} logPackage ")
-        }
-
-        val where = StringJoiner(QR_NL).apply {
-            add(" where logPackage.executionLog.id = :pLogId ")
-            queryParams.add(Parameter(name = "pLogId", value = logId))
-        }
-
-        val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by logPackage.clientExecutionStart ")
-        }
-
-        val sql = StringJoiner(QR_NL).apply {
-            add(select.toString())
-            add(from.toString())
-            add(where.toString())
-            add(orderBy.toString())
-        }
-
-        val query = entityManager.createQuery(sql.toString(), LocalDateTime::class.java)
-        query.setParameters(queryParams)
-
-        return query.resultList.firstOrNull()
-    }
-
-    private fun getServiceEndTime(logId: String): LocalDateTime? {
-        val queryParams = mutableListOf<Parameter>()
-
-        val select = StringJoiner(QR_NL).apply {
-            add(" select logPackage.serviceExecutionEnd as serviceEnd ")
-        }
-
-        val from = StringJoiner(QR_NL).apply {
-            add(" from ${ExecutionLogPackage::class.java.name} logPackage ")
-        }
-
-        val where = StringJoiner(QR_NL).apply {
-            add(" where logPackage.executionLog.id = :pLogId ")
-            queryParams.add(Parameter(name = "pLogId", value = logId))
-        }
-
-        val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by logPackage.serviceExecutionEnd desc ")
-        }
-
-        val sql = StringJoiner(QR_NL).apply {
-            add(select.toString())
-            add(from.toString())
-            add(where.toString())
-            add(orderBy.toString())
-        }
-
-        val query = entityManager.createQuery(sql.toString(), LocalDateTime::class.java)
-        query.setParameters(queryParams)
-
-        return query.resultList.firstOrNull()
-    }
-
-    private fun getClientEndTime(logId: String): LocalDateTime? {
-        val queryParams = mutableListOf<Parameter>()
-
-        val select = StringJoiner(QR_NL).apply {
-            add(" select logPackage.clientExecutionEnd as clientEnd ")
-        }
-
-        val from = StringJoiner(QR_NL).apply {
-            add(" from ${ExecutionLogPackage::class.java.name} logPackage ")
-        }
-
-        val where = StringJoiner(QR_NL).apply {
-            add(" where logPackage.executionLog.id = :pLogId ")
-            queryParams.add(Parameter(name = "pLogId", value = logId))
-        }
-
-        val orderBy = StringJoiner(QR_NL).apply {
-            add(" order by logPackage.clientExecutionEnd desc ")
-        }
-
-        val sql = StringJoiner(QR_NL).apply {
-            add(select.toString())
-            add(from.toString())
-            add(where.toString())
-            add(orderBy.toString())
-        }
-
-        val query = entityManager.createQuery(sql.toString(), LocalDateTime::class.java)
-        query.setParameters(queryParams)
-
-        return query.resultList.firstOrNull()
+        return ExecutionProcessingTime(
+            service = if (totalServiceDuration > 0) totalServiceDuration else null,
+            client = if (totalClientDuration > 0) totalClientDuration else null
+        )
     }
 
 }
