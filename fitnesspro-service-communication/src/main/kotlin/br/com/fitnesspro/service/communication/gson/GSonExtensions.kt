@@ -93,6 +93,7 @@ fun GsonBuilder.defaultServiceGSon(): Gson {
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutDTO::class.java, ValidatedWorkoutDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupDTO::class.java, ValidatedWorkoutGroupDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutGroupPreDefinitionDTO::class.java,ValidatedWorkoutGroupPreDefinitionDTO::class.java))
+        .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IWorkoutReportDTO::class.java, ValidatedWorkoutReportDTO::class.java))
 
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectMetadataDTO::class.java, ValidatedHealthConnectMetadataDTO::class.java))
         .registerTypeAdapterFactory(GenericInterfaceAdapterFactory(IHealthConnectStepsDTO::class.java, ValidatedHealthConnectStepsDTO::class.java))
