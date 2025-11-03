@@ -79,8 +79,7 @@ class FirebaseNotificationService(
         notification: FitnessProNotificationData
     ): List<NotificationResult> {
         if (devicesTokens.isEmpty()) {
-            val message = messageSource.getMessage("notification.error.empty.devices", null, Locale.getDefault())
-            throw FirebaseNotificationException(message)
+            return emptyList()
         }
 
         return if (devicesTokens.size > 1) {
