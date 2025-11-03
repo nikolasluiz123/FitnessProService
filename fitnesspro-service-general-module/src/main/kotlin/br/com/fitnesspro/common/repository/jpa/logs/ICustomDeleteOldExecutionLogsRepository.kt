@@ -7,4 +7,6 @@ interface ICustomDeleteOldExecutionLogsRepository {
     fun getIdsExecutionLogDelete(config: DeleteOldExecutionLogsConfig): List<String>
 
     fun getIdsExecutionLogPackageDelete(executionLogId: String): List<String>
+
+    fun getIdsExecutionLogSubPackageDelete(executionLogPackageId: String): List<String>
 }
