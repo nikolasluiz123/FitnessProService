@@ -16,6 +16,7 @@ import br.com.fitnesspro.shared.communication.notification.SchedulerNotification
 import com.google.gson.GsonBuilder
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Service
+import java.time.ZoneId
 import java.util.*
 
 @Service
@@ -88,13 +89,14 @@ class SchedulerAntecedenceNotificationExecutorService(
     }
 
     private fun getNotificationText(notificationInfo: TOSchedulerAntecedenceNotificationInfo): Pair<String, String> {
+        val zoneId = deviceService.getDeviceFromPerson(notificationInfo.personToSendNotificationId)?.zoneId!!
         val title = messageSource.getMessage("scheduler.antecedence.notification.title", null, Locale.getDefault())
 
         val message = messageSource.getMessage(
             "scheduler.antecedence.notification.message",
             arrayOf(
-                notificationInfo.dateTimeStart.format(EnumDateTimePatterns.DAY_MONTH),
-                notificationInfo.dateTimeStart.format(EnumDateTimePatterns.TIME),
+                notificationInfo.dateTimeStart.format(EnumDateTimePatterns.DAY_MONTH, ZoneId.of(zoneId)),
+                notificationInfo.dateTimeStart.format(EnumDateTimePatterns.TIME, ZoneId.of(zoneId)),
                 notificationInfo.otherPersonName
             ),
             Locale.getDefault()
